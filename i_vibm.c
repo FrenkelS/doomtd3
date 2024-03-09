@@ -44,8 +44,8 @@
  
 extern const int16_t CENTERY;
 
-// The screen is [SCREENWIDTH * SCREENHEIGHT];
-static uint8_t __far* _s_screen;
+static uint8_t __far* _s_viewwindow;
+static uint8_t __far* _s_statusbar;
 static uint8_t __far* videomemory;
 
 
@@ -64,8 +64,8 @@ void I_InitGraphicsHardwareSpecificCode(void)
 	__djgpp_nearptr_enable();
 	videomemory = D_MK_FP(0xb800, ((SCREENWIDTH_VGA - SCREENWIDTH) / 2) / 4 + (((SCREENHEIGHT_VGA - SCREENHEIGHT) / 2) * PLANEWIDTH) / 2 + __djgpp_conventional_base);
 
-	_s_screen = Z_MallocStatic(SCREENWIDTH * SCREENHEIGHT);
-	_fmemset(_s_screen, 0, SCREENWIDTH * SCREENHEIGHT);
+	_s_viewwindow = Z_MallocStatic(VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT);
+	_s_statusbar = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
 }
 
 
@@ -83,14 +83,25 @@ void I_SetPalette(int8_t pal)
 
 void I_FinishUpdate(void)
 {
-	uint8_t __far* src = _s_screen;
+	uint8_t __far* src = _s_viewwindow;
 	uint8_t __far* dst = videomemory;
 
-#if defined DISABLE_STATUS_BAR
 	for (uint_fast8_t y = 0; y < (SCREENHEIGHT - ST_HEIGHT) / 2; y++) {
-#else
-	for (uint_fast8_t y = 0; y < SCREENHEIGHT / 2; y++) {
-#endif
+		_fmemcpy(dst, src, VIEWWINDOWWIDTH);
+		dst += 0x2000;
+		src += VIEWWINDOWWIDTH;
+
+		for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+			uint8_t b = *src++;
+			*dst++ = (b << 4 | b >> 4);
+		}
+
+		dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
+	}
+
+#if !defined DISABLE_STATUS_BAR
+	src = _s_statusbar;
+	for (uint_fast8_t y = (SCREENHEIGHT - ST_HEIGHT) / 2; y < SCREENHEIGHT / 2; y++) {
 		for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
 			*dst++ = *src;
 			src += 4;
@@ -106,6 +117,7 @@ void I_FinishUpdate(void)
 
 		dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
 	}
+#endif
 }
 
 
@@ -132,7 +144,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 		nearcolormapoffset = D_FP_OFF(dcvars->colormap);
 	}
 
-	uint8_t __far* dest = _s_screen + (dcvars->yl * SCREENWIDTH) + (dcvars->x << 2);
+	uint8_t __far* dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
 
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
@@ -140,7 +152,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 	while (count--)
 	{
 		*dest = nearcolormap[source[frac>>COLBITS]];
-		dest += SCREENWIDTH;
+		dest += VIEWWINDOWWIDTH;
 		frac += fracstep;
 	}
 }
@@ -156,12 +168,12 @@ void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 
 	const uint8_t color = texture;
 
-	uint8_t __far* dest = _s_screen + (dcvars->yl * SCREENWIDTH) + (dcvars->x << 2);
+	uint8_t __far* dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
 
 	while (count--)
 	{
 		*dest = color;
-		dest += SCREENWIDTH;
+		dest += VIEWWINDOWWIDTH;
 	}
 }
 
@@ -206,14 +218,14 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 		nearcolormapoffset = D_FP_OFF(&fullcolormap[6 * 256]);
 	}
 
-	uint8_t __far* dest = _s_screen + (dc_yl * SCREENWIDTH) + (dcvars->x << 2);
+	uint8_t __far* dest = _s_viewwindow + (dc_yl * VIEWWINDOWWIDTH) + dcvars->x;
 
 	static int16_t fuzzpos = 0;
 
 	do
 	{
 		*dest = nearcolormap[dest[fuzzoffset[fuzzpos] * 4]];
-		dest += SCREENWIDTH;
+		dest += VIEWWINDOWWIDTH;
 
 		fuzzpos++;
 		if (fuzzpos >= FUZZTABLE)
@@ -248,11 +260,11 @@ void V_DrawRaw(int16_t num, uint16_t offset)
 	if (lump != NULL)
 	{
 		uint16_t lumpLength = W_LumpLength(num);
-		_fmemcpy(&_s_screen[offset], lump, lumpLength);
+		_fmemcpy(&_s_statusbar[offset - (SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH], lump, lumpLength);
 		Z_ChangeTagToCache(lump);
 	}
 	else
-		W_ReadLumpByNum(num, &_s_screen[offset]);
+		W_ReadLumpByNum(num, &_s_statusbar[offset - (SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH]);
 }
 
 
@@ -261,7 +273,7 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch)
 	y -= patch->topoffset;
 	x -= patch->leftoffset;
 
-	byte __far* desttop = _s_screen + (y * SCREENWIDTH) + x;
+	byte __far* desttop = _s_statusbar + (y * SCREENWIDTH) + x - (SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH;
 
 	int16_t width = patch->width;
 
