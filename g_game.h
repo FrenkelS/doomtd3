@@ -59,7 +59,4 @@ void G_LoadSettings();
 void G_SaveSettings();
 
 
-extern const int16_t  key_fire;
-
-
 #endif
