@@ -5,7 +5,7 @@ unset CFLAGS
 #export RENDER_OPTIONS="-DONE_WALL_TEXTURE -DFLAT_WALL -DFLAT_SPAN -DFLAT_SKY -DDISABLE_STATUS_BAR"
 export RENDER_OPTIONS="-DFLAT_SPAN"
 
-ia16-elf-gcc -c i_vvga13.c $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
+ia16-elf-gcc -c i_vibm.c   $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_map.c    $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_maputl.c $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_sight.c  $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
@@ -28,12 +28,10 @@ export GLOBOBJS+=" hu_stuff.c"
 export GLOBOBJS+=" i_audio.c"
 export GLOBOBJS+=" i_main.c"
 export GLOBOBJS+=" i_system.c"
-#export GLOBOBJS+=" i_vvga13.c"
-export GLOBOBJS+=" i_vvga13.o"
-export GLOBOBJS+=" i_vvg13a.o"
+#export GLOBOBJS+=" i_vibm.c"
+export GLOBOBJS+=" i_vibm.o"
 export GLOBOBJS+=" info.c"
 export GLOBOBJS+=" m_cheat.c"
-export GLOBOBJS+=" m_fixed.o"
 export GLOBOBJS+=" m_menu.c"
 export GLOBOBJS+=" m_random.c"
 export GLOBOBJS+=" p_doors.c"
@@ -78,7 +76,7 @@ export GLOBOBJS+=" z_zone.o"
 
 ia16-elf-gcc $GLOBOBJS $CFLAGS $RENDER_OPTIONS -o GCCIA16/DOOM8088.EXE
 
-rm i_vvga13.o
+rm i_vibm.o
 rm p_map.o
 rm p_maputl.o
 rm p_sight.o

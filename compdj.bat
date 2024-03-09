@@ -19,7 +19,7 @@ set CFLAGS=%CFLAGS% -D__far= -DFLAT_SPAN
 @set GLOBOBJS=%GLOBOBJS% i_audio.c
 @set GLOBOBJS=%GLOBOBJS% i_main.c
 @set GLOBOBJS=%GLOBOBJS% i_system.c
-@set GLOBOBJS=%GLOBOBJS% i_vmodey.c
+@set GLOBOBJS=%GLOBOBJS% i_vibm.c
 @set GLOBOBJS=%GLOBOBJS% info.c
 @set GLOBOBJS=%GLOBOBJS% m_cheat.c
 @set GLOBOBJS=%GLOBOBJS% m_menu.c
