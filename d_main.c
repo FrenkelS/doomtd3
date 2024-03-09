@@ -502,18 +502,10 @@ static void D_DoomMainSetup(void)
 
     I_InitGraphics();
 
-    int16_t p = M_CheckParm("-timedemo");
-    if (p && p < myargc - 1)
-    {
-        singletics = true;
-        _g_timingdemo = true;            // show stats after quit
-        G_DeferedPlayDemo(myargv[p + 1]);
-        _g_singledemo = true;            // quit after one demo
-    }
-    else
-    {
-        D_StartTitle();                 // start up intro loop
-    }
+    singletics = true;
+    _g_timingdemo = true;            // show stats after quit
+    G_DeferedPlayDemo("demo3");
+    _g_singledemo = true;            // quit after one demo
 }
 
 //
