@@ -41,20 +41,6 @@
 #include "r_defs.h"
 #include "sounds.h"
 
-//
-// Initializes sound stuff, including volume
-// Sets channels, SFX and music volume,
-//  allocates channel buffer, sets S_sfx lookup.
-//
-void S_Init(int16_t sfxVolume, int16_t musicVolume);
-
-
-//
-// Per level startup code.
-// Kills playing sounds at start of level,
-//  determines music if any, changes music.
-//
-void S_Start(void);
 
 //
 // Start sound for thing at <origin>
@@ -66,20 +52,6 @@ void S_StartSound2(degenmobj_t __far* origin, sfxenum_t sfx_id);
 
 // killough 4/25/98: mask used to indicate sound origin is player item pickup
 #define PICKUP_SOUND (0x8000)
-
-// Stop sound for thing at <origin>
-void S_StopSound(void __far* origin);
-
-// Start music using <music_id> from sounds.h
-void S_StartMusic(musicenum_t music_id);
-
-
-//
-// Updates music & sounds
-//
-void S_UpdateSounds(void);
-void S_SetMusicVolume(int16_t volume);
-void S_SetSfxVolume(int16_t volume);
 
 
 #endif

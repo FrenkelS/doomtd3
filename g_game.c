@@ -641,9 +641,6 @@ void G_LoadSettings()
         snd_MusicVolume = (settings.musicVolume > 15) ? 15 : settings.musicVolume;
 		
         I_SetPalette(0);
-
-        S_SetSfxVolume(snd_SfxVolume);
-        S_SetMusicVolume(snd_MusicVolume);
     }
 }
 

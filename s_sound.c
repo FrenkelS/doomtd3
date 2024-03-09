@@ -88,41 +88,6 @@ int16_t snd_SfxVolume = 15;
 int16_t snd_MusicVolume = 15;
 
 
-// Initializes sound stuff, including volume
-// Sets channels, SFX and music volume,
-//  allocates channel buffer, sets S_sfx lookup.
-//
-
-void S_Init(int16_t sfxVolume, int16_t musicVolume)
-{
-	UNUSED(sfxVolume);
-	UNUSED(musicVolume);
-}
-
-
-//
-// Kills all sounds
-//
-
-static void S_Stop(void)
-{
-
-}
-
-//
-// Per level startup code.
-// Kills playing sounds at start of level,
-//  determines music if any, changes music.
-//
-void S_Start(void)
-{
-    // kill all playing sounds at start of level
-    //  (trust me - a good idea)
-
-    S_Stop();
-}
-
-
 void S_StartSound(mobj_t __far* origin, sfxenum_t sfx_id)
 {
 	UNUSED(origin);
@@ -156,39 +121,4 @@ void S_StartSound2(degenmobj_t __far* origin, sfxenum_t sfx_id)
 
     fm.origin.x = origin->x;
     fm.origin.y = origin->y;
-}
-
-void S_StopSound(void __far* origin)
-{
-	UNUSED(origin);
-}
-
-
-//
-// Updates music & sounds
-//
-void S_UpdateSounds(void)
-{
-
-}
-
-void S_SetMusicVolume(int16_t volume)
-{
-	UNUSED(volume);
-}
-
-
-
-void S_SetSfxVolume(int16_t volume)
-{
-	UNUSED(volume);
-}
-
-
-
-// Starts some music with the music id found in sounds.h.
-//
-void S_StartMusic(musicenum_t m_id)
-{
-	UNUSED(m_id);
 }

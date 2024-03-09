@@ -534,8 +534,6 @@ static void M_SfxVol(int16_t choice)
     }
 
   G_SaveSettings();
-
-  S_SetSfxVolume(snd_SfxVolume /* *8 */);
 }
 
 static void M_MusicVol(int16_t choice)
@@ -553,8 +551,6 @@ static void M_MusicVol(int16_t choice)
     }
 
   G_SaveSettings();
-
-  S_SetMusicVolume(snd_MusicVolume /* *8 */);
 }
 
 /////////////////////////////

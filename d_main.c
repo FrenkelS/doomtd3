@@ -217,10 +217,6 @@ static void D_DoomLoop(void)
         else
             TryRunTics (); // will run at least one tic
 
-        // killough 3/16/98: change consoleplayer to displayplayer
-        if (_g_player.mo) // cph 2002/08/10
-            S_UpdateSounds();// move positional sounds
-
         // Update display, next frame, with current state.
         D_Display();
 
@@ -305,7 +301,6 @@ static void D_DrawTitle1(const char *name)
 {
 	UNUSED(name);
 
-	S_StartMusic(mus_intro);
 	pagetic = (TICRATE*30);
 }
 
@@ -394,8 +389,6 @@ static void D_DoomMainSetup(void)
     R_Init();
 
     P_Init();
-
-    S_Init(snd_SfxVolume /* *8 */, snd_MusicVolume /* *8*/ );
 
     HU_Init();
 

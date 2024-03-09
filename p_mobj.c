@@ -960,10 +960,6 @@ void P_RemoveMobj(mobj_t __far* mobj)
   // Delete all nodes on the current sector_list               phares 3/16/98
   P_DelSeclist();
 
-  // stop any playing sound
-
-  S_StopSound (mobj);
-
   // killough 11/98:
   //
   // Remove any references to other mobjs.

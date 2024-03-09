@@ -534,9 +534,6 @@ void P_SetupLevel(int16_t map)
     // Initial height of PointOfView will be set by player think.
     _g_player.viewz = 1;
 
-    // Make sure all sounds are stopped before Z_FreeTags.
-    S_Start();
-
     P_FreeLevelData();
 
     P_InitThinkers();
