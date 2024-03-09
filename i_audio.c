@@ -82,9 +82,6 @@ void I_InitSound(void)
 {
 	if (nomusicparm && nosfxparm)
 		return;
-
-	// Finished initialization.
-	printf("I_InitSound: sound ready\n");
 }
 
 

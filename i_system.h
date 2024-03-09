@@ -43,11 +43,10 @@ int32_t I_GetTime(void);
 
 void NORETURN_PRE I_Error(const char *error, ...) NORETURN_POST;
 
-void I_InitScreen();
+void I_InitScreen(void);
 
-void I_InitGraphics();
-
-void I_SetScreenMode(uint16_t mode);
+void I_InitGraphics(void);
+void I_ShutdownGraphics(void);
 
 void I_FinishUpdate(void);
 

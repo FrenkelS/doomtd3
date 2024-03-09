@@ -49,6 +49,14 @@ static uint8_t __far* _s_screen;
 static uint8_t __far* videomemory;
 
 
+static void I_SetScreenMode(uint16_t mode)
+{
+	union REGS regs;
+	regs.w.ax = mode;
+	int86(0x10, &regs, &regs);
+}
+
+
 void I_InitGraphicsHardwareSpecificCode(void)
 {
 	I_SetScreenMode(6);
@@ -61,9 +69,21 @@ void I_InitGraphicsHardwareSpecificCode(void)
 }
 
 
-static void I_DrawBuffer(uint8_t __far* buffer)
+void I_ShutdownGraphics(void)
 {
-	uint8_t __far* src = buffer;
+	I_SetScreenMode(3);
+}
+
+
+void I_SetPalette(int8_t pal)
+{
+
+}
+
+
+void I_FinishUpdate(void)
+{
+	uint8_t __far* src = _s_screen;
 	uint8_t __far* dst = videomemory;
 
 #if defined DISABLE_STATUS_BAR
@@ -86,18 +106,6 @@ static void I_DrawBuffer(uint8_t __far* buffer)
 
 		dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
 	}
-}
-
-
-void I_SetPalette(int8_t pal)
-{
-
-}
-
-
-void I_FinishUpdate(void)
-{
-	I_DrawBuffer(_s_screen);
 }
 
 

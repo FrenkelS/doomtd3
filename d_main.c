@@ -476,24 +476,18 @@ static void D_DoomMainSetup(void)
     // CPhipps - move up netgame init
     D_InitNetGame();
 
-    printf("W_Init: Init WADfiles.\n");
     W_Init(); // CPhipps - handling of wadfiles init changed
 
-    printf("M_Init: Init miscellaneous info.\n");
     M_Init();
 
-    printf("R_Init: DOOM refresh daemon - [...................]\n");
     R_Init();
 
-    printf("P_Init: Init Playloop state.\n");
     P_Init();
 
     S_Init(snd_SfxVolume /* *8 */, snd_MusicVolume /* *8*/ );
 
-    printf("HU_Init: Setting up heads up display.\n");
     HU_Init();
 
-    printf("ST_Init: Init status bar.\n");
     ST_Init();
 
     G_LoadSettings();

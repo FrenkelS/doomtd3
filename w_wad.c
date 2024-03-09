@@ -118,9 +118,6 @@ typedef struct
 
 void W_Init(void)
 {
-	printf("\tadding doomtd3l.wad\n");
-	printf("\tshareware version.\n");
-
 	fileWAD = fopen("DOOMTD3L.WAD", "rb");
 	if (fileWAD == NULL)
 		I_Error("Can't open DOOMTD3L.WAD.");

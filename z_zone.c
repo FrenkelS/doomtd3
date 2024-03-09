@@ -145,8 +145,6 @@ void Z_Init (void)
 
 	uint32_t heapSize = (uint32_t)max * PARAGRAPH_SIZE;
 
-	printf("Standard: %ld bytes\n", heapSize);
-
 	// align blocklist
 	uint_fast8_t i = 0;
 	static uint8_t __far mainzone_sentinal_buffer[PARAGRAPH_SIZE * 2];
@@ -172,8 +170,6 @@ void Z_Init (void)
 #if defined ZONEIDCHECK
 	block->id   = ZONEID;
 #endif
-
-	printf("%ld bytes allocated for zone\n", heapSize);
 }
 
 

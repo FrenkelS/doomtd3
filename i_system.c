@@ -23,10 +23,7 @@
  *
  *-----------------------------------------------------------------------------*/
 
-#include <conio.h>
-#include <dos.h>
 #include <stdarg.h>
-#include <time.h>
 
 #include "doomdef.h"
 #include "doomtype.h"
@@ -37,7 +34,6 @@
 
 
 void I_InitGraphicsHardwareSpecificCode(void);
-static void NORETURN_PRE I_Quit(void) NORETURN_POST;
 
 
 static boolean isGraphicsModeSet = false;
@@ -48,14 +44,6 @@ static boolean isGraphicsModeSet = false;
 // Screen code
 //
 
-void I_SetScreenMode(uint16_t mode)
-{
-	union REGS regs;
-	regs.w.ax = mode;
-	int86(0x10, &regs, &regs);
-}
-
-
 void I_InitGraphics(void)
 {
 	I_InitGraphicsHardwareSpecificCode();
@@ -65,12 +53,12 @@ void I_InitGraphics(void)
 
 //**************************************************************************************
 //
-// Keyboard code
+//
 //
 
 void I_InitScreen(void)
 {
-	I_SetScreenMode(3);
+
 }
 
 
@@ -108,28 +96,9 @@ void I_InitTimer(void)
 static void I_Shutdown(void)
 {
 	if (isGraphicsModeSet)
-		I_SetScreenMode(3);
+		I_ShutdownGraphics();
 
 	I_ShutdownSound();
-}
-
-
-static void I_Quit(void)
-{
-	I_Shutdown();
-
-	int16_t lumpnum = W_GetNumForName("ENDOOM");
-	W_ReadLumpByNum(lumpnum, D_MK_FP(0xb800, __djgpp_conventional_base));
-
-	union REGS regs;
-	regs.h.ah = 2;
-	regs.h.bh = 0;
-	regs.h.dl = 0;
-	regs.h.dh = 23;
-	int86(0x10, &regs, &regs);
-
-	printf("\n");
-	exit(0);
 }
 
 
