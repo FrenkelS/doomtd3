@@ -230,8 +230,7 @@ static const menu_t MainDef =
 
 static void M_DrawMainMenu(void)
 {
-  // CPhipps - patch drawing updated
-  V_DrawNamePatchScaled(94, 2, "M_DOOM");
+
 }
 
 
@@ -274,9 +273,7 @@ static const menu_t NewDef =
 
 static void M_DrawNewGame(void)
 {
-  // CPhipps - patch drawing updated
-  V_DrawNamePatchScaled(96, 14, "M_NEWG");
-  V_DrawNamePatchScaled(54, 38, "M_SKILL");
+
 }
 
 static void M_NewGame(int16_t choice)
@@ -360,8 +357,6 @@ static const menu_t LoadDef =
 static void M_DrawSaveLoad(const char* name)
 {
 	int8_t i, j;
-
-	V_DrawNamePatchScaled(72 ,LOADGRAPHIC_Y, name);
 
 	const patch_t __far* lpatch = W_GetLumpByName("M_LSLEFT");
 	const patch_t __far* mpatch = W_GetLumpByName("M_LSCNTR");
@@ -558,14 +553,6 @@ static const char msgNames[2][9]  = {"M_MSGOFF","M_MSGON"};
 
 static void M_DrawOptions(void)
 {
-  // CPhipps - patch drawing updated
-  // proff/nicolas 09/20/98 -- changed for hi-res
-  V_DrawNamePatchScaled(108, 15, "M_OPTTTL");
-
-  V_DrawNamePatchScaled(OptionsDef.x + 120, OptionsDef.y+LINEHEIGHT*messages, msgNames[showMessages]);
-
-  V_DrawNamePatchScaled(OptionsDef.x + 146, OptionsDef.y+LINEHEIGHT*alwaysrun, msgNames[_g_alwaysRun]);
-
   M_DrawThermo(OptionsDef.x + 158, OptionsDef.y+LINEHEIGHT*gamma+2,6,_g_gamma);
 }
 
@@ -618,9 +605,6 @@ static const menu_t SoundDef =
 
 static void M_DrawSound(void)
 {
-  // CPhipps - patch drawing updated
-  V_DrawNamePatchScaled(60, 38, "M_SVOL");
-
   M_DrawThermo(SoundDef.x, SoundDef.y + LINEHEIGHT * (sfx_vol   + 1), 16, snd_SfxVolume);
 
   M_DrawThermo(SoundDef.x, SoundDef.y + LINEHEIGHT * (music_vol + 1), 16, snd_MusicVolume);
@@ -1027,15 +1011,8 @@ void M_Drawer (void)
 
             for (i=0;i<max;i++)
             {
-                if (currentMenu->menuitems[i].name[0])
-                    V_DrawNamePatchScaled(x,y,currentMenu->menuitems[i].name);
                 y += LINEHEIGHT;
             }
-
-            // DRAW SKULL
-
-            // CPhipps - patch drawing updated
-            V_DrawNamePatchScaled(x + SKULLXOFF, currentMenu->y - 5 + itemOn*LINEHEIGHT, skullName[whichSkull]);
         }
 }
 
@@ -1119,19 +1096,13 @@ static void M_DrawThermo(int16_t x, int16_t y, int16_t thermWidth, int16_t therm
 
     int16_t thermm_lump = W_GetNumForName("M_THERMM");
 
-    V_DrawNamePatchScaled(xx, y, "M_THERML");
-
     xx += 8;
     for (i=0;i<thermWidth;i++)
     {
-        V_DrawNumPatchScaled(xx, y, thermm_lump);
         xx += horizScaler;
     }
 
     xx += (8 - horizScaler);  /* make the right end look even */
-
-    V_DrawNamePatchScaled(xx, y, "M_THERMR");
-    V_DrawNamePatchScaled((x+8)+thermDot*horizScaler,y, "M_THERMO");
 }
 
 /////////////////////////////

@@ -256,14 +256,9 @@ static void WI_drawLF(void)
   // draw <LevelName>
   /* cph - get the graphic lump name and use it */
   WI_levelNameLump(wbs->last, lname);
-  // CPhipps - patch drawing updated
-  V_DrawNamePatchScaled((SCREENWIDTH_VGA - V_NamePatchWidth(lname))/2, y, lname);
 
   // draw "Finished!"
   y += (5*V_NamePatchHeight(lname))/4;
-
-  // CPhipps - patch drawing updated
-  V_DrawNamePatchScaled((SCREENWIDTH_VGA - V_NamePatchWidth(finished))/2, y, finished);
 }
 
 
@@ -281,15 +276,9 @@ static void WI_drawEL(void)
   /* cph - get the graphic lump name */
   WI_levelNameLump(wbs->next, lname);
 
-  // draw "Entering"
-  // CPhipps - patch drawing updated
-  V_DrawNamePatchScaled((SCREENWIDTH_VGA - V_NamePatchWidth(entering))/2, y, entering);
 
   // draw level
   y += (5*V_NamePatchHeight(lname))/4;
-
-  // CPhipps - patch drawing updated
-  V_DrawNamePatchScaled((SCREENWIDTH_VGA - V_NamePatchWidth(lname))/2, y, lname);
 }
 
 
@@ -332,8 +321,7 @@ static void WI_drawOnLnode(int8_t n, const char* const c[])
 
 	if (fits && i < 2)
 	{
-		// CPhipps - patch drawing updated
-		V_DrawNamePatchScaled(lnodes[n].x, lnodes[n].y, c[i]);
+
 	}
 	else
 	{
@@ -397,14 +385,8 @@ static int16_t WI_drawNum (int16_t x, int16_t y, int16_t n, int16_t digits)
 		x -= fontwidth;
 		// CPhipps - patch drawing updated
 		sprintf(name, "WINUM%d", n % 10);
-		V_DrawNamePatchScaled(x, y, name);
 		n /= 10;
 	}
-
-	// draw a minus sign if necessary
-	if (neg)
-		// CPhipps - patch drawing updated
-		V_DrawNamePatchScaled(x-=8, y, wiminus);
 
 	return x;
 }
@@ -423,8 +405,6 @@ static void WI_drawPercent(int16_t x, int16_t y, int16_t p)
   if (p < 0)
     return;
 
-  // CPhipps - patch drawing updated
-  V_DrawNamePatchScaled(x, y, percent);
   WI_drawNum(x, y, p, -1);
 }
 
@@ -454,13 +434,9 @@ static void WI_drawTime(int16_t x, int16_t y, int32_t t)
       x = WI_drawNum(x, y, n, (t || n>9) ? 2 : 1) - V_NamePatchWidth(colon);
 
       // draw
-      if (t)
-  // CPhipps - patch drawing updated
-        V_DrawNamePatchScaled(x, y, colon);
-      else break;
+      if (!t)
+        break;
     }
-  else // "sucks" (maybe should be "addicted", even I've never had a 100 hour game ;)
-    V_DrawNamePatchScaled(x - V_NamePatchWidth(sucks), y, sucks);
 }
 
 
@@ -502,10 +478,8 @@ static void WI_initNoState(void)
 
 static void WI_drawTimeStats(void)
 {
-  V_DrawNamePatchScaled(SP_TIMEX, SP_TIMEY, time1);
   WI_drawTime(SCREENWIDTH_VGA / 2 - SP_TIMEX, SP_TIMEY, cnt_time);
 
-  V_DrawNamePatchScaled(SP_TIMEX, (SP_TIMEY + SCREENHEIGHT_VGA) / 2, total);
   WI_drawTime(SCREENWIDTH_VGA / 2 - SP_TIMEX, (SP_TIMEY + SCREENHEIGHT_VGA) / 2, cnt_total_time);
 
   // Ty 04/11/98: redid logic: should skip only if with pwad but
@@ -513,7 +487,6 @@ static void WI_drawTimeStats(void)
   // killough 2/22/98: skip drawing par times on pwads
   // Ty 03/17/98: unless pars changed with deh patch
 
-  V_DrawNamePatchScaled(SCREENWIDTH_VGA / 2 + SP_TIMEX, SP_TIMEY, par);
   WI_drawTime(SCREENWIDTH_VGA - SP_TIMEX, SP_TIMEY, cnt_par);
 }
 
@@ -775,15 +748,12 @@ static void WI_drawStats(void)
 
 	WI_drawLF();
 
-	V_DrawNamePatchScaled(SP_STATSX, SP_STATSY, kills);
 	if (cnt_kills)
 		WI_drawPercent(SCREENWIDTH_VGA - SP_STATSX, SP_STATSY, cnt_kills);
 
-	V_DrawNamePatchScaled(SP_STATSX, SP_STATSY + lineHeight, items);
 	if (cnt_items)
 		WI_drawPercent(SCREENWIDTH_VGA - SP_STATSX, SP_STATSY + lineHeight, cnt_items);
 
-	V_DrawNamePatchScaled(SP_STATSX, SP_STATSY + 2 * lineHeight, sp_secret);
 	if (cnt_secret)
 		WI_drawPercent(SCREENWIDTH_VGA - SP_STATSX, SP_STATSY + 2 * lineHeight, cnt_secret);
 
