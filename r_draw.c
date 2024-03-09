@@ -258,7 +258,12 @@ static const fixed_t IPSPRITEYSCALE = FRACUNIT * SCREENHEIGHT_VGA / SCREENHEIGHT
 static const angle16_t clipangle = 0x2008; // = xtoviewangleTable[0]
 
 
-inline fixed_t CONSTFUNC FixedMul(fixed_t a, fixed_t b)
+#if defined __WATCOMC__
+//
+#else
+inline
+#endif
+fixed_t CONSTFUNC FixedMul(fixed_t a, fixed_t b)
 {
 	uint16_t alw = a;
 	 int16_t ahw = a >> FRACBITS;
@@ -299,7 +304,12 @@ inline static fixed_t CONSTFUNC FixedMul3232(fixed_t a, fixed_t b)
 // FixedMulAngle
 // b should be coming from finesine() or finecosine(), so it's high word is either 0x0000 or 0xffff
 //
-inline fixed_t CONSTFUNC FixedMulAngle(fixed_t a, fixed_t b)
+#if defined __WATCOMC__
+//
+#else
+inline
+#endif
+fixed_t CONSTFUNC FixedMulAngle(fixed_t a, fixed_t b)
 {
 	uint16_t alw = a;
 	 int16_t ahw = a >> FRACBITS;
@@ -316,7 +326,12 @@ inline fixed_t CONSTFUNC FixedMulAngle(fixed_t a, fixed_t b)
 }
 
 
-inline fixed_t CONSTFUNC FixedMul3216(fixed_t a, uint16_t blw)
+#if defined __WATCOMC__
+//
+#else
+inline
+#endif
+fixed_t CONSTFUNC FixedMul3216(fixed_t a, uint16_t blw)
 {
 	uint16_t alw = a;
 	 int16_t ahw = a >> FRACBITS;
@@ -337,7 +352,12 @@ inline fixed_t CONSTFUNC FixedMul3216(fixed_t a, uint16_t blw)
 
 
 //Approx fixed point divide of a/b using reciprocal. -> a * (1/b).
-inline fixed_t CONSTFUNC FixedApproxDiv(fixed_t a, fixed_t b)
+#if defined __WATCOMC__
+//
+#else
+inline
+#endif
+fixed_t CONSTFUNC FixedApproxDiv(fixed_t a, fixed_t b)
 {
 	if (b <= 0xffffu)
 		return FixedMul3232(a, FixedReciprocalSmall(b));

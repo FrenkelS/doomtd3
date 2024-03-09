@@ -25,7 +25,11 @@
 
 #define D_MK_FP  MK_FP
 #define D_FP_SEG FP_SEG
+#if defined __WATCOMC__
+#define D_FP_OFF FP_OFF
+#else
 #define D_FP_OFF(p) ((uint16_t)((uint32_t)(p)))
+#endif
 
 typedef uint16_t segment_t;
 
@@ -55,7 +59,7 @@ typedef uint32_t segment_t;
 
 
 #else
-//gcc-ia16
+//Watcom and gcc-ia16
 #define __djgpp_nearptr_enable()
 #define __djgpp_conventional_base 0
 
