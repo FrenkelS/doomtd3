@@ -641,10 +641,6 @@ void P_DamageMobj(mobj_t __far* target, mobj_t __far* inflictor, mobj_t __far* s
   // player specific
   if (player)
     {
-      // end of game hell hack
-      if (target->subsector->sector->special == 11 && damage >= target->health)
-        damage = target->health - 1;
-
       // Below certain threshold,
       // ignore damage in GOD mode, or with INVUL power.
       // killough 3/26/98: make god mode 100% god mode in non-compat mode

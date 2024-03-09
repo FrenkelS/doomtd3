@@ -220,7 +220,6 @@ static void P_LoadSectors (int16_t lump)
 
       ss->lightlevel = SHORT(ms->lightlevel);
       ss->special = SHORT(ms->special);
-      ss->oldspecial = SHORT(ms->special);
       ss->tag = SHORT(ms->tag);
 
       ss->thinglist = NULL;

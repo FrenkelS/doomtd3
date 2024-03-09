@@ -303,13 +303,6 @@ static void P_PlayerInSpecialSector (player_t* player)
   // Has hit ground.
     switch (sector->special)
       {
-      case 5:
-        // 5/10 unit damage per 31 ticks
-        if (!player->powers[pw_ironfeet])
-          if (!(_g_leveltime&0x1f))
-            P_DamageMobj (player->mo, NULL, NULL, 10);
-        break;
-
       case 7:
         // 2/5 unit damage per 31 ticks
         if (!player->powers[pw_ironfeet])
@@ -317,30 +310,10 @@ static void P_PlayerInSpecialSector (player_t* player)
             P_DamageMobj (player->mo, NULL, NULL, 5);
         break;
 
-      case 16:
-        // 10/20 unit damage per 31 ticks
-        if (!player->powers[pw_ironfeet]
-            || (P_Random()<5) ) // even with suit, take damage
-        {
-          if (!(_g_leveltime&0x1f))
-            P_DamageMobj (player->mo, NULL, NULL, 20);
-        }
-        break;
-
       case 9:
         // Tally player in secret sector, clear secret special
         player->secretcount++;
         sector->special = 0;
-        break;
-
-      case 11:
-        _g_player.cheats &= ~CF_GODMODE;
-
-        if (!(_g_leveltime&0x1f))
-          P_DamageMobj (player->mo, NULL, NULL, 20);
-
-        if (player->health <= 10)
-          G_ExitLevel();
         break;
 
       default:

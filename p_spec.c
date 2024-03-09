@@ -386,11 +386,6 @@ void P_SpawnSpecials (void)
         // sync strobe slow
         P_SpawnStrobeFlash (sector, SLOWDARK, true);
         break;
-
-      case 13:
-        // sync strobe fast
-        P_SpawnStrobeFlash (sector, FASTDARK, true);
-        break;
     }
   }
 

@@ -213,8 +213,6 @@ boolean EV_DoPlat(const line_t __far* line, plattype_e type)
         plat->wait = 0;
         plat->status = up;
         sec->special = 0;
-        //jff 3/14/98 clear old field as well
-        sec->oldspecial = 0;
 
         S_StartSound2(&sec->soundorg,sfx_stnmov);
         break;

@@ -106,7 +106,6 @@ typedef struct
 
   int16_t lightlevel;
   int16_t special;
-  int16_t oldspecial;      //jff 2/16/98 remembers if sector WAS secret (automap)
   int16_t tag;
 
   int16_t soundtraversed;    // 0 = untraversed, 1,2 = sndlines-1
