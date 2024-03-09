@@ -355,7 +355,6 @@ void S_SetMusicVolume(int16_t volume)
     if (!(0 <= volume && volume <= 15))
         I_Error("S_SetMusicVolume: Attempt to set music volume at %d", volume);
 
-    I_SetMusicVolume(volume);
     snd_MusicVolume = volume;
 }
 
@@ -401,9 +400,6 @@ void S_ChangeMusic(musicenum_t musicnum, boolean looping)
     // shutdown old music
     S_StopMusic();
 
-    // play it
-    I_PlaySong(musicnum, looping);
-
     mus_playing = musicnum;
 }
 
@@ -417,8 +413,6 @@ static void S_StopMusic(void)
 
     if (mus_playing)
     {
-        I_StopSong(mus_None);
-
         mus_playing = mus_None;
     }
 }

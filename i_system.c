@@ -74,8 +74,6 @@ static void I_Shutdown(void)
 {
 	if (isGraphicsModeSet)
 		I_ShutdownGraphics();
-
-	I_ShutdownSound();
 }
 
 

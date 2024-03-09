@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -39,10 +39,6 @@
 #include "sounds.h"
 #include "doomtype.h"
 
-// Init at program start...
-void I_InitSound(void);
-
-void I_ShutdownSound(void);
 
 //
 //  SFX I/O
@@ -51,24 +47,6 @@ void I_ShutdownSound(void);
 
 // Starts a sound in a particular sound channel.
 int16_t I_StartSound(sfxenum_t id, int16_t channel, int16_t vol, int16_t sep);
-
-
-//
-//  MUSIC I/O
-//
-
-// Volume.
-void I_SetMusicVolume(int16_t volume);
-
-
-// Called by anything that wishes to start music.
-//  plays a song, and when the song is done,
-//  starts playing it again in an endless loop.
-// Horrible thing to do, considering.
-void I_PlaySong(musicenum_t handle, boolean looping);
-
-// Stops a song over 3 seconds.
-void I_StopSong(musicenum_t handle);
 
 
 #endif

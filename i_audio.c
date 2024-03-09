@@ -76,34 +76,3 @@ int16_t I_StartSound(sfxenum_t id, int16_t channel, int16_t vol, int16_t sep)
 
 	return channel;
 }
-
-
-void I_InitSound(void)
-{
-	if (nomusicparm && nosfxparm)
-		return;
-}
-
-
-void I_ShutdownSound(void)
-{
-
-}
-
-
-void I_PlaySong(musicenum_t handle, boolean looping)
-{
-	UNUSED(handle);
-	UNUSED(looping);
-}
-
-
-void I_StopSong(musicenum_t handle)
-{
-	UNUSED(handle);
-}
-
-void I_SetMusicVolume(int16_t volume)
-{
-	UNUSED(volume);
-}

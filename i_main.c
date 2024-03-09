@@ -58,8 +58,6 @@
 
 int main(int argc, const char * const * argv)
 {
-	I_InitSound();
-
 	Z_Init();                  /* 1/18/98 killough: start up memory stuff first */
 
 	D_DoomMain(argc, argv);
