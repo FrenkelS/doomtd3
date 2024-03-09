@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -60,8 +60,6 @@
 
 #include "m_fixed.h"
 
-#include "a_pcfx.h"
-
 #include "globdata.h"
 
 
@@ -76,27 +74,6 @@ int16_t I_StartSound(sfxenum_t id, int16_t channel, int16_t vol, int16_t sep)
 	if (!(0 <= channel && channel < MAX_CHANNELS))
 		return -1;
 
-//	// hacks out certain PC sounds
-//	if (id == sfx_posact
-//	 || id == sfx_bgact
-//	 || id == sfx_dmact
-//	 || id == sfx_dmpain
-//	 || id == sfx_popain
-//	 || id == sfx_sawidl)
-//		return -1;
-
-	int16_t lumpnum = 999; // TODO should be W_GetNumForName("DPPISTOL") - 1;
-	if (id < sfx_chgun)
-		lumpnum += id;
-	else if (id == sfx_chgun)
-		lumpnum += sfx_pistol;
-	else
-		lumpnum += id - 1;
-
-	const void __far* soundpatch = W_GetLumpByNum(lumpnum);
-	PCFX_Play(soundpatch);
-	Z_ChangeTagToCache(soundpatch);
-
 	return channel;
 }
 
@@ -106,8 +83,6 @@ void I_InitSound(void)
 	if (nomusicparm && nosfxparm)
 		return;
 
-	PCFX_Init();
-
 	// Finished initialization.
 	printf("I_InitSound: sound ready\n");
 }
@@ -115,7 +90,7 @@ void I_InitSound(void)
 
 void I_ShutdownSound(void)
 {
-	PCFX_Shutdown();
+
 }
 
 
