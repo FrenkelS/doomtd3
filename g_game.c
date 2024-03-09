@@ -41,6 +41,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <time.h>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -1050,6 +1051,38 @@ static void ExtractFileBase (const char *path, char *dest)
 }
 
 
+static int32_t GetTime(void)
+{
+    int32_t thistimereply;
+    static int32_t lasttimereply = 0;
+    static int32_t basetime = 0;
+    clock_t now = clock();
+
+    thistimereply = (now * TICRATE) / CLOCKS_PER_SEC;
+
+    if (thistimereply < lasttimereply)
+    {
+        basetime -= 0xffff;
+    }
+
+    lasttimereply = thistimereply;
+
+
+    /* Fix for time problem */
+    if (!basetime)
+    {
+        basetime = thistimereply;
+        thistimereply = 0;
+    }
+    else
+    {
+        thistimereply -= basetime;
+    }
+
+    return thistimereply;
+}
+
+
 static void G_DoPlayDemo(void)
 {
     char basename[9];
@@ -1069,7 +1102,7 @@ static void G_DoPlayDemo(void)
 
     _g_demoplayback = true;
 
-    starttime = I_GetTime();
+    starttime = GetTime();
 }
 
 /* G_CheckDemoStatus
@@ -1080,7 +1113,7 @@ void G_CheckDemoStatus (void)
 {
     if (_g_timingdemo)
     {
-        int32_t endtime = I_GetTime();
+        int32_t endtime = GetTime();
         // killough -- added fps information and made it work for longer demos:
         uint32_t realtics = endtime - starttime;
         uint32_t resultfps = TICRATE * 1000L * _g_gametic / realtics;
