@@ -89,8 +89,6 @@ int16_t             _g_gamemap;
 
 player_t        _g_player;
 
-static int32_t             starttime;     // for comparative timing purposes
-
 int32_t             _g_gametic;
 int32_t             _g_basetic;       /* killough 9/29/98: for demo sync */
 int32_t             _g_totalkills, _g_totallive, _g_totalitems, _g_totalsecret;    // for intermission
@@ -1051,38 +1049,6 @@ static void ExtractFileBase (const char *path, char *dest)
 }
 
 
-static int32_t GetTime(void)
-{
-    int32_t thistimereply;
-    static int32_t lasttimereply = 0;
-    static int32_t basetime = 0;
-    clock_t now = clock();
-
-    thistimereply = (now * TICRATE) / CLOCKS_PER_SEC;
-
-    if (thistimereply < lasttimereply)
-    {
-        basetime -= 0xffff;
-    }
-
-    lasttimereply = thistimereply;
-
-
-    /* Fix for time problem */
-    if (!basetime)
-    {
-        basetime = thistimereply;
-        thistimereply = 0;
-    }
-    else
-    {
-        thistimereply -= basetime;
-    }
-
-    return thistimereply;
-}
-
-
 static void G_DoPlayDemo(void)
 {
     char basename[9];
@@ -1102,7 +1068,7 @@ static void G_DoPlayDemo(void)
 
     _g_demoplayback = true;
 
-    starttime = GetTime();
+    clock();
 }
 
 /* G_CheckDemoStatus
@@ -1113,9 +1079,7 @@ void G_CheckDemoStatus (void)
 {
     if (_g_timingdemo)
     {
-        int32_t endtime = GetTime();
-        // killough -- added fps information and made it work for longer demos:
-        uint32_t realtics = endtime - starttime;
+        uint32_t realtics = (clock() * TICRATE) / CLOCKS_PER_SEC;
         uint32_t resultfps = TICRATE * 1000L * _g_gametic / realtics;
         I_Error ("Timed %lu gametics in %lu realtics = %lu.%.3lu frames per second",
                  (uint32_t) _g_gametic,realtics,
