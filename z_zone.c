@@ -102,12 +102,6 @@ static memblock_t __far* segmentToPointer(segment_t seg)
 }
 
 
-void Z_Shutdown(void)
-{
-
-}
-
-
 #if defined __DJGPP__ || defined _M_I386
 static unsigned int _dos_allocmem(unsigned int __size, unsigned int *__seg)
 {
