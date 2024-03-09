@@ -56,9 +56,9 @@ set CFLAGS=%CFLAGS% -D__far= -DFLAT_SPAN
 @set GLOBOBJS=%GLOBOBJS% z_bmallo.c
 @set GLOBOBJS=%GLOBOBJS% z_zone.c
 
-gcc %GLOBOBJS% %CFLAGS% -o DJ/DOOM32DJ.EXE
-strip -s DJ/DOOM32DJ.EXE
-stubedit DJ/DOOM32DJ.EXE dpmi=CWSDPR0.EXE
+gcc %GLOBOBJS% %CFLAGS% -o DJ/DOOMTD32.EXE
+strip -s DJ/DOOMTD32.EXE
+stubedit DJ/DOOMTD32.EXE dpmi=CWSDPR0.EXE
 
 goto end
 

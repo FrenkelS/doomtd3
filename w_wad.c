@@ -118,12 +118,12 @@ typedef struct
 
 void W_Init(void)
 {
-	printf("\tadding doom1.wad\n");
+	printf("\tadding doomtd3l.wad\n");
 	printf("\tshareware version.\n");
 
-	fileWAD = fopen("DOOM1.WAD", "rb");
+	fileWAD = fopen("DOOMTD3L.WAD", "rb");
 	if (fileWAD == NULL)
-		I_Error("Can't open DOOM1.WAD.");
+		I_Error("Can't open DOOMTD3L.WAD.");
 
 	wadinfo_t header;
 	fseek(fileWAD, 0, SEEK_SET);

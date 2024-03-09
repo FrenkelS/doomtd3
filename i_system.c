@@ -31,7 +31,6 @@
 #include "doomdef.h"
 #include "doomtype.h"
 #include "compiler.h"
-#include "a_taskmn.h"
 #include "d_main.h"
 #include "i_system.h"
 #include "globdata.h"
@@ -91,7 +90,7 @@ static volatile int32_t ticcount;
 
 int32_t I_GetTime(void)
 {
-    return ticcount++;
+    return ++ticcount;
 }
 
 
@@ -112,8 +111,6 @@ static void I_Shutdown(void)
 		I_SetScreenMode(3);
 
 	I_ShutdownSound();
-
-	Z_Shutdown();
 }
 
 

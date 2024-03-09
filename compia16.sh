@@ -74,7 +74,7 @@ export GLOBOBJS+=" z_bmallo.c"
 #export GLOBOBJS+=" z_zone.c"
 export GLOBOBJS+=" z_zone.o"
 
-ia16-elf-gcc $GLOBOBJS $CFLAGS $RENDER_OPTIONS -o GCCIA16/DOOM8088.EXE
+ia16-elf-gcc $GLOBOBJS $CFLAGS $RENDER_OPTIONS -o GCCIA16/DOOMTD16.EXE
 
 rm i_vibm.o
 rm p_map.o
