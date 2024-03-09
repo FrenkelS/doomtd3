@@ -204,9 +204,6 @@ extern button_t  _g_buttonlist[MAXBUTTONS];
 
 extern int32_t _g_leveltime; // tics in game play for par
 
-// killough 8/29/98: we maintain several separate threads, each containing
-// a special class of thinkers, to allow more efficient searches.
-extern thinker_t _g_thinkerclasscap;
 
 
 

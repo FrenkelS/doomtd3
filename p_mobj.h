@@ -314,7 +314,6 @@ mobj_t __far* P_SpawnMobj(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type);
 void    P_RemoveMobj(mobj_t __far* th);
 boolean P_SetMobjState(mobj_t __far* mobj, statenum_t state);
 
-void    P_MobjThinker(mobj_t __far* mobj);
 
 void    P_SpawnPuff(fixed_t x, fixed_t y, fixed_t z);
 void    P_SpawnBlood(fixed_t x, fixed_t y, fixed_t z, int16_t damage);

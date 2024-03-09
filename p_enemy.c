@@ -918,41 +918,6 @@ void A_Explode(mobj_t __far* thingy)
   P_RadiusAttack( thingy, thingy->target, 128 );
 }
 
-//
-// A_BossDeath
-// Possibly trigger special effects
-// if on first boss level
-//
-
-void A_BossDeath(mobj_t __far* mo)
-{
-    thinker_t __far* th;
-    line_t    junk;
-
-    if (_g_gamemap != 8)
-        return;
-
-    if (mo->type != MT_BRUISER)
-        return;
-
-    if (!(_g_playeringame && _g_player.health > 0))
-        return;     // no one left alive, so do not end game
-
-    // scan the remaining thinkers to see
-    // if all bosses are dead
-    for (th = _g_thinkerclasscap.next; th != &_g_thinkerclasscap; th = th->next)
-        if (th->function == P_MobjThinker)
-        {
-            mobj_t __far* mo2 = (mobj_t __far*) th;
-            if (mo2 != mo && mo2->type == mo->type && mo2->health > 0)
-                return;         // other boss not dead
-        }
-
-    // victory!
-    junk.tag = 666;
-    EV_DoFloor(&junk, lowerFloorToLowest);
-}
-
 
 void A_PlayerScream(mobj_t __far* mo)
 {

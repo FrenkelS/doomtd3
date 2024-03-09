@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@ int32_t _g_leveltime; // tics in game play for par
 
 // killough 8/29/98: we maintain several separate threads, each containing
 // a special class of thinkers, to allow more efficient searches.
-thinker_t _g_thinkerclasscap;
+static thinker_t _g_thinkerclasscap;
 
 
 //

@@ -768,7 +768,7 @@ static void P_NightmareRespawn(mobj_t __far* mobj)
 }
 
 
-void P_MobjThinker (mobj_t __far* mobj)
+static void P_MobjThinker (mobj_t __far* mobj)
 {
     // killough 11/98:
     // removed old code which looked at target references
