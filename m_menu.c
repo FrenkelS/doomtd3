@@ -55,7 +55,6 @@
 #include "sounds.h"
 #include "m_menu.h"
 #include "doomtype.h"
-#include "am_map.h"
 #include "i_system.h"
 #include "i_sound.h"
 

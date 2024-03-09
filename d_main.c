@@ -62,11 +62,9 @@
 #include "hu_stuff.h"
 #include "wi_stuff.h"
 #include "st_stuff.h"
-#include "am_map.h"
 #include "p_setup.h"
 #include "r_main.h"
 #include "d_main.h"
-#include "am_map.h"
 #include "m_cheat.h"
 #include "globdata.h"
 
@@ -115,7 +113,7 @@ void D_PostEvent(event_t *ev)
         return;
 
     if (!M_Responder(ev))
-        if (!(_g_gamestate == GS_LEVEL && (C_Responder(ev) || AM_Responder(ev))))
+        if (!(_g_gamestate == GS_LEVEL && (C_Responder(ev))))
             G_Responder(ev);
 }
 
@@ -180,15 +178,8 @@ static void D_Display (void)
     else if (_g_gametic != _g_basetic)
     { // In a level
 
-        // Work out if the player view is visible, and if there is a border
-        boolean viewactive = (!(automapmode & am_active) || (automapmode & am_overlay));
-
         // Now do the drawing
-        if (viewactive)
-            R_RenderPlayerView (&_g_player);
-
-        if (automapmode & am_active)
-            AM_Drawer();
+        R_RenderPlayerView (&_g_player);
 
         ST_Drawer();
 

@@ -43,8 +43,6 @@ void R_DrawSpan(uint16_t y, uint16_t x1, uint16_t x2, const draw_span_vars_t *ds
 #endif
 
 
-void V_FillRect(byte colour);
-void V_DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint8_t color);
 void V_DrawBackground(void);
 void V_DrawRaw(int16_t num, uint16_t offset);
 void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);

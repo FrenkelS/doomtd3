@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -36,7 +36,6 @@
 #include "d_player.h"
 #include "d_englsh.h"
 #include "m_random.h"
-#include "am_map.h"
 #include "r_main.h"
 #include "s_sound.h"
 #include "sounds.h"
@@ -543,9 +542,6 @@ static void P_KillMobj(mobj_t __far* source, mobj_t __far* target)
       target->flags &= ~MF_SOLID;
       _g_player.playerstate = PST_DEAD;
       P_DropWeapon (&_g_player);
-
-      if (automapmode & am_active)
-        AM_Stop();    // don't die in auto map; switch view prior to dying
     }
 
   if (target->health < -mobjinfo[target->type].spawnhealth && mobjinfo[target->type].xdeathstate)

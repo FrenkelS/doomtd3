@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -77,7 +77,6 @@ void F_StartFinale (void)
 {
     _g_gameaction = ga_nothing;
     _g_gamestate = GS_FINALE;
-    automapmode &= ~am_active;
 
     // killough 3/28/98: clear accelerative text flags
     _g_acceleratestage = midstage = false;

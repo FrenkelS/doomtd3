@@ -108,11 +108,6 @@
 #define HUSTR_E1M9  "E1M9: Military Base"
 
 
-/* am_map.c */
-
-#define AMSTR_FOLLOWON    "Follow Mode ON"
-#define AMSTR_FOLLOWOFF   "Follow Mode OFF"
-
 /* st_stuff.c */
 
 #define STSTR_DQDON     "Degreelessness Mode On"

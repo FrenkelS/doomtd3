@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -62,12 +62,6 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);
 
 // V_DrawNamePatchScaled - Draws the patch from lump "name"
 #define V_DrawNamePatchScaled(x,y,name) V_DrawNumPatchScaled(x,y,W_GetNumForName(name))
-
-
-void V_FillRect(byte colour);
-
-
-void V_DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint8_t color);
 
 
 #endif

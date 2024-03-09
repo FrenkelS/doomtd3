@@ -45,7 +45,6 @@
 #include "w_wad.h"
 #include "st_stuff.h"
 #include "r_main.h"
-#include "am_map.h"
 #include "s_sound.h"
 #include "sounds.h"
 #include "d_englsh.h"
