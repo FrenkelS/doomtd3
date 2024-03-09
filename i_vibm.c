@@ -77,7 +77,7 @@ void I_ShutdownGraphics(void)
 
 void I_SetPalette(int8_t pal)
 {
-
+	UNUSED(pal);
 }
 
 

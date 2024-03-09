@@ -364,30 +364,8 @@ void D_StartTitle (void)
 }
 
 
-/*
-=================
-=
-= M_CheckParm
-=
-= Checks for the given parameter in the program's command line arguments
-=
-= Returns the argument number (1 to argc - 1) or 0 if not present
-=
-=================
-*/
-
 static int myargc;
 static const char * const * myargv;
-
-static int16_t M_CheckParm(char *check)
-{
-	for (int16_t i = 1; i < myargc; i++)
-		if (!stricmp(check, myargv[i]))
-			return i;
-
-	return 0;
-}
-
 
 static void D_InitNetGame (void)
 {

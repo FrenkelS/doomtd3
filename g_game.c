@@ -419,27 +419,6 @@ void G_Ticker (void)
     }
 }
 
-//
-// PLAYER STRUCTURE FUNCTIONS
-// also see P_SpawnPlayer in P_Things
-//
-
-//
-// G_PlayerFinishLevel
-// Can when a player completes a level.
-//
-
-static void G_PlayerFinishLevel(void)
-{
-    player_t *p = &_g_player;
-    memset(p->powers, 0, sizeof p->powers);
-    memset(p->cards, 0, sizeof p->cards);
-    p->mo = NULL;           // cph - this is allocated PU_LEVEL so it's gone
-    p->extralight = 0;      // cancel gun flashes
-    p->fixedcolormap = 0;   // cancel ir gogles
-    p->damagecount = 0;     // no palette changes
-    p->bonuscount = 0;
-}
 
 //
 // G_PlayerReborn
@@ -505,12 +484,6 @@ void G_SecretExitLevel (void)
     secretexit = true;
     _g_gameaction = ga_completed;
 }
-
-
-// DOOM Par Times
-static const uint8_t pars[10] = {
-    0,30,75,120,90,165,180,180,30,165
-};
 
 
 //

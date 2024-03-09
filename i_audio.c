@@ -68,6 +68,7 @@
 
 int16_t I_StartSound(sfxenum_t id, int16_t channel, int16_t vol, int16_t sep)
 {
+	UNUSED(id);
 	UNUSED(vol);
 	UNUSED(sep);
 

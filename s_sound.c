@@ -61,13 +61,6 @@ typedef struct
 } channel_t;
 
 
-// the set of channels available
-static channel_t *channels;
-
-// music currently being played
-static musicenum_t mus_playing;
-
-
 // when to clip out sounds
 // Does not fit the large outdoor areas.
 #define S_CLIPPING_DIST (1200L<<FRACBITS)
@@ -96,21 +89,6 @@ int16_t snd_SfxVolume = 15;
 int16_t snd_MusicVolume = 15;
 
 
-// number of channels available
-static const int16_t numChannels = 1;
-
-//
-// Internals.
-//
-
-static void S_StopChannel(int16_t cnum);
-
-static void S_StopMusic(void);
-
-static boolean S_AdjustSoundParams(mobj_t __far* listener, mobj_t __far* source, int16_t *vol, int16_t *sep);
-
-static int16_t S_getChannel(void __far* origin, const sfxinfo_t *sfxinfo, boolean is_pickup);
-
 // Initializes sound stuff, including volume
 // Sets channels, SFX and music volume,
 //  allocates channel buffer, sets S_sfx lookup.
@@ -118,7 +96,8 @@ static int16_t S_getChannel(void __far* origin, const sfxinfo_t *sfxinfo, boolea
 
 void S_Init(int16_t sfxVolume, int16_t musicVolume)
 {
-
+	UNUSED(sfxVolume);
+	UNUSED(musicVolume);
 }
 
 
@@ -138,26 +117,23 @@ static void S_Stop(void)
 //
 void S_Start(void)
 {
-    musicenum_t mnum;
-
     // kill all playing sounds at start of level
     //  (trust me - a good idea)
 
     S_Stop();
 }
 
-static void S_StartSoundAtVolume(mobj_t __far* origin, sfxenum_t sfx_id, int16_t volume)
-{
-
-}
 
 void S_StartSound(mobj_t __far* origin, sfxenum_t sfx_id)
 {
-    S_StartSoundAtVolume(origin, sfx_id, snd_SfxVolume);
+	UNUSED(origin);
+	UNUSED(sfx_id);
 }
 
 void S_StartSound2(degenmobj_t __far* origin, sfxenum_t sfx_id)
 {
+	UNUSED(sfx_id);
+
     //Look at this mess.
 
     //Originally, the degenmobj_t had
@@ -181,29 +157,13 @@ void S_StartSound2(degenmobj_t __far* origin, sfxenum_t sfx_id)
 
     fm.origin.x = origin->x;
     fm.origin.y = origin->y;
-
-    S_StartSoundAtVolume((mobj_t __far*)&fm, sfx_id, snd_SfxVolume);
 }
 
 void S_StopSound(void __far* origin)
 {
-
+	UNUSED(origin);
 }
 
-
-static boolean S_SoundIsPlaying(int16_t cnum)
-{
-    const channel_t* channel = &channels[cnum];
-
-    if(channel->sfxinfo)
-    {
-        int32_t ticknow = _g_gametic;
-
-        return (channel->tickend < ticknow);
-    }
-
-    return false;
-}
 
 //
 // Updates music & sounds
@@ -215,14 +175,14 @@ void S_UpdateSounds(void)
 
 void S_SetMusicVolume(int16_t volume)
 {
-
+	UNUSED(volume);
 }
 
 
 
 void S_SetSfxVolume(int16_t volume)
 {
-
+	UNUSED(volume);
 }
 
 
@@ -231,47 +191,12 @@ void S_SetSfxVolume(int16_t volume)
 //
 void S_StartMusic(musicenum_t m_id)
 {
-
+	UNUSED(m_id);
 }
 
 
 void S_ChangeMusic(musicenum_t musicnum, boolean looping)
 {
-
-}
-
-
-// Stops the music fer sure.
-static void S_StopMusic(void)
-{
-
-}
-
-
-
-static void S_StopChannel(int16_t cnum)
-{
-
-}
-
-//
-// Changes volume, stereo-separation, and pitch variables
-//  from the norm of a sound effect to be played.
-// If the sound is not audible, returns false.
-// Otherwise, modifies parameters and returns true.
-//
-
-static boolean S_AdjustSoundParams(mobj_t __far* listener, mobj_t __far* source, int16_t *vol, int16_t *sep)
-{
-	return false;
-}
-
-//
-// S_getChannel :
-//   If none available, return -1.  Otherwise channel #.
-//
-
-static int16_t S_getChannel(void __far* origin, const sfxinfo_t *sfxinfo, boolean is_pickup)
-{
-    return -1;
+	UNUSED(musicnum);
+	UNUSED(looping);
 }
