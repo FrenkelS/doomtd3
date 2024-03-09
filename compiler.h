@@ -49,26 +49,15 @@ typedef uint32_t segment_t;
 
 
 
-#if defined __IA16_SYS_MSDOS
-//gcc-ia16
-#define _chain_intr(func) func()
-#endif
-
-
-
 #if defined __DJGPP__
 //DJGPP
-#include <dpmi.h>
-#include <go32.h>
 #include <sys/nearptr.h>
-
 
 
 #else
 //gcc-ia16
 #define __djgpp_nearptr_enable()
 #define __djgpp_conventional_base 0
-
 
 
 #endif
