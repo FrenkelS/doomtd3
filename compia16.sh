@@ -2,8 +2,8 @@ mkdir GCCIA16
 
 unset CFLAGS
 
-#export RENDER_OPTIONS="-DONE_WALL_TEXTURE -DFLAT_WALL -DFLAT_SPAN -DFLAT_SKY -DDISABLE_STATUS_BAR"
-export RENDER_OPTIONS="-DFLAT_SPAN"
+#export RENDER_OPTIONS="-DONE_WALL_TEXTURE -DFLAT_WALL -DFLAT_SKY -DDISABLE_STATUS_BAR"
+export RENDER_OPTIONS=""
 
 ia16-elf-gcc -c i_vibm.c   $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_map.c    $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple

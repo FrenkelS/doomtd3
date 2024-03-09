@@ -38,10 +38,6 @@ void R_DrawColumn (const draw_column_vars_t *dcvars);
 void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars);
 void R_DrawFuzzColumn (const draw_column_vars_t *dcvars);
 
-#if !defined FLAT_SPAN
-void R_DrawSpan(uint16_t y, uint16_t x1, uint16_t x2, const draw_span_vars_t *dsvars);
-#endif
-
 
 void V_DrawRaw(int16_t num, uint16_t offset);
 void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);

@@ -512,10 +512,6 @@ static void P_GroupLines (void)
 
 static void P_FreeLevelData()
 {
-#if !defined FLAT_SPAN
-    R_ResetPlanes();
-#endif
-
     Z_FreeTags();
 }
 

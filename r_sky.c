@@ -38,7 +38,6 @@ static int16_t skypatchnum;
 static uint16_t skywidthmask;
 
 
-#if defined FLAT_SPAN
 static const patch_t __far* skypatch;
 
 
@@ -82,67 +81,6 @@ void R_DrawSky(draw_column_vars_t *dcvars)
 		R_DrawColumn(dcvars);
 	}
 }
-
-#else
-
-static void R_DrawSkyFlat(visplane_t __far* pl)
-{
-	draw_column_vars_t dcvars;
-
-	for (int16_t x = pl->minx; x <= pl->maxx; x++)
-	{
-		if (pl->top[x] != 0xff &&  pl->top[x] <= pl->bottom[x])
-		{
-			dcvars.x = x;
-			dcvars.yl = pl->top[x];
-			dcvars.yh = pl->bottom[x];
-			R_DrawColumnFlat(FLAT_SKY_COLOR, &dcvars);
-		}
-	}
-}
-
-
-void R_DrawSky(visplane_t __far* pl)
-{
-	const patch_t __far* patch = W_TryGetLumpByNum(skypatchnum);
-	if (patch == NULL)
-	{
-		R_DrawSkyFlat(pl);
-		return;
-	}
-
-	// Normal Doom sky, only one allowed per level
-	draw_column_vars_t dcvars;
-	dcvars.texturemid = (SCREENHEIGHT_VGA / 2) * FRACUNIT;    // Default y-offset
-
-	// Sky is always drawn full bright, i.e. colormaps[0] is used.
-	// Because of this hack, sky is not affected by INVUL inverse mapping.
-	// Until Boom fixed this.
-
-	if (!(dcvars.colormap = fixedcolormap))
-		dcvars.colormap = fullcolormap;
-
-	dcvars.iscale = (FRACUNIT * SCREENHEIGHT_VGA) / (VIEWWINDOWHEIGHT + 16);
-
-	for (int16_t x = pl->minx; (dcvars.x = x) <= pl->maxx; x++)
-	{
-		if ((dcvars.yl = pl->top[x]) != -1 && dcvars.yl <= (dcvars.yh = pl->bottom[x])) // dropoff overflow
-		{
-			int16_t xc = viewangle >> FRACBITS;
-			xc += xtoviewangleTable[x];
-			xc >>= ANGLETOSKYSHIFT - FRACBITS;
-			xc &= skywidthmask;
-
-			const column_t __far* column = (const column_t __far*) ((const byte __far*)patch + patch->columnofs[xc]);
-
-			dcvars.source = (const byte __far*)column + 3;
-			R_DrawColumn(&dcvars);
-		}
-	}
-
-	Z_ChangeTagToCache(patch);
-}
-#endif
 
 
 // Set the sky map.
