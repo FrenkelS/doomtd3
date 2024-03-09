@@ -49,7 +49,4 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);
 void V_DrawPatchScaled(   int16_t x, int16_t y, const patch_t __far* patch);
 
 
-void wipe_StartScreen(void);
-void D_Wipe(void);
-
 #endif

@@ -54,7 +54,6 @@
 #include "s_sound.h"
 #include "v_video.h"
 #include "f_finale.h"
-#include "f_wipe.h"
 #include "m_menu.h"
 #include "i_system.h"
 #include "i_sound.h"
@@ -150,12 +149,6 @@ static void D_Display (void)
     if (nodrawers)                    // for comparative timing / profiling
         return;
 
-    // save the current screen if about to wipe
-    boolean wipe = (_g_gamestate != wipegamestate);
-
-    if (wipe)
-        wipe_StartScreen();
-
     if (_g_gamestate != GS_LEVEL) { // Not a level
         if (oldgamestate == GS_LEVEL)
             I_SetPalette(0); // cph - use default (basic) palette
@@ -193,12 +186,8 @@ static void D_Display (void)
 
     D_BuildNewTiccmds();
 
-    if (!wipe)
-        // normal update
-        I_FinishUpdate ();              // page flip or blit buffer
-    else
-        // wipe update
-        D_Wipe();
+    // normal update
+    I_FinishUpdate ();              // page flip or blit buffer
 }
 
 
