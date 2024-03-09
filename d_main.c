@@ -69,12 +69,6 @@ static void D_PageDrawer(void);
 static void D_UpdateFPS(void);
 
 
-// CPhipps - removed wadfiles[] stuff
-
-
-const boolean nodrawers = false;
-
-
 static int32_t maketic;
 
 
@@ -115,9 +109,6 @@ gamestate_t wipegamestate = GS_DEMOSCREEN; // wipegamestate can be set to -1 to 
 static void D_Display (void)
 {
     static gamestate_t oldgamestate = GS_LEVEL;
-
-    if (nodrawers)                    // for comparative timing / profiling
-        return;
 
     if (_g_gamestate != GS_LEVEL) { // Not a level
         if (oldgamestate == GS_LEVEL)

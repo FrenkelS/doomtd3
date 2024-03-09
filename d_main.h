@@ -40,8 +40,6 @@
 #include "w_wad.h"
 
 
-extern const boolean nodrawers;
-
 // Demo stuff
 void D_AdvanceDemo(void);
 
