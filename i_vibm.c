@@ -289,20 +289,10 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch)
 
 			uint16_t count = column->length;
 
-			uint16_t l = count >> 2;
-			while (l--)
+			while (count--)
 			{
-				*dest = *source++; dest += SCREENWIDTH;
-				*dest = *source++; dest += SCREENWIDTH;
-				*dest = *source++; dest += SCREENWIDTH;
-				*dest = *source++; dest += SCREENWIDTH;
-			}
-
-			switch (count & 3)
-			{
-				case 3: *dest = *source++; dest += SCREENWIDTH;
-				case 2: *dest = *source++; dest += SCREENWIDTH;
-				case 1: *dest = *source++;
+				*dest = *source++;
+				dest += SCREENWIDTH;
 			}
 
 			column = (const column_t __far*)((const byte __far*)column + column->length + 4);
