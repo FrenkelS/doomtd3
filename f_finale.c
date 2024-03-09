@@ -157,8 +157,6 @@ static int32_t Get_TextSpeed(void)
 
 static void F_TextWrite (void)
 {
-	V_DrawBackground();
-
 	int16_t font_lump_offset = W_GetNumForName(HU_FONTSTART_LUMP) - HU_FONTSTART;
 
 	// draw some of the text onto the screen

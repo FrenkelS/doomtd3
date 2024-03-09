@@ -235,12 +235,6 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 }
 
 
-void V_DrawBackground(void)
-{
-
-}
-
-
 void V_DrawRaw(int16_t num, uint16_t offset)
 {
 	const uint8_t __far* lump = W_TryGetLumpByNum(num);
