@@ -34,7 +34,6 @@ set CFLAGS=%CFLAGS% -D__far=
 @set GLOBOBJS=%GLOBOBJS% p_sight.c
 @set GLOBOBJS=%GLOBOBJS% p_spec.c
 @set GLOBOBJS=%GLOBOBJS% p_switch.c
-@set GLOBOBJS=%GLOBOBJS% p_telept.c
 @set GLOBOBJS=%GLOBOBJS% p_tick.c
 @set GLOBOBJS=%GLOBOBJS% p_user.c
 @set GLOBOBJS=%GLOBOBJS% r_data.c

@@ -47,7 +47,6 @@ void G_DeferedInitNew(skill_t skill);
 void G_DeferedPlayDemo(const char *demo);
 void G_LoadGame(int16_t slot);
 void G_ExitLevel(void);
-void G_SecretExitLevel(void);
 void G_Ticker(void);
 void G_ReloadDefaults(void);     // killough 3/1/98: loads game defaults
 void G_PlayerReborn(void);

@@ -154,18 +154,6 @@ void P_RemoveThing(mobj_t __far* thing)
 }
 
 
-/* cph 2002/01/13 - iterator for thinker list
- * WARNING: Do not modify thinkers between calls to this function
- */
-thinker_t __far* P_NextThinker(thinker_t __far* th)
-{
-  thinker_t* top = &_g_thinkerclasscap;
-  if (!th) th = top;
-  th = th->next;
-  return th == top ? NULL : th;
-}
-
-
 //
 // P_RunThinkers
 //

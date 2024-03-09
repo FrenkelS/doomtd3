@@ -460,15 +460,6 @@ void G_ExitLevel (void)
     _g_gameaction = ga_completed;
 }
 
-// Here's for the german edition.
-// IF NO WOLF3D LEVELS, NO SECRET EXIT!
-
-void G_SecretExitLevel (void)
-{
-    secretexit = true;
-    _g_gameaction = ga_completed;
-}
-
 
 static void G_DoWorldDone (void)
 {

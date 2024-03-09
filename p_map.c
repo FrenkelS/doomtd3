@@ -108,9 +108,6 @@ static mobj_t __far*   usething;
 static boolean   floatok;
 
 
-static boolean telefrag;   /* killough 8/9/98: whether to telefrag at exit */
-
-
 // MAXRADIUS is for precalculated sector block boxes
 #define MAXRADIUS       (32*FRACUNIT)
 
@@ -125,122 +122,6 @@ boolean P_IsFloatOk(void)
 {
 	return floatok;
 }
-
-
-//
-// TELEPORT MOVE
-//
-
-//
-// PIT_StompThing
-//
-
-
-static boolean PIT_StompThing(mobj_t __far* thing)
-  {
-  fixed_t blockdist;
-
-  // phares 9/10/98: moved this self-check to start of routine
-
-  // don't clip against self
-
-  if (thing == tmthing)
-    return true;
-
-  if (!(thing->flags & MF_SHOOTABLE)) // Can't shoot it? Can't stomp it!
-    return true;
-
-  blockdist = thing->radius + tmthing->radius;
-
-  if (D_abs(thing->x - tmx) >= blockdist || D_abs(thing->y - tmy) >= blockdist)
-    return true; // didn't hit it
-
-  // monsters don't stomp things except on boss level
-  if (!telefrag)  // killough 8/9/98: make consistent across all levels
-    return false;
-
-  P_DamageMobj (thing, tmthing, tmthing, 10000); // Stomp!
-
-  return true;
-  }
-
-
-//
-// P_TeleportMove
-//
-
-boolean P_TeleportMove(mobj_t __far* thing, fixed_t x, fixed_t y, boolean boss)
-  {
-  int16_t     xl;
-  int16_t     xh;
-  int16_t     yl;
-  int16_t     yh;
-  int16_t     bx;
-  int16_t     by;
-
-  subsector_t __far*  newsubsec;
-
-  /* killough 8/9/98: make telefragging more consistent, preserve compatibility */
-  telefrag = P_MobjIsPlayer(thing) || boss;
-
-  // kill anything occupying the position
-
-  tmthing = thing;
-
-  tmx = x;
-  tmy = y;
-
-  _g_tmbbox[BOXTOP]    = y + tmthing->radius;
-  _g_tmbbox[BOXBOTTOM] = y - tmthing->radius;
-  _g_tmbbox[BOXRIGHT]  = x + tmthing->radius;
-  _g_tmbbox[BOXLEFT]   = x - tmthing->radius;
-
-  newsubsec = R_PointInSubsector (x,y);
-  _g_ceilingline = NULL;
-
-  // The base floor/ceiling is from the subsector
-  // that contains the point.
-  // Any contacted lines the step closer together
-  // will adjust them.
-
-  _g_tmfloorz = _g_tmdropoffz = newsubsec->sector->floorheight;
-  _g_tmceilingz = newsubsec->sector->ceilingheight;
-
-  validcount++;
-  _g_numspechit = 0;
-
-  // stomp on any things contacted
-
-  xl = (_g_tmbbox[BOXLEFT]   - _g_bmaporgx - MAXRADIUS)>>MAPBLOCKSHIFT;
-  xh = (_g_tmbbox[BOXRIGHT]  - _g_bmaporgx + MAXRADIUS)>>MAPBLOCKSHIFT;
-  yl = (_g_tmbbox[BOXBOTTOM] - _g_bmaporgy - MAXRADIUS)>>MAPBLOCKSHIFT;
-  yh = (_g_tmbbox[BOXTOP]    - _g_bmaporgy + MAXRADIUS)>>MAPBLOCKSHIFT;
-
-  for (bx=xl ; bx<=xh ; bx++)
-    for (by=yl ; by<=yh ; by++)
-      if (!P_BlockThingsIterator(bx,by,PIT_StompThing))
-        return false;
-
-  // the move is ok,
-  // so unlink from the old position & link into the new position
-
-  P_UnsetThingPosition (thing);
-
-  thing->floorz = _g_tmfloorz;
-  thing->ceilingz = _g_tmceilingz;
-  thing->dropoffz = _g_tmdropoffz;        // killough 11/98
-
-  thing->x = x;
-  thing->y = y;
-
-  P_SetThingPosition (thing);
-
-  //thing->PrevX = x;
-  //thing->PrevY = y;
-  //thing->PrevZ = thing->floorz;
-
-  return true;
-  }
 
 
 //
@@ -573,7 +454,7 @@ boolean P_CheckPosition(mobj_t __far* thing, fixed_t x, fixed_t y)
 //  crossed. Change is qualified by demo_compatibility.
 //
 // CPhipps - take a line_t pointer instead of a line number, as in MBF
-static void P_CrossSpecialLine(const line_t __far* line, int16_t side, mobj_t __far* thing)
+static void P_CrossSpecialLine(const line_t __far* line, mobj_t __far* thing)
 {
   boolean         ok;
 
@@ -598,7 +479,6 @@ static void P_CrossSpecialLine(const line_t __far* line, int16_t side, mobj_t __
     ok = false;
     switch(LN_SPECIAL(line))
     {
-      case 97:      // teleport retrigger
       case 88:      // plat down-wait-up-stay retrigger
         ok = true;
         break;
@@ -623,58 +503,13 @@ static void P_CrossSpecialLine(const line_t __far* line, int16_t side, mobj_t __
         LN_SPECIAL(line) = 0;
       break;
 
-    case 5:
-      // Raise Floor
-      if (EV_DoFloor(line,raiseFloor))
-        LN_SPECIAL(line) = 0;
-      break;
-
-    case 8:
-      // Build Stairs
-      if (EV_BuildStairs(line))
-        LN_SPECIAL(line) = 0;
-      break;
-
-    case 16:
-      // Close Door 30
-      if (EV_DoDoor(line,close30ThenOpen))
-        LN_SPECIAL(line) = 0;
-      break;
-
     case 22:
       // Raise floor to nearest height and change texture
       if (EV_DoPlat(line,raiseToNearestAndChange))
         LN_SPECIAL(line) = 0;
       break;
 
-    case 35:
-      // Lights Very Dark
-      EV_LightTurnOn(line,35);
-      LN_SPECIAL(line) = 0;
-      break;
-
-    case 36:
-      // Lower Floor (TURBO)
-      if (EV_DoFloor(line,turboLower))
-        LN_SPECIAL(line) = 0;
-      break;
-
       // Regular walk many retriggerable
-
-    case 76:
-      // Close Door 30
-      EV_DoDoor(line,close30ThenOpen);
-      break;
-
-    case 82:
-      // Lower Floor To Lowest
-      EV_DoFloor( line, lowerFloorToLowest );
-      break;
-
-    case 86:
-      // Open Door
-      EV_DoDoor(line,dopen);
-      break;
 
     case 88:
       // PlatDownWaitUp
@@ -689,11 +524,6 @@ static void P_CrossSpecialLine(const line_t __far* line, int16_t side, mobj_t __
     case 91:
       // Raise Floor
       EV_DoFloor(line,raiseFloor);
-      break;
-
-    case 97:
-      // TELEPORT!
-      EV_Teleport( line, side, thing );
       break;
 
     case 98:
@@ -760,10 +590,9 @@ boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
         while (_g_numspechit--)
             if (LN_SPECIAL(_g_spechit[_g_numspechit]))  // see if the line was crossed
             {
-                int16_t oldside;
-                if ((oldside = P_PointOnLineSide(oldx, oldy, _g_spechit[_g_numspechit])) !=
+                if ((P_PointOnLineSide(oldx, oldy, _g_spechit[_g_numspechit])) !=
                         P_PointOnLineSide(thing->x, thing->y, _g_spechit[_g_numspechit]))
-                    P_CrossSpecialLine(_g_spechit[_g_numspechit], oldside, thing);
+                    P_CrossSpecialLine(_g_spechit[_g_numspechit], thing);
             }
 
     return true;
@@ -870,47 +699,6 @@ static boolean PTR_AimTraverse (intercept_t* in)
 }
 
 
-//
-// P_ShootSpecialLine - Gun trigger special dispatcher
-//
-// Called when a thing shoots a special line with bullet, shell, saw, or fist.
-//
-// jff 02/12/98 all G1 lines were fixed to check the result from the EV_
-// function before clearing the special. This avoids losing the function
-// of the line, should the sector already be in motion when the line is
-// impacted. Change is qualified by demo_compatibility.
-//
-static void P_ShootSpecialLine(mobj_t __far* thing, const line_t __far* line)
-{
-  // Impacts that other things can activate.
-  if (!P_MobjIsPlayer(thing))
-  {
-    boolean ok = false;
-    switch(LN_SPECIAL(line))
-    {
-      case 46:
-        // 46 GR Open door on impact weapon is monster activatable
-        ok = true;
-        break;
-    }
-    if (!ok)
-      return;
-  }
-
-  if (!P_CheckTag(line))  //jff 2/27/98 disallow zero tag on some types
-    return;
-
-  switch(LN_SPECIAL(line))
-  {
-    case 46:
-      // 46 GR open door, stay open
-      EV_DoDoor(line,dopen);
-      P_ChangeSwitchTexture(line,true);
-      break;
-  }
-}
-
-
 static fixed_t FixedMul3(fixed_t a, fixed_t b, fixed_t c)
 {
 	if (a == 0)
@@ -940,9 +728,6 @@ static boolean PTR_ShootTraverse (intercept_t* in)
   if (in->isaline)
   {
     const line_t __far* li = in->d.line;
-
-    if (LN_SPECIAL(li))
-      P_ShootSpecialLine (shootthing, li);
 
     if (li->flags & ML_TWOSIDED)
     {  // crosses a two sided (really 2s) line

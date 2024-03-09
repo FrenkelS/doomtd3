@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -48,8 +48,5 @@ void P_AddThinker(thinker_t __far* thinker);
 void P_RemoveThinker(thinker_t __far* thinker);
 void P_RemoveThing(mobj_t __far* thing);
 
-
-/* cph 2002/01/13 - iterator for thinker lists */
-thinker_t __far* P_NextThinker(thinker_t __far*);
 
 #endif

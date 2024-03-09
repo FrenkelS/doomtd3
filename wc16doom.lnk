@@ -37,7 +37,6 @@ file p_setup.obj
 file p_sight.obj
 file p_spec.obj
 file p_switch.obj
-file p_telept.obj
 file p_tick.obj
 file p_user.obj
 file r_data.obj

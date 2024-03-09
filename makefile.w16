@@ -62,7 +62,6 @@ GLOBOBJS = &
  p_sight.obj &
  p_spec.obj &
  p_switch.obj &
- p_telept.obj &
  p_tick.obj &
  p_user.obj &
  r_data.obj &

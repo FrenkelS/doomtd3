@@ -239,16 +239,9 @@ boolean P_CheckTag(const line_t __far* line)
     case 27:
     case 28:
     case 31:
-    case 32:
-    case 33:
     case 34:
 
-    case 35:                // Lighting specials
-
-    case 97:                // Thing teleporters
-
     case 11:                // Exits
-    case 51:
 
     case 48:                // Scrolling walls
       return true;   // zero tag allowed

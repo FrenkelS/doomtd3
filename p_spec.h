@@ -251,7 +251,6 @@ sector_t __far* getNextSector(const line_t __far* line, sector_t __far* sec);
 
 boolean P_CheckTag(const line_t __far* line);
 
-void P_ChangeSwitchTexture(const line_t __far* line, boolean useAgain);
 
 ////////////////////////////////////////////////////////////////
 //
@@ -279,28 +278,13 @@ result_e T_MovePlaneCeiling(sector_t __far* sector, fixed_t speed, fixed_t dest,
 //
 ////////////////////////////////////////////////////////////////
 
-// p_telept
-
-boolean EV_Teleport(const line_t __far* line, int16_t side, mobj_t __far* thing);
-
-
 // p_floor
-
-boolean EV_BuildStairs(const line_t __far* line);
 
 boolean EV_DoFloor(const line_t __far* line, floor_e floortype);
 
 // p_doors
 
 boolean EV_DoDoor(const line_t __far* line, vldoor_e type);
-
-// p_lights
-
-void EV_LightTurnOn(const line_t __far* line, int16_t bright);
-
-// p_floor
-
-boolean EV_DoDonut(const line_t __far* line);
 
 // p_plats
 

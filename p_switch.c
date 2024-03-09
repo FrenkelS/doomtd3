@@ -171,7 +171,7 @@ static void P_StartButton(const line_t __far* line, bwhere_e w, int16_t texture,
 // 1 second, in ticks.
 #define BUTTONTIME  TICRATE
 
-void P_ChangeSwitchTexture(const line_t __far* line, boolean useAgain)
+static void P_ChangeSwitchTexture(const line_t __far* line, boolean useAgain)
 {
     /* Rearranged a bit to avoid too much code duplication */
     int16_t     i;
@@ -258,7 +258,6 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
   switch(LN_SPECIAL(line))
   {
     case 26: // Blue Lock
-    case 32:
       if ( !player )
         return;
       if (!player->cards[it_bluecard] && !player->cards[it_blueskull])
@@ -282,7 +281,6 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
       break;
 
     case 28: // Red Lock
-    case 33:
       if ( !player )
           return;
       if (!player->cards[it_redcard] && !player->cards[it_redskull])
@@ -385,8 +383,6 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
       break;
 
     case 31:
-    case 32:
-    case 33:
     case 34:
       door->type = dopen;
       LN_SPECIAL(line) = 0;
@@ -426,8 +422,6 @@ boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line)
     switch(LN_SPECIAL(line))
     {
       case 1:         // MANUAL DOOR RAISE
-      case 32:        // MANUAL BLUE
-      case 33:        // MANUAL RED
       case 34:        // MANUAL YELLOW
         break;
 
@@ -449,25 +443,11 @@ boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line)
     case 28:            // Red Door /Locked
 
     case 31:            // Manual door open
-    case 32:            // Blue locked door open
-    case 33:            // Red locked door open
     case 34:            // Yellow locked door open
       EV_VerticalDoor (line, thing);
       break;
 
     // Switches (non-retriggerable)
-    case 7:
-      // Build Stairs
-      if (EV_BuildStairs(line))
-        P_ChangeSwitchTexture(line,false);
-      break;
-
-    case 9:
-      // Change Donut
-      if (EV_DoDonut(line))
-        P_ChangeSwitchTexture(line,false);
-      break;
-
     case 11:
       /* Exit level
        * killough 10/98: prevent zombies from exiting levels
@@ -482,36 +462,10 @@ boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line)
       G_ExitLevel ();
       break;
 
-    case 18:
-      // Raise Floor to next highest floor
-      if (EV_DoFloor(line, raiseFloorToNearest))
-        P_ChangeSwitchTexture(line,false);
-      break;
-
-    case 20:
-      // Raise Plat next highest floor and change texture
-      if (EV_DoPlat(line,raiseToNearestAndChange))
-        P_ChangeSwitchTexture(line,false);
-      break;
-
     case 23:
       // Lower Floor to Lowest
       if (EV_DoFloor(line,lowerFloorToLowest))
         P_ChangeSwitchTexture(line,false);
-      break;
-
-    case 51:
-      /* Secret EXIT
-       * killough 10/98: prevent zombies from exiting levels
-       */
-      if (P_MobjIsPlayer(thing) && P_MobjIsPlayer(thing)->health <= 0)
-      {
-        S_StartSound(thing, sfx_noway);
-        return false;
-      }
-
-      P_ChangeSwitchTexture(line,false);
-      G_SecretExitLevel ();
       break;
 
     case 103:
