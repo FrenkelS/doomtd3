@@ -28,8 +28,6 @@
 
 #include "w_wad.h"
 
-#include "wi_stuff.h"
-
 
 extern boolean _g_fps_show;
 
@@ -212,12 +210,7 @@ extern int32_t _g_leveltime; // tics in game play for par
 extern thinker_t _g_thinkerclasscap;
 
 
-//******************************************************************************
-//wi_stuff.c
-//******************************************************************************
 
-// used to accelerate or skip a stage
-extern boolean   _g_acceleratestage;
 
 
 extern gamestate_t wipegamestate;

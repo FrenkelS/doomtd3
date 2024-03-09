@@ -54,5 +54,6 @@ void V_DrawNumPatchNotScaled(int16_t x, int16_t y, int16_t lump);
 
 void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);
 
+int16_t V_NumPatchWidth(int16_t num);
 
 #endif

@@ -56,7 +56,6 @@
 #include "p_tick.h"
 #include "p_map.h"
 #include "d_main.h"
-#include "wi_stuff.h"
 #include "hu_stuff.h"
 #include "st_stuff.h"
 #include "w_wad.h"
@@ -152,7 +151,6 @@ static const int8_t sidemove[2]    = {0x18, 0x28};
 static const int16_t angleturn[3]  = {640, 1280, 320};  // + slow turn
 
 static void G_DoReborn (void);
-static void G_DoCompleted(void);
 static void G_DoWorldDone(void);
 static void G_DoLoadGame(void);
 static void G_DoSaveGame (void);
@@ -365,9 +363,6 @@ void G_Ticker (void)
         case ga_playdemo:
             G_DoPlayDemo ();
             break;
-        case ga_completed:
-            G_DoCompleted ();
-            break;
         case ga_worlddone:
             G_DoWorldDone ();
             break;
@@ -403,8 +398,6 @@ void G_Ticker (void)
             // S_Stop();
             // Z_FreeTags(PU_LEVEL, PU_PURGELEVEL-1);
             break;
-        case GS_INTERMISSION:
-            WI_End();
         default:
             break;
         }
@@ -418,10 +411,6 @@ void G_Ticker (void)
         P_Ticker ();
         ST_Ticker ();
         HU_Ticker ();
-        break;
-
-    case GS_INTERMISSION:
-        WI_Ticker ();
         break;
 
     case GS_DEMOSCREEN:
@@ -523,67 +512,6 @@ static const uint8_t pars[10] = {
     0,30,75,120,90,165,180,180,30,165
 };
 
-
-//
-// G_DoCompleted
-//
-
-static void G_DoCompleted (void)
-{
-    _g_gameaction = ga_nothing;
-
-    if (_g_playeringame)
-        G_PlayerFinishLevel();        // take away cards and stuff
-
-    if (_g_gamemap == 9) // kilough 2/7/98
-        _g_player.didsecret = true;
-
-    _g_wminfo.didsecret = _g_player.didsecret;
-    _g_wminfo.last = _g_gamemap -1;
-
-    // wminfo.next is 0 biased, unlike gamemap
-    if (secretexit)
-        _g_wminfo.next = 8;  // go to secret level
-    else
-        if (_g_gamemap == 9)
-        {
-            // returning from secret level
-            _g_wminfo.next = 3;
-        }
-        else
-           _g_wminfo.next = _g_gamemap;          // go to next level
-
-    _g_wminfo.maxkills = _g_totalkills;
-    _g_wminfo.maxitems = _g_totalitems;
-    _g_wminfo.maxsecret = _g_totalsecret;
-
-    _g_wminfo.partime = TICRATE*pars[_g_gamemap];
-
-
-    _g_wminfo.plyr[0].in = _g_playeringame;
-    _g_wminfo.plyr[0].skills = _g_player.killcount;
-    _g_wminfo.plyr[0].sitems = _g_player.itemcount;
-    _g_wminfo.plyr[0].ssecret = _g_player.secretcount;
-    _g_wminfo.plyr[0].stime = _g_leveltime;
-
-    /* cph - modified so that only whole seconds are added to the totalleveltimes
-   *  value; so our total is compatible with the "naive" total of just adding
-   *  the times in seconds shown for each level. Also means our total time
-   *  will agree with Compet-n.
-   */
-    _g_wminfo.totaltimes = (totalleveltimes += (_g_leveltime - _g_leveltime%35));
-
-    _g_gamestate = GS_INTERMISSION;
-
-    // lmpwatch.pl engine-side demo testing support
-    // print "FINISHED: <mapname>" when the player exits the current map
-    if (nodrawers && (_g_demoplayback || _g_timingdemo))
-    {
-        printf("FINISHED: E1M%d\n", _g_gamemap);
-    }
-
-    WI_Start (&_g_wminfo);
-}
 
 //
 // G_WorldDone

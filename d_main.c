@@ -58,7 +58,6 @@
 #include "i_sound.h"
 #include "g_game.h"
 #include "hu_stuff.h"
-#include "wi_stuff.h"
 #include "st_stuff.h"
 #include "p_setup.h"
 #include "r_main.h"
@@ -130,9 +129,6 @@ static void D_Display (void)
 
         switch (_g_gamestate)
         {
-            case GS_INTERMISSION:
-                WI_Drawer();
-                break;
             case GS_DEMOSCREEN:
                 D_PageDrawer();
                 break;

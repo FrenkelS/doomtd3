@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -90,6 +90,16 @@ typedef PACKEDATTR_PRE struct
 // of one or more mappatch_t structures that arrange graphic patches.
 
 static const texture_t __far*__far* textures;
+
+
+static int16_t V_NumPatchWidthDontCache(int16_t num)
+{
+	if (W_IsLumpCached(num))
+		return V_NumPatchWidth(num);
+	else
+		return W_GetFirstInt16(num);
+}
+
 
 static void R_LoadTexture(int16_t texture_num)
 {

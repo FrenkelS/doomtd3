@@ -626,6 +626,15 @@ static void STlib_updateMultIcon(st_multicon_t* mi)
 }
 
 
+int16_t V_NumPatchWidth(int16_t num)
+{
+	const patch_t __far* patch = W_GetLumpByNum(num);
+	int16_t width = patch->width;
+	Z_ChangeTagToCache(patch);
+	return width;
+}
+
+
 /*
  * STlib_drawNum()
  *
