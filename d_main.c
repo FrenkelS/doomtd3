@@ -72,10 +72,6 @@ static void D_UpdateFPS(void);
 // CPhipps - removed wadfiles[] stuff
 
 
-//jff 1/22/98 parms for disabling music and sound
-const boolean nosfxparm   = true;
-const boolean nomusicparm = true;
-
 const boolean nodrawers = false;
 
 
