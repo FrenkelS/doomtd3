@@ -62,51 +62,12 @@ typedef uint32_t segment_t;
 #include <go32.h>
 #include <sys/nearptr.h>
 
-//DJGPP doesn't inline inp, outp and outpw,
-//but it does inline inportb, outportb and outportw
-#define inp(port)			inportb(port)
-#define outp(port,data)		outportb(port,data)
-
-#define __interrupt
-
-#define replaceInterrupt(OldInt,NewInt,vector,handler)				\
-_go32_dpmi_get_protected_mode_interrupt_vector(vector, &OldInt);	\
-																	\
-NewInt.pm_selector = _go32_my_cs(); 								\
-NewInt.pm_offset = (int32_t)handler;								\
-_go32_dpmi_allocate_iret_wrapper(&NewInt);							\
-_go32_dpmi_set_protected_mode_interrupt_vector(vector, &NewInt)
-
-#define restoreInterrupt(vector,OldInt,NewInt)						\
-_go32_dpmi_set_protected_mode_interrupt_vector(vector, &OldInt);	\
-_go32_dpmi_free_iret_wrapper(&NewInt);
-
-#define _chain_intr(OldInt)		\
-asm								\
-(								\
-	"cli \n"					\
-	"pushfl \n"					\
-	"lcall *%0"					\
-	:							\
-	: "m" (OldInt.pm_offset)	\
-)
-
 
 
 #else
 //gcc-ia16
 #define __djgpp_nearptr_enable()
 #define __djgpp_conventional_base 0
-
-#if defined _M_I386
-#define int86 int386
-#endif
-
-#define replaceInterrupt(OldInt,NewInt,vector,handler)	\
-OldInt = _dos_getvect(vector);							\
-_dos_setvect(vector, handler)
-
-#define restoreInterrupt(vector,OldInt,NewInt)	_dos_setvect(vector,OldInt)
 
 
 
