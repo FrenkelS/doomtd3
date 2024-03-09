@@ -329,55 +329,6 @@ static void G_DoLoadLevel (void)
 
 
 //
-// G_Responder
-// Get info needed to make ticcmd_ts for the players.
-//
-
-void G_Responder (event_t* ev)
-{
-    // any other key pops up menu if in demos
-    //
-    // killough 8/2/98: enable automap in -timedemo demos
-    //
-    // killough 9/29/98: make any key pop up menu regardless of
-    // which kind of demo, and allow other events during playback
-
-    if (_g_gameaction == ga_nothing && (_g_demoplayback || _g_gamestate == GS_DEMOSCREEN))
-    {
-        // killough 10/98:
-        // Don't pop up menu, if paused in middle
-        // of demo playback, or if automap active.
-        // Don't suck up keys, which may be cheats
-        if(_g_gamestate == GS_DEMOSCREEN)
-        {
-            if(ev->type == ev_keydown)
-            {
-                M_StartControlPanel();
-                return;
-            }
-        }
-
-        return;
-    }
-
-    switch (ev->type)
-    {
-        case ev_keydown:
-            if (ev->data1 < NUMKEYS)
-                gamekeydown[ev->data1] = true;
-            return;    // eat key down events
-
-        case ev_keyup:
-            if (ev->data1 < NUMKEYS)
-                gamekeydown[ev->data1] = false;
-            return;   // always let key up events filter down
-
-        default:
-            break;
-    }
-}
-
-//
 // G_Ticker
 // Make ticcmd_ts for the players.
 //

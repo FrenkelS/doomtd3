@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -41,13 +41,6 @@
 //
 // MENUS
 //
-// Called by main loop,
-// saves config file and calls I_Quit when user exits.
-// Even when the menu is not displayed,
-// this can resize the view and change game parameters.
-// Does all the real work of the menu interaction.
-
-boolean M_Responder (event_t *ev);
 
 // Called by main loop,
 // only used for menu (skull cursor) animation.

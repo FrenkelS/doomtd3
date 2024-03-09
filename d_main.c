@@ -93,27 +93,6 @@ boolean _g_fps_show;
 int16_t _g_fps_framerate;
 
 
-/*
- * D_PostEvent - Event handling
- *
- * Called by I/O functions when an event is received.
- * Try event handlers for each code area in turn.
- * cph - in the true spirit of the Boom source, let the 
- *  short ciruit operator madness begin!
- */
-
-void D_PostEvent(event_t *ev)
-{
-    /* cph - suppress all input events at game start
-   * FIXME: This is a lousy kludge */
-    if (_g_gametic < 3)
-        return;
-
-    if (!M_Responder(ev))
-        G_Responder(ev);
-}
-
-
 static void D_BuildNewTiccmds(void)
 {
     static int32_t lastmadetic = 0;

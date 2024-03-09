@@ -47,9 +47,6 @@ extern const boolean nomusicparm;
 
 extern const boolean nodrawers;
 
-// Called by IO functions when input is detected.
-void D_PostEvent(event_t* ev);
-
 // Demo stuff
 void D_AdvanceDemo(void);
 
