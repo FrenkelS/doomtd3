@@ -1,6 +1,6 @@
 //
 //
-// Copyright (C) 2023 Frenkel Smeijers
+// Copyright (C) 2023-2024 Frenkel Smeijers
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,11 +25,7 @@
 
 #define D_MK_FP  MK_FP
 #define D_FP_SEG FP_SEG
-#if defined __WATCOMC__
-#define D_FP_OFF FP_OFF
-#else
 #define D_FP_OFF(p) ((uint16_t)((uint32_t)(p)))
-#endif
 
 typedef uint16_t segment_t;
 
@@ -98,7 +94,7 @@ asm								\
 
 
 #else
-//Watcom and gcc-ia16
+//gcc-ia16
 #define __djgpp_nearptr_enable()
 #define __djgpp_conventional_base 0
 
