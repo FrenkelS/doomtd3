@@ -38,12 +38,9 @@
 
 #include "config.h"
 
-void I_InitTimer(void);
 int32_t I_GetTime(void);
 
 void NORETURN_PRE I_Error(const char *error, ...) NORETURN_POST;
-
-void I_InitScreen(void);
 
 void I_InitGraphics(void);
 void I_ShutdownGraphics(void);
@@ -51,13 +48,5 @@ void I_ShutdownGraphics(void);
 void I_FinishUpdate(void);
 
 void I_SetPalette(int8_t pal);
-
-/* I_StartTic
- * Called by D_DoomLoop,
- * called before processing each tic in a frame.
- * Quick syncronous operations are performed here.
- * Can call D_PostEvent.
- */
-void I_StartTic();
 
 #endif

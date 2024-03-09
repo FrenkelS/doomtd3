@@ -122,7 +122,6 @@ static void D_BuildNewTiccmds(void)
 
     while (newtics--)
     {
-        I_StartTic();
         if (maketic - _g_gametic > 3)
             break;
 
@@ -231,7 +230,7 @@ static void TryRunTics (void)
 //  called by D_DoomMain, never exits.
 // Manages timing and IO,
 //  calls all ?_Responder, ?_Ticker, and ?_Drawer,
-//  calls I_GetTime and I_StartTic
+//  calls I_GetTime
 //
 static void NORETURN_PRE D_DoomLoop(void) NORETURN_POST;
 static void D_DoomLoop(void)
@@ -243,7 +242,6 @@ static void D_DoomLoop(void)
         // process one or more tics
         if (singletics)
         {
-            I_StartTic ();
             G_BuildTiccmd ();
 
             if (advancedemo)

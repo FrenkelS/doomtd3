@@ -772,6 +772,7 @@ static void M_InitDefaults(void)
 
 boolean M_Responder (event_t* ev)
 {
+I_Error("responder");
     int16_t    ch;
 
     // Mouse input processing removed

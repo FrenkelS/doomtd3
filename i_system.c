@@ -53,23 +53,6 @@ void I_InitGraphics(void)
 
 //**************************************************************************************
 //
-//
-//
-
-void I_InitScreen(void)
-{
-
-}
-
-
-void I_StartTic(void)
-{
-
-}
-
-
-//**************************************************************************************
-//
 // Returns time in 1/35th second tics.
 //
 
@@ -79,12 +62,6 @@ static volatile int32_t ticcount;
 int32_t I_GetTime(void)
 {
     return ++ticcount;
-}
-
-
-void I_InitTimer(void)
-{
-
 }
 
 
