@@ -337,13 +337,8 @@ inline fixed_t CONSTFUNC FixedMul3216(fixed_t a, uint16_t blw)
 // Divide FFFFFFFFh by a 16-bit number.
 //
 
-#if defined C_ONLY
 #define FixedReciprocalSmall(v) (0xffffffffu/(uint16_t)(v))
 #define FixedReciprocalBig(v)   (0xffffffffu/(v))
-#else
-fixed_t  CONSTFUNC FixedReciprocalSmall(uint16_t v);
-uint16_t CONSTFUNC FixedReciprocalBig(fixed_t v);
-#endif
 
 
 //Approx fixed point divide of a/b using reciprocal. -> a * (1/b).

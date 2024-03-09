@@ -5,9 +5,6 @@ unset CFLAGS
 #export RENDER_OPTIONS="-DONE_WALL_TEXTURE -DFLAT_WALL -DFLAT_SPAN -DFLAT_SKY -DDISABLE_STATUS_BAR"
 export RENDER_OPTIONS="-DFLAT_SPAN"
 
-nasm i_vvg13a.asm -f elf
-nasm m_fixed.asm -f elf
-
 ia16-elf-gcc -c i_vvga13.c $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_map.c    $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_maputl.c $RENDER_OPTIONS -march=i286 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
@@ -83,8 +80,6 @@ export GLOBOBJS+=" z_zone.o"
 
 ia16-elf-gcc $GLOBOBJS $CFLAGS $RENDER_OPTIONS -o GCCIA16/DOOM8088.EXE
 
-rm i_vvg13a.o
-rm m_fixed.o
 rm i_vvga13.o
 rm p_map.o
 rm p_maputl.o

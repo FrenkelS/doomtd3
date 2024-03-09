@@ -163,7 +163,6 @@ inline static void R_DrawColumnPixel(uint8_t __far* dest, const byte __far* sour
 }
 
 
-#if defined C_ONLY
 static void R_DrawColumn2(uint16_t fracstep, uint16_t frac, int16_t count)
 {
 	while (count--)
@@ -173,9 +172,6 @@ static void R_DrawColumn2(uint16_t fracstep, uint16_t frac, int16_t count)
 		frac += fracstep;
 	}
 }
-#else
-void R_DrawColumn2(uint16_t fracstep, uint16_t frac, int16_t count);
-#endif
 
 
 void R_DrawColumn(const draw_column_vars_t *dcvars)
