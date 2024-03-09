@@ -12,7 +12,6 @@ set CFLAGS=%CFLAGS% -D__far= -DFLAT_SPAN
 @set GLOBOBJS=
 @set GLOBOBJS=%GLOBOBJS% d_items.c
 @set GLOBOBJS=%GLOBOBJS% d_main.c
-@set GLOBOBJS=%GLOBOBJS% f_finale.c
 @set GLOBOBJS=%GLOBOBJS% g_game.c
 @set GLOBOBJS=%GLOBOBJS% hu_stuff.c
 @set GLOBOBJS=%GLOBOBJS% i_audio.c

@@ -49,7 +49,6 @@
 
 #include "compiler.h"
 #include "d_player.h"
-#include "f_finale.h"
 #include "doomtype.h"
 #include "m_menu.h"
 #include "m_random.h"
@@ -418,9 +417,6 @@ void G_Ticker (void)
         case ga_completed:
             G_DoCompleted ();
             break;
-        case ga_victory:
-            F_StartFinale ();
-            break;
         case ga_worlddone:
             G_DoWorldDone ();
             break;
@@ -475,10 +471,6 @@ void G_Ticker (void)
 
     case GS_INTERMISSION:
         WI_Ticker ();
-        break;
-
-    case GS_FINALE:
-        F_Ticker ();
         break;
 
     case GS_DEMOSCREEN:
@@ -652,9 +644,6 @@ void G_WorldDone (void)
 
     if (secretexit)
         _g_player.didsecret = true;
-
-    if (_g_gamemap == 8)
-        _g_gameaction = ga_victory; // cph - after ExM8 summary screen, show victory stuff
 }
 
 static void G_DoWorldDone (void)

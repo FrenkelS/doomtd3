@@ -53,7 +53,6 @@
 #include "w_wad.h"
 #include "s_sound.h"
 #include "v_video.h"
-#include "f_finale.h"
 #include "m_menu.h"
 #include "i_system.h"
 #include "i_sound.h"
@@ -155,9 +154,6 @@ static void D_Display (void)
         {
             case GS_INTERMISSION:
                 WI_Drawer();
-                break;
-            case GS_FINALE:
-                F_Drawer();
                 break;
             case GS_DEMOSCREEN:
                 D_PageDrawer();

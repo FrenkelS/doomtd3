@@ -22,7 +22,6 @@ export CFLAGS="-march=i286 -mcmodel=medium -li86 -mnewlib-nano-stdio -Os -fomit-
 
 export GLOBOBJS="  d_items.c"
 export GLOBOBJS+=" d_main.c"
-export GLOBOBJS+=" f_finale.c"
 export GLOBOBJS+=" g_game.c"
 export GLOBOBJS+=" hu_stuff.c"
 export GLOBOBJS+=" i_audio.c"
