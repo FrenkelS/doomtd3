@@ -64,7 +64,6 @@
 #include "p_setup.h"
 #include "r_main.h"
 #include "d_main.h"
-#include "m_cheat.h"
 #include "globdata.h"
 
 static void D_DoAdvanceDemo(void);
@@ -112,8 +111,7 @@ void D_PostEvent(event_t *ev)
         return;
 
     if (!M_Responder(ev))
-        if (!(_g_gamestate == GS_LEVEL && (C_Responder(ev))))
-            G_Responder(ev);
+        G_Responder(ev);
 }
 
 
