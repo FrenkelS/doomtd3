@@ -119,26 +119,10 @@ static const int16_t key_right       = KEYD_RIGHT;
 static const int16_t key_left        = KEYD_LEFT;
 static const int16_t key_up          = KEYD_UP;
 static const int16_t key_down        = KEYD_DOWN;
-       const int16_t key_menu_right  = KEYD_RIGHT;
-       const int16_t key_menu_left   = KEYD_LEFT;
-       const int16_t key_menu_up     = KEYD_UP;
-       const int16_t key_menu_down   = KEYD_DOWN;
-       const int16_t key_menu_escape = KEYD_START;
-       const int16_t key_menu_enter  = KEYD_A;
 static const int16_t key_strafeleft  = KEYD_L;
 static const int16_t key_straferight = KEYD_R;
        const int16_t key_fire        = KEYD_B; 
 static const int16_t key_use         = KEYD_A;
-       const int16_t key_escape      = KEYD_START;
-       const int16_t key_enter       = KEYD_A;
-       const int16_t key_map_right   = KEYD_RIGHT;
-       const int16_t key_map_left    = KEYD_LEFT;
-       const int16_t key_map_up      = KEYD_UP;
-       const int16_t key_map_down    = KEYD_DOWN;
-       const int16_t key_map         = KEYD_SELECT;
-       const int16_t key_map_follow  = 'f';
-       const int16_t key_map_zoomin  = KEYD_PLUS;
-       const int16_t key_map_zoomout = KEYD_MINUS;
 static const int16_t key_weapon_up   = KEYD_BRACKET_RIGHT;
 static const int16_t key_weapon_down = KEYD_BRACKET_LEFT;
 
@@ -486,18 +470,6 @@ void G_SecretExitLevel (void)
 }
 
 
-//
-// G_WorldDone
-//
-
-void G_WorldDone (void)
-{
-    _g_gameaction = ga_worlddone;
-
-    if (secretexit)
-        _g_player.didsecret = true;
-}
-
 static void G_DoWorldDone (void)
 {
     _g_gamestate = GS_LEVEL;
@@ -593,17 +565,6 @@ static void G_DoLoadGame(void)
 		_g_player.backpack = true;
 
     Z_Free(loadbuffer);
-}
-
-//
-// G_SaveGame
-// Called by the menu task.
-//
-
-void G_SaveGame(int16_t slot)
-{
-    savegameslot = slot;
-    G_DoSaveGame();
 }
 
 

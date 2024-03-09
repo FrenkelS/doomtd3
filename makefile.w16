@@ -42,7 +42,6 @@ GLOBOBJS = &
  d_main.obj &
  g_game.obj &
  hu_stuff.obj &
- i_audio.obj &
  i_main.obj &
  i_system.obj &
  i_vibm.obj &
@@ -72,7 +71,6 @@ GLOBOBJS = &
  r_sky.obj &
  r_things.obj &
  s_sound.obj &
- sounds.obj &
  st_stuff.obj &
  tables.obj &
  v_video.obj &

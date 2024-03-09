@@ -52,7 +52,6 @@
 #include "d_player.h"
 #include "g_game.h"
 #include "doomtype.h"
-#include "i_sound.h"
 #include "globdata.h"
 
 

@@ -57,10 +57,5 @@ void M_Drawer (void);
 
 void M_Init (void);
 
-// Called by intro code to force menu up upon a keypress,
-// does nothing if menu is already up.
-
-void M_StartControlPanel (void);
-
 
 #endif

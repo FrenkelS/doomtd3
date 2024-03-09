@@ -55,7 +55,6 @@
 #include "v_video.h"
 #include "m_menu.h"
 #include "i_system.h"
-#include "i_sound.h"
 #include "g_game.h"
 #include "hu_stuff.h"
 #include "st_stuff.h"

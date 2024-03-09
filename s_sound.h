@@ -73,8 +73,6 @@ void S_StopSound(void __far* origin);
 // Start music using <music_id> from sounds.h
 void S_StartMusic(musicenum_t music_id);
 
-// Start music using <music_id> from sounds.h, and set whether looping
-void S_ChangeMusic(musicenum_t music_id, boolean looping);
 
 //
 // Updates music & sounds

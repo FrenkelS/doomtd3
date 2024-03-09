@@ -41,7 +41,6 @@
 
 #include "d_player.h"
 #include "s_sound.h"
-#include "i_sound.h"
 #include "i_system.h"
 #include "d_main.h"
 #include "r_main.h"
@@ -192,11 +191,4 @@ void S_SetSfxVolume(int16_t volume)
 void S_StartMusic(musicenum_t m_id)
 {
 	UNUSED(m_id);
-}
-
-
-void S_ChangeMusic(musicenum_t musicnum, boolean looping)
-{
-	UNUSED(musicnum);
-	UNUSED(looping);
 }

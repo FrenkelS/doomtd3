@@ -46,10 +46,8 @@ void G_CheckDemoStatus(void);
 void G_DeferedInitNew(skill_t skill);
 void G_DeferedPlayDemo(const char *demo);
 void G_LoadGame(int16_t slot);
-void G_SaveGame(int16_t slot);
 void G_ExitLevel(void);
 void G_SecretExitLevel(void);
-void G_WorldDone(void);
 void G_Ticker(void);
 void G_ReloadDefaults(void);     // killough 3/1/98: loads game defaults
 void G_PlayerReborn(void);
@@ -61,23 +59,7 @@ void G_LoadSettings();
 void G_SaveSettings();
 
 
-extern const int16_t  key_menu_right;
-extern const int16_t  key_menu_left;
-extern const int16_t  key_menu_up;
-extern const int16_t  key_menu_down;
-extern const int16_t  key_menu_escape;
-extern const int16_t  key_menu_enter;
 extern const int16_t  key_fire;
-extern const int16_t  key_escape;
-extern const int16_t  key_enter;
-extern const int16_t  key_map_right;
-extern const int16_t  key_map_left;
-extern const int16_t  key_map_up;
-extern const int16_t  key_map_down;
-extern const int16_t  key_map_zoomin;
-extern const int16_t  key_map_zoomout;
-extern const int16_t  key_map;
-extern const int16_t  key_map_follow;
 
 
 #endif

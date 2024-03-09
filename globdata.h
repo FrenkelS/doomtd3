@@ -7,7 +7,6 @@
 #include "g_game.h"
 #include "r_defs.h"
 #include "hu_stuff.h"
-#include "i_sound.h"
 #include "m_menu.h"
 #include "p_spec.h"
 #include "p_enemy.h"

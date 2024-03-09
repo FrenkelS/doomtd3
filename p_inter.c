@@ -64,9 +64,6 @@ static const int16_t green_armor_class = 1;  // these are involved with armortyp
 static const int16_t blue_armor_class  = 2;
 static const int16_t max_soul          = 200;
 static const int16_t soul_health       = 100;
-       const int16_t god_health        = 100;   // these are used in cheats (see st_stuff.c)
-       const int16_t idfa_armor        = 200;
-       const int16_t idfa_armor_class  = 2;
 
        const int16_t bfgcells          = 40;      // used in p_pspr.c
 // Ty 03/07/98 - end deh externals

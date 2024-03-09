@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -49,8 +49,6 @@ void P_DamageMobj(mobj_t __far* target, mobj_t __far* inflictor, mobj_t __far* s
 
 
 extern const int16_t god_health;
-extern const int16_t idfa_armor;
-extern const int16_t idfa_armor_class;
 /* Ty 03/13/98 - externalized initial settings for respawned player */
 extern const int16_t initial_health;
 extern const int16_t initial_bullets;

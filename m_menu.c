@@ -56,7 +56,6 @@
 #include "m_menu.h"
 #include "doomtype.h"
 #include "i_system.h"
-#include "i_sound.h"
 
 #include "globdata.h"
 
@@ -672,25 +671,6 @@ static void M_InitDefaults(void)
 // This displays the Main menu and gets the menu screens rolling.
 // Plus a variety of routines that control the Big Font menu display.
 // Plus some initialization for game-dependant situations.
-
-void M_StartControlPanel (void)
-{
-  // intro might call this repeatedly
-
-  if (_g_menuactive)
-    return;
-
-  //jff 3/24/98 make default skill menu choice follow -skill or defaultskill
-  //from command line or config file
-  //
-  // killough 10/98:
-  // Fix to make "always floating" with menu selections, and to always follow
-  // defaultskill, instead of -skill.
-
-  _g_menuactive = true;
-  currentMenu = &MainDef;         // JDC
-}
-
 
 static char __far* Z_Strdup(const char* s)
 {

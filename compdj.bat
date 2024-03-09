@@ -14,7 +14,6 @@ set CFLAGS=%CFLAGS% -D__far=
 @set GLOBOBJS=%GLOBOBJS% d_main.c
 @set GLOBOBJS=%GLOBOBJS% g_game.c
 @set GLOBOBJS=%GLOBOBJS% hu_stuff.c
-@set GLOBOBJS=%GLOBOBJS% i_audio.c
 @set GLOBOBJS=%GLOBOBJS% i_main.c
 @set GLOBOBJS=%GLOBOBJS% i_system.c
 @set GLOBOBJS=%GLOBOBJS% i_vibm.c
@@ -44,7 +43,6 @@ set CFLAGS=%CFLAGS% -D__far=
 @set GLOBOBJS=%GLOBOBJS% r_sky.c
 @set GLOBOBJS=%GLOBOBJS% r_things.c
 @set GLOBOBJS=%GLOBOBJS% s_sound.c
-@set GLOBOBJS=%GLOBOBJS% sounds.c
 @set GLOBOBJS=%GLOBOBJS% st_stuff.c
 @set GLOBOBJS=%GLOBOBJS% tables.c
 @set GLOBOBJS=%GLOBOBJS% v_video.c
