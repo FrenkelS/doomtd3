@@ -43,7 +43,6 @@ extern wbstartstruct_t _g_wminfo;               // parms for world map / intermi
 
 extern boolean         _g_playeringame;
 extern boolean         _g_demoplayback;
-extern boolean         _g_singledemo;           // quit after playing a demo from cmdline
 
 
 //******************************************************************************

@@ -93,14 +93,10 @@ static int32_t             totalleveltimes;      // CPhipps - total time for all
 
 static boolean gamekeydown[NUMKEYS];
 
-static skill_t d_skill;
-
-
 static boolean secretexit;
 
 boolean         _g_playeringame;
 boolean         _g_demoplayback;
-boolean         _g_singledemo;           // quit after playing a demo from cmdline
 
 
 //
@@ -128,7 +124,6 @@ static const int16_t angleturn[3]  = {640, 1280, 320};  // + slow turn
 
 static void G_DoReborn (void);
 static void G_DoWorldDone(void);
-static void G_DoNewGame (void);
 static void G_DoPlayDemo(void);
 static void G_InitNew(skill_t skill, int16_t map);
 static void G_ReadDemoTiccmd (void);
@@ -323,9 +318,6 @@ void G_Ticker (void)
             _g_player.playerstate = PST_REBORN;
             G_DoLoadLevel ();
             break;
-        case ga_newgame:
-            G_DoNewGame ();
-            break;
         case ga_playdemo:
             G_DoPlayDemo ();
             break;
@@ -473,18 +465,8 @@ void G_ReloadDefaults(void)
     // and savegames without messing up defaults).
 
     _g_demoplayback = false;
-    _g_singledemo = false;            // killough 9/29/98: don't stop after 1 demo
 }
 
-static void G_DoNewGame (void)
-{
-    G_ReloadDefaults();            // killough 3/1/98
-    G_InitNew (d_skill, 1);
-    _s_gameaction = ga_nothing;
-
-    //jff 4/26/98 wake up the status bar in case were coming out of a DM demo
-    ST_Start();
-}
 
 //
 // G_InitNew

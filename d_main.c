@@ -183,7 +183,6 @@ static void D_DoomMainSetup(void)
     I_InitGraphics();
 
     G_DeferedPlayDemo("demo3");
-    _g_singledemo = true;            // quit after one demo
 }
 
 //
