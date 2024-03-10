@@ -465,7 +465,6 @@ static void P_CrossSpecialLine(const line_t __far* line, mobj_t __far* thing)
     switch(thing->type)
     {
       case MT_TROOPSHOT:
-      case MT_BRUISERSHOT:
         return;
 
       default: break;

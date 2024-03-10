@@ -62,7 +62,6 @@ const char * const sprnames[NUMSPRITES] = {
   "BLUD","PUFF","BAL1",
   "TFOG","IFOG","PLAY","POSS",
   "SPOS","SARG",
-  "BAL7",
   "ARM1","ARM2","BAR1","BEXP",
   "BON1","BON2","BKEY","RKEY","YKEY","STIM","MEDI",
   "SOUL","PINS","SUIT","PMAP","PVIS","CLIP","AMMO",
@@ -279,11 +278,6 @@ const state_t states[NUMSTATES] = {
   {SPR_SARG,11,4,A_Fall,S_SARG_DIE5}, // S_SARG_DIE4
   {SPR_SARG,12,4,NULL,S_SARG_DIE6}, // S_SARG_DIE5
   {SPR_SARG,13,-1,NULL,S_NULL}, // S_SARG_DIE6
-  {SPR_BAL7,32768,4,NULL,S_BRBALL2},  // S_BRBALL1
-  {SPR_BAL7,32769,4,NULL,S_BRBALL1},  // S_BRBALL2
-  {SPR_BAL7,32770,6,NULL,S_BRBALLX2}, // S_BRBALLX1
-  {SPR_BAL7,32771,6,NULL,S_BRBALLX3}, // S_BRBALLX2
-  {SPR_BAL7,32772,6,NULL,S_NULL}, // S_BRBALLX3
   {SPR_ARM1,0,6,NULL,S_ARM1A},  // S_ARM1
   {SPR_ARM1,32769,7,NULL,S_ARM1}, // S_ARM1A
   {SPR_ARM2,0,6,NULL,S_ARM2A},  // S_ARM2
@@ -531,31 +525,6 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     0,    // damage
     sfx_dmact,    // activesound
     MF_SOLID|MF_SHOOTABLE|MF_SHADOW|MF_COUNTKILL   // flags
-  },
-
-  {   // MT_BRUISERSHOT
-    -1,   // doomednum
-    S_BRBALL1,    // spawnstate
-    1000,   // spawnhealth
-    S_NULL,   // seestate
-    sfx_firsht,   // seesound
-    8,    // reactiontime
-    sfx_None,   // attacksound
-    S_NULL,   // painstate
-    0,    // painchance
-    sfx_None,   // painsound
-    S_NULL,   // meleestate
-    S_NULL,   // missilestate
-    S_BRBALLX1,   // deathstate
-    S_NULL,   // xdeathstate
-    sfx_firxpl,   // deathsound
-    15*FRACUNIT,   // speed
-    6*FRACUNIT,   // radius
-    8*FRACUNIT,   // height
-    100,    // mass
-    8,    // damage
-    sfx_None,   // activesound
-    MF_NOBLOCKMAP|MF_MISSILE|MF_DROPOFF|MF_NOGRAVITY   // flags
   },
 
   {   // MT_BARREL
