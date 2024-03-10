@@ -67,7 +67,7 @@ const char * const sprnames[NUMSPRITES] = {
   "SOUL","PINS","SUIT","PMAP","CLIP","AMMO",
   "ROCK","BROK","SHEL","SBOX","BPAK","MGUN","CSAW",
   "LAUN","SHOT","COLU","POL5",
-  "CAND","CBRA","ELEC"
+  "CBRA","ELEC"
 };
 
 // ********************************************************************
@@ -340,7 +340,6 @@ const state_t states[NUMSTATES] = {
   {SPR_PLAY,13,-1,NULL,S_NULL}, // S_DEADTORSO
   {SPR_PLAY,18,-1,NULL,S_NULL}, // S_DEADBOTTOM
   {SPR_POL5,0,-1,NULL,S_NULL},	// S_GIBS
-  {SPR_CAND,32768,-1,NULL,S_NULL},	// S_CANDLESTIK
   {SPR_CBRA,32768,-1,NULL,S_NULL},  // S_CANDELABRA
   {SPR_ELEC,0,-1,NULL,S_NULL}  // S_TECHPILLAR
 };

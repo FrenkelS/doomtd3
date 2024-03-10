@@ -90,7 +90,6 @@ typedef enum
   SPR_SHOT,
   SPR_COLU,
   SPR_POL5,
-  SPR_CAND,
   SPR_CBRA,
   SPR_ELEC,
   NUMSPRITES  /* counter of how many there are */
@@ -352,7 +351,6 @@ typedef enum
   S_DEADTORSO,
   S_DEADBOTTOM,
   S_GIBS,
-  S_CANDLESTIK,
   S_CANDELABRA,
   S_TECHPILLAR,
   NUMSTATES  /* Counter of how many there are */
