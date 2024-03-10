@@ -6,7 +6,6 @@
 #include "m_fixed.h"
 #include "g_game.h"
 #include "r_defs.h"
-#include "hu_stuff.h"
 #include "p_spec.h"
 #include "p_enemy.h"
 #include "p_map.h"
@@ -41,8 +40,6 @@ extern int16_t _g_fps_framerate;
 extern gameaction_t    _g_gameaction;
 extern gamestate_t     _g_gamestate;
 extern skill_t         _g_gameskill;
-
-extern int16_t             _g_gamemap;
 
 extern player_t        _g_player;
 

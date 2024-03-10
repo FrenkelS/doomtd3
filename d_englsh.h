@@ -78,17 +78,6 @@
 /* g_game.c */
 #define GGSAVED     "game saved."
 
-/* hu_stuff.c */
-#define HUSTR_E1M1  "E1M1: Hangar"
-#define HUSTR_E1M2  "E1M2: Nuclear Plant"
-#define HUSTR_E1M3  "E1M3: Toxin Refinery"
-#define HUSTR_E1M4  "E1M4: Command Control"
-#define HUSTR_E1M5  "E1M5: Phobos Lab"
-#define HUSTR_E1M6  "E1M6: Central Processing"
-#define HUSTR_E1M7  "E1M7: Computer Station"
-#define HUSTR_E1M8  "E1M8: Phobos Anomaly"
-#define HUSTR_E1M9  "E1M9: Military Base"
-
 
 /* st_stuff.c */
 

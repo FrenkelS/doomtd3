@@ -45,7 +45,6 @@
 #include "p_tick.h"
 #include "sounds.h"
 #include "st_stuff.h"
-#include "hu_stuff.h"
 #include "s_sound.h"
 #include "info.h"
 #include "g_game.h"
@@ -945,7 +944,6 @@ static void P_SpawnPlayer (const mapthing_t* mthing)
   P_SetupPsprites (p);
 
   ST_Start(); // wake up the status bar
-  HU_Start(); // wake up the heads up text
 }
 
 

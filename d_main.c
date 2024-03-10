@@ -55,7 +55,6 @@
 #include "v_video.h"
 #include "i_system.h"
 #include "g_game.h"
-#include "hu_stuff.h"
 #include "st_stuff.h"
 #include "p_setup.h"
 #include "r_main.h"
@@ -128,8 +127,6 @@ static void D_Display (void)
         R_RenderPlayerView (&_g_player);
 
         ST_Drawer();
-
-        HU_Drawer();
     }
 
     oldgamestate = wipegamestate = _g_gamestate;
@@ -370,8 +367,6 @@ static void D_DoomMainSetup(void)
     R_Init();
 
     P_Init();
-
-    HU_Init();
 
     ST_Init();
 

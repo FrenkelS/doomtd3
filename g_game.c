@@ -55,7 +55,6 @@
 #include "p_tick.h"
 #include "p_map.h"
 #include "d_main.h"
-#include "hu_stuff.h"
 #include "st_stuff.h"
 #include "w_wad.h"
 #include "r_main.h"
@@ -81,7 +80,7 @@ gameaction_t    _g_gameaction;
 gamestate_t     _g_gamestate;
 skill_t         _g_gameskill;
 
-int16_t             _g_gamemap;
+static int16_t             _s_gamemap;
 
 player_t        _g_player;
 
@@ -293,7 +292,7 @@ static void G_DoLoadLevel (void)
     P_SetSecnodeFirstpoolToNull();
 
 
-    P_SetupLevel (_g_gamemap);
+    P_SetupLevel (_s_gamemap);
 
     _g_gameaction = ga_nothing;
     Z_CheckHeap ();
@@ -303,7 +302,6 @@ static void G_DoLoadLevel (void)
 
     // killough 5/13/98: in case netdemo has consoleplayer other than green
     ST_Start();
-    HU_Start();
 }
 
 
@@ -455,7 +453,7 @@ void G_ExitLevel (void)
 static void G_DoWorldDone (void)
 {
     _g_gamestate = GS_LEVEL;
-    _g_gamemap = _g_wminfo.next+1;
+    _s_gamemap = _g_wminfo.next+1;
     G_DoLoadLevel();
     _g_gameaction = ga_nothing;
 }
@@ -528,9 +526,9 @@ static void G_DoLoadGame(void)
         return;
 
     _g_gameskill = savedata->gameskill;
-    _g_gamemap = savedata->gamemap;
+    _s_gamemap = savedata->gamemap;
 	
-    G_InitNew (_g_gameskill, _g_gamemap);
+    G_InitNew (_g_gameskill, _s_gamemap);
 
     totalleveltimes = savedata->totalleveltimes;
     _fmemcpy(_g_player.weaponowned, savedata->weaponowned, sizeof(savedata->weaponowned));
@@ -568,7 +566,7 @@ static void G_DoSaveGame(void)
     savedata->save_present = 1;
 
     savedata->gameskill = _g_gameskill;
-    savedata->gamemap = _g_gamemap;
+    savedata->gamemap = _s_gamemap;
     savedata->totalleveltimes = totalleveltimes;
 
     _fmemcpy(savedata->weaponowned, _g_player.weaponowned, sizeof(savedata->weaponowned));
@@ -645,7 +643,7 @@ static void G_InitNew(skill_t skill, int16_t map)
     _g_player.playerstate = PST_REBORN;
 
     _g_usergame = true;                // will be set false if a demo
-    _g_gamemap = map;
+    _s_gamemap = map;
     _g_gameskill = skill;
 
     totalleveltimes = 0;
