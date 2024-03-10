@@ -840,22 +840,6 @@ void A_SargAttack(mobj_t __far* actor)
 }
 
 
-void A_BruisAttack(mobj_t __far* actor)
-{
-  if (!actor->target)
-    return;
-  if (P_CheckMeleeRange(actor))
-    {
-      int16_t damage;
-      S_StartSound(actor, sfx_claw);
-      damage = (P_Random()%8+1)*10;
-      P_DamageMobj(actor->target, actor, actor, damage);
-      return;
-    }
-  P_SpawnMissile(actor, actor->target, MT_BRUISERSHOT);  // launch a missile
-}
-
-
 void A_Scream(mobj_t __far* actor)
 {
   sfxenum_t sound;

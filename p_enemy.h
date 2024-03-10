@@ -62,6 +62,6 @@ void A_Scream();
 void A_SPosAttack();
 void A_TroopAttack();
 void A_SargAttack();
-void A_BruisAttack();
+
 
 #endif // __P_ENEMY__
