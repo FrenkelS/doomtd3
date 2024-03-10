@@ -118,9 +118,17 @@ typedef struct
 
 void W_Init(void)
 {
+#if BYTE_ORDER == LITTLE_ENDIAN
 	fileWAD = fopen("DOOMTD3L.WAD", "rb");
 	if (fileWAD == NULL)
 		I_Error("Can't open DOOMTD3L.WAD.");
+#elif BYTE_ORDER == BIG_ENDIAN
+	fileWAD = fopen("DOOMTD3B.WAD", "rb");
+	if (fileWAD == NULL)
+		I_Error("Can't open DOOMTD3B.WAD.");
+#else
+#error unknown byte order
+#endif
 
 	wadinfo_t header;
 	fseek(fileWAD, 0, SEEK_SET);
