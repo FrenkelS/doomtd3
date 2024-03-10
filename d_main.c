@@ -61,17 +61,8 @@
 #include "d_main.h"
 #include "globdata.h"
 
-static void D_DoAdvanceDemo(void);
-static void D_PageDrawer(void);
-
 
 static int32_t maketic;
-
-
-static int16_t  pagetic;
-
-static boolean singletics; // debug flag to cancel adaptiveness
-static boolean advancedemo;
 
 
 static void D_BuildNewTiccmds(void)
@@ -105,15 +96,6 @@ static void D_Display (void)
     if (_g_gamestate != GS_LEVEL) { // Not a level
         if (oldgamestate == GS_LEVEL)
             I_SetPalette(0); // cph - use default (basic) palette
-
-        switch (_g_gamestate)
-        {
-            case GS_DEMOSCREEN:
-                D_PageDrawer();
-                break;
-            default:
-                break;
-        }
     }
     else if (_g_gametic != _g_basetic)
     { // In a level
@@ -130,42 +112,6 @@ static void D_Display (void)
 
     // normal update
     I_FinishUpdate ();              // page flip or blit buffer
-}
-
-
-//? how many ticks to run?
-static void TryRunTics (void)
-{
-    int32_t runtics;
-    int32_t entertime = I_GetTime();
-
-    // Wait for tics to run
-    while (1)
-    {
-
-        D_BuildNewTiccmds();
-
-        runtics = maketic - _g_gametic;
-        if (runtics <= 0)
-        {
-            if (I_GetTime() - entertime > 10)
-            {
-                return;
-            }
-        }
-        else
-            break;
-    }
-
-    while (runtics-- > 0)
-    {
-
-        if (advancedemo)
-            D_DoAdvanceDemo ();
-
-        G_Ticker ();
-        _g_gametic++;
-    }
 }
 
 
@@ -187,121 +133,16 @@ static void D_DoomLoop(void)
         // frame syncronous IO operations
 
         // process one or more tics
-        if (singletics)
-        {
-            G_BuildTiccmd ();
+        G_BuildTiccmd ();
 
-            if (advancedemo)
-                D_DoAdvanceDemo ();
+        G_Ticker ();
 
-            G_Ticker ();
-
-            _g_gametic++;
-            maketic++;
-        }
-        else
-            TryRunTics (); // will run at least one tic
+        _g_gametic++;
+        maketic++;
 
         // Update display, next frame, with current state.
         D_Display();
     }
-}
-
-
-//
-//  DEMO LOOP
-//
-
-
-//
-// D_PageTicker
-// Handles timing for warped projection
-//
-
-static void D_AdvanceDemo (void);
-
-void D_PageTicker(void)
-{
-    if (--pagetic < 0)
-        D_AdvanceDemo();
-}
-
-//
-// D_PageDrawer
-//
-
-static void D_PageDrawer(void)
-{
-	int16_t num = W_GetNumForName("TITLEPIC");
-	V_DrawRaw(num, 0);
-}
-
-//
-// D_AdvanceDemo
-// Called after each demo or intro demosequence finishes
-//
-static void D_AdvanceDemo (void)
-{
-    advancedemo = true;
-}
-
-/* killough 11/98: functions to perform demo sequences
- * cphipps 10/99: constness fixes
- */
-
-static void D_SetPageName(const char *name)
-{
-	UNUSED(name);
-}
-
-static void D_DrawTitle1(const char *name)
-{
-	UNUSED(name);
-
-	pagetic = (TICRATE*30);
-}
-
-
-/* killough 11/98: tabulate demo sequences
- */
-
-static struct
-{
-    void (*func)(const char *);
-    const char *name;
-}
-const demostates[] =
-{
-    {D_DrawTitle1, NULL},
-    {G_DeferedPlayDemo, "demo3"},
-    {D_SetPageName, NULL},
-    {G_DeferedPlayDemo, "demo1"},
-    {D_SetPageName, NULL},
-    {G_DeferedPlayDemo, "demo2"},
-    {NULL, NULL},
-};
-
-static int16_t  demosequence;
-
-/*
- * This cycles through the demo sequences.
- * killough 11/98: made table-driven
- */
-
-void D_DoAdvanceDemo(void)
-{
-    _g_player.playerstate = PST_LIVE;  /* not reborn */
-    advancedemo = _g_usergame = false;
-    _g_gameaction = ga_nothing;
-
-    pagetic = TICRATE * 11;         /* killough 11/98: default behavior */
-    _g_gamestate = GS_DEMOSCREEN;
-
-
-    if (!demostates[++demosequence].func)
-        demosequence = 0;
-
-    demostates[demosequence].func(demostates[demosequence].name);
 }
 
 
@@ -341,7 +182,6 @@ static void D_DoomMainSetup(void)
 
     I_InitGraphics();
 
-    singletics = true;
     G_DeferedPlayDemo("demo3");
     _g_singledemo = true;            // quit after one demo
 }

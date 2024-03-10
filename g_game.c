@@ -76,7 +76,7 @@ static uint16_t demolength; // check for overrun (missing DEMOMARKER)
 
 static const byte __far* demo_p;
 
-gameaction_t    _g_gameaction;
+static gameaction_t    _s_gameaction;
 gamestate_t     _g_gamestate;
 skill_t         _g_gameskill;
 
@@ -100,7 +100,6 @@ static byte  savegameslot;         // Slot to load if gameaction == ga_loadgame
 
 static boolean secretexit;
 
-boolean         _g_usergame;      // ok to save / end game
 boolean         _g_playeringame;
 boolean         _g_demoplayback;
 boolean         _g_singledemo;           // quit after playing a demo from cmdline
@@ -293,7 +292,7 @@ static void G_DoLoadLevel (void)
 
     P_SetupLevel (_s_gamemap);
 
-    _g_gameaction = ga_nothing;
+    _s_gameaction = ga_nothing;
     Z_CheckHeap ();
 
     // clear cmd building stuff
@@ -321,9 +320,9 @@ void G_Ticker (void)
     P_MapEnd();
 
     // do things to change the game state
-    while (_g_gameaction != ga_nothing)
+    while (_s_gameaction != ga_nothing)
     {
-        switch (_g_gameaction)
+        switch (_s_gameaction)
         {
         case ga_loadlevel:
             _g_player.playerstate = PST_REBORN;
@@ -386,10 +385,6 @@ void G_Ticker (void)
         P_Ticker ();
         ST_Ticker ();
         break;
-
-    case GS_DEMOSCREEN:
-        D_PageTicker ();
-        break;
     }
 }
 
@@ -438,14 +433,14 @@ void G_PlayerReborn (void)
 
 void G_DoReborn (void)
 {
-    _g_gameaction = ga_loadlevel;      // reload the level from scratch
+    _s_gameaction = ga_loadlevel;      // reload the level from scratch
 }
 
 
 void G_ExitLevel (void)
 {
     secretexit = false;
-    _g_gameaction = ga_completed;
+    _s_gameaction = ga_completed;
 }
 
 
@@ -454,7 +449,7 @@ static void G_DoWorldDone (void)
     _g_gamestate = GS_LEVEL;
     _s_gamemap = _g_wminfo.next+1;
     G_DoLoadLevel();
-    _g_gameaction = ga_nothing;
+    _s_gameaction = ga_nothing;
 }
 
 // killough 2/28/98: A ridiculously large number
@@ -615,7 +610,7 @@ static void G_DoNewGame (void)
 {
     G_ReloadDefaults();            // killough 3/1/98
     G_InitNew (d_skill, 1);
-    _g_gameaction = ga_nothing;
+    _s_gameaction = ga_nothing;
 
     //jff 4/26/98 wake up the status bar in case were coming out of a DM demo
     ST_Start();
@@ -641,7 +636,6 @@ static void G_InitNew(skill_t skill, int16_t map)
 
     _g_player.playerstate = PST_REBORN;
 
-    _g_usergame = true;                // will be set false if a demo
     _s_gamemap = map;
     _g_gameskill = skill;
 
@@ -689,7 +683,7 @@ static const char *defdemoname;
 void G_DeferedPlayDemo (const char* name)
 {
     defdemoname = name;
-    _g_gameaction = ga_playdemo;
+    _s_gameaction = ga_playdemo;
 }
 
 
@@ -748,7 +742,7 @@ static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
     demo_p += MIN_MAXPLAYERS - MAXPLAYERS;
 
 
-    if (_g_gameaction != ga_loadgame) { /* killough 12/98: support -loadgame */
+    if (_s_gameaction != ga_loadgame) { /* killough 12/98: support -loadgame */
         G_InitNew(skill, map);
     }
 
@@ -798,8 +792,7 @@ static void G_DoPlayDemo(void)
 
     demo_p = G_ReadDemoHeader(demobuffer);
 
-    _g_gameaction = ga_nothing;
-    _g_usergame = false;
+    _s_gameaction = ga_nothing;
 
     _g_demoplayback = true;
 

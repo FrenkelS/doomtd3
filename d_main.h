@@ -44,7 +44,6 @@
 // BASE LEVEL
 //
 
-void D_PageTicker(void);
 void D_DoomMain(int argc, const char * const * argv);
 
 
