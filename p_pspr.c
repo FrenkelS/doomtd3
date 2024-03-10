@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -458,9 +458,6 @@ void A_WeaponReady(player_t *player, pspdef_t *psp)
       || player->mo->state == &states[S_PLAY_ATK2] )
     P_SetMobjState(player->mo, S_PLAY);
 
-  if (player->readyweapon == wp_chainsaw && psp->state == &states[S_SAW])
-    S_StartSound(player->mo, sfx_sawidl);
-
   // check for change
   //  if player is dead, put the weapon away
 
@@ -657,53 +654,6 @@ void A_Punch(player_t *player, pspdef_t *psp)
 	player->mo->angle = R_PointToAngle2(player->mo->x, player->mo->y, _g_linetarget->x, _g_linetarget->y);
 }
 
-//
-// A_Saw
-//
-
-void A_Saw(player_t *player, pspdef_t *psp)
-{
-	fixed_t slope;
-	int16_t	damage = 2*(P_Random()%10+1);
-	angle_t angle = player->mo->angle;
-	// killough 5/5/98: remove dependence on order of evaluation:
-	angle_t t = P_Random();
-	angle += (t - P_Random())<<18;
-
-	UNUSED(psp);
-
-	/* Use meleerange + 1 so that the puff doesn't skip the flash
-	 * killough 8/2/98: make autoaiming prefer enemies */
-	if ((slope = P_AimLineAttack(player->mo, angle, MELEERANGE+1, true), !_g_linetarget))
-		slope = P_AimLineAttack(player->mo, angle, MELEERANGE+1, false);
-
-	P_LineAttack(player->mo, angle, MELEERANGE+1, slope, damage);
-
-	if (!_g_linetarget)
-	{
-		S_StartSound(player->mo, sfx_sawful);
-		return;
-	}
-
-	S_StartSound(player->mo, sfx_sawhit);
-
-	// turn to face target
-	angle = R_PointToAngle2(player->mo->x, player->mo->y, _g_linetarget->x, _g_linetarget->y);
-
-	if (angle - player->mo->angle > ANG180) {
-		if (angle - player->mo->angle < -ANG90/20)
-			player->mo->angle = angle + ANG90/21;
-		else
-			player->mo->angle -= ANG90/20;
-	} else {
-		if (angle - player->mo->angle > ANG90/20)
-			player->mo->angle = angle - ANG90/21;
-		else
-			player->mo->angle += ANG90/20;
-	}
-
-	player->mo->flags |= MF_JUSTATTACKED;
-}
 
 //
 // A_FireMissile

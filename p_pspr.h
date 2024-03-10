@@ -98,6 +98,5 @@ void A_Light2();
 void A_FireCGun();
 void A_GunFlash();
 void A_FireMissile();
-void A_Saw();
 
 #endif
