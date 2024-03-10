@@ -318,7 +318,6 @@ boolean P_SetMobjState(mobj_t __far* mobj, statenum_t state);
 void    P_SpawnPuff(fixed_t x, fixed_t y, fixed_t z);
 void    P_SpawnBlood(fixed_t x, fixed_t y, fixed_t z, int16_t damage);
 mobj_t __far* P_SpawnMissile(mobj_t __far* source, mobj_t __far* dest, mobjtype_t type);
-void    P_SpawnPlayerMissile(mobj_t __far* source);
 void    P_SpawnMapThing (const mapthing_t __far* mthing);
 
 struct player_s* P_MobjIsPlayer(const mobj_t __far* mobj);

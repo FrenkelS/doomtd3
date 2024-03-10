@@ -601,18 +601,6 @@ static void A_FireSomething(player_t* player,int16_t adder)
                weaponinfo[player->readyweapon].flashstate+adder);
 }
 
-//
-// A_GunFlash
-//
-
-void A_GunFlash(player_t *player, pspdef_t *psp)
-{
-	UNUSED(psp);
-
-	P_SetMobjState(player->mo, S_PLAY_ATK2);
-
-	A_FireSomething(player,0);                                      // phares
-}
 
 //
 // WEAPON ATTACKS
@@ -652,20 +640,6 @@ void A_Punch(player_t *player, pspdef_t *psp)
 
 	// turn to face target
 	player->mo->angle = R_PointToAngle2(player->mo->x, player->mo->y, _g_linetarget->x, _g_linetarget->y);
-}
-
-
-//
-// A_FireMissile
-//
-
-void A_FireMissile(player_t *player, pspdef_t *psp)
-{
-	UNUSED(psp);
-
-	S_StartSound(player->mo, sfx_rlaunc);
-	player->ammo[weaponinfo[player->readyweapon].ammo]--;
-	P_SpawnPlayerMissile(player->mo);
 }
 
 

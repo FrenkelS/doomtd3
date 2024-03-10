@@ -92,13 +92,13 @@ const weaponinfo_t weaponinfo[NUMWEAPONS] =
         S_CHAINFLASH1
     },
     {
-        // missile launcher
+        // shotgun, was missile launcher
         am_misl,
-        S_MISSILEUP,
-        S_MISSILEDOWN,
-        S_MISSILE,
-        S_MISSILE1,
-        S_MISSILEFLASH1
+        S_SGUNUP,
+        S_SGUNDOWN,
+        S_SGUN,
+        S_SGUN1,
+        S_SGUNFLASH1
     },
     {
         // chaingun, was plasma rifle
@@ -110,13 +110,13 @@ const weaponinfo_t weaponinfo[NUMWEAPONS] =
         S_CHAINFLASH1
     },
     {
-        // missile launcher, was bfg 9000
+        // shotgun, was bfg 9000
         am_misl,
-        S_MISSILEUP,
-        S_MISSILEDOWN,
-        S_MISSILE,
-        S_MISSILE1,
-        S_MISSILEFLASH1
+        S_SGUNUP,
+        S_SGUNDOWN,
+        S_SGUN,
+        S_SGUN1,
+        S_SGUNFLASH1
     },
     {
         // fist, was chainsaw

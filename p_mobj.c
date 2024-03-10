@@ -1252,57 +1252,6 @@ mobj_t __far* P_SpawnMissile(mobj_t __far* source, mobj_t __far* dest, mobjtype_
   }
 
 
-//
-// P_SpawnPlayerMissile
-// Tries to aim at a nearby monster
-//
-
-void P_SpawnPlayerMissile(mobj_t __far* source)
-{
-	mobj_t __far* th;
-	fixed_t x, y, z, slope = 0;
-
-	// see which target is to be aimed at
-
-	angle_t an = source->angle;
-
-	// killough 7/19/98: autoaiming was not in original beta
-	{
-		// killough 8/2/98: prefer autoaiming at enemies
-		boolean friend = true;
-
-		do
-		{
-			slope = P_AimLineAttack(source, an, 16 * 64 * FRACUNIT, friend);
-			if (!_g_linetarget)
-				slope = P_AimLineAttack(source, an += 1L << 26, 16 * 64 * FRACUNIT, friend);
-			if (!_g_linetarget)
-				slope = P_AimLineAttack(source, an -= 2l << 26, 16 * 64 * FRACUNIT, friend);
-			if (!_g_linetarget)
-				an = source->angle, slope = 0;
-		}
-		while (friend && (friend = false, !_g_linetarget));
-	}
-
-	x = source->x;
-	y = source->y;
-	z = source->z + 4 * 8 * FRACUNIT;
-
-	th = P_SpawnMobj(x,y,z, MT_ROCKET);
-
-	if (mobjinfo[th->type].seesound)
-		S_StartSound(th, mobjinfo[th->type].seesound);
-
-	th->target = source;
-	th->angle  = an;
-	th->momx   = FixedMulAngle(mobjinfo[th->type].speed,finecosine(an >> ANGLETOFINESHIFT));
-	th->momy   = FixedMulAngle(mobjinfo[th->type].speed,finesine(  an >> ANGLETOFINESHIFT));
-	th->momz   = FixedMul(mobjinfo[th->type].speed,slope);
-
-	P_CheckMissileSpawn(th);
-}
-
-
 struct player_s* P_MobjIsPlayer(const mobj_t __far* mobj)
 {
     if(mobj == _g_player.mo)
