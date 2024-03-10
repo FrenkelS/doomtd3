@@ -93,7 +93,6 @@ typedef enum
   SPR_CAND,
   SPR_CBRA,
   SPR_ELEC,
-  SPR_TRED,
   NUMSPRITES  /* counter of how many there are */
 } spritenum_t;
 
@@ -356,10 +355,6 @@ typedef enum
   S_CANDLESTIK,
   S_CANDELABRA,
   S_TECHPILLAR,
-  S_REDTORCH,
-  S_REDTORCH2,
-  S_REDTORCH3,
-  S_REDTORCH4,
   NUMSTATES  /* Counter of how many there are */
 } statenum_t;
 
