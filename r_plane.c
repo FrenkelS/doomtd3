@@ -32,6 +32,9 @@
 #include "globdata.h"
 
 
+int16_t skyflatnum;
+
+
 static int16_t firstflat;
 static int16_t  animated_flat_basepic;
 static int16_t __far* flattranslation;             // for global animation
@@ -89,6 +92,16 @@ void R_InitFlats(void)
 	animated_flat_basepic_color[0] = flattranslation[animated_flat_basepic + 0];
 	animated_flat_basepic_color[1] = flattranslation[animated_flat_basepic + 1];
 	animated_flat_basepic_color[2] = flattranslation[animated_flat_basepic + 2];
+}
+
+
+void R_InitSky(void)
+{
+	// First thing, we have a dummy sky texture name,
+	//  a flat. The data is in the WAD only because
+	//  we look for an actual index, instead of simply
+	//  setting one.
+	skyflatnum = R_FlatNumForName("F_SKY1");
 }
 
 

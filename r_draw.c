@@ -161,7 +161,7 @@ const mapnode_t __far* nodes;
 
 static fixed_t  viewx, viewy, viewz;
 
-angle_t  viewangle;
+static angle_t   viewangle;
 static angle16_t viewangle16;
 
 static byte solidcol[VIEWWINDOWWIDTH];
@@ -201,7 +201,7 @@ static fixed_t  rw_toptexturemid;
 static fixed_t  rw_bottomtexturemid;
 
 const uint8_t __far* fullcolormap;
-const uint8_t __far* fixedcolormap;
+static const uint8_t __far* fixedcolormap;
 
 static int16_t extralight;                           // bumped light from gun blasts
 
@@ -1671,10 +1671,7 @@ static void R_RenderSegLoop(int16_t rw_x, boolean segtextured, boolean markfloor
             {
                 dcvars.yl = top;
                 dcvars.yh = bottom;
-                if (ceilingplane_color == -2)
-                    R_DrawSky(&dcvars);
-                else
-                    R_DrawColumnFlat(ceilingplane_color, &dcvars);
+                R_DrawColumnFlat(ceilingplane_color, &dcvars);
             }
             // SoM: this should be set here
             cc_rwx = bottom;
@@ -2352,6 +2349,8 @@ static void R_AddLine(const seg_t __far* line)
 // Draw one or more line segments.
 //
 
+#define FLAT_SKY_COLOR 100
+
 static void R_Subsector(int16_t num)
 {
     int16_t         count;
@@ -2369,10 +2368,9 @@ static void R_Subsector(int16_t num)
         floorplane_color = -1;
 
 
-    if (frontsector->ceilingpic == skyflatnum) {
-        ceilingplane_color = -2;
-        R_LoadSkyPatch();
-    } else if (frontsector->ceilingheight > viewz)
+    if (frontsector->ceilingpic == skyflatnum)
+        ceilingplane_color = FLAT_SKY_COLOR;
+    else if (frontsector->ceilingheight > viewz)
         ceilingplane_color = R_GetPlaneColor(frontsector->ceilingpic, frontsector->lightlevel);
     else
         ceilingplane_color = -1;
@@ -2630,8 +2628,6 @@ void R_RenderPlayerView (player_t* player)
 
     // The head node is the last node output.
     R_RenderBSPNode (numnodes-1);
-
-    R_FreeSkyPatch ();
 
     R_DrawMasked ();
 }

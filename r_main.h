@@ -58,10 +58,7 @@ typedef struct {
 extern int16_t numnodes;
 extern const mapnode_t __far* nodes;
 
-extern angle_t viewangle;
-
 extern const uint8_t __far* fullcolormap;
-extern const uint8_t __far* fixedcolormap;
 
 extern int16_t   __far* textureheight; //needed for texture pegging (and TFE fix - killough)
 
@@ -95,10 +92,6 @@ visplane_t __far* R_CheckPlane(visplane_t __far* pl, int16_t start, int16_t stop
 byte R_GetPlaneColor(int16_t picnum, int16_t lightlevel);
 void R_ResetPlanes(void);
 void R_ClearPlanes(void);
-
-void R_LoadSkyPatch(void);
-void R_FreeSkyPatch(void);
-void R_DrawSky(draw_column_vars_t *dcvars);
 
 
 #endif
