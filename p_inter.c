@@ -104,8 +104,8 @@ static boolean P_GiveAmmo(player_t *player, ammotype_t ammo, int16_t num)
   else
     num = clipammo[ammo]/2;
 
-  // give double ammo in trainer mode, you'll need in nightmare
-  if (_g_gameskill == sk_baby || _g_gameskill == sk_nightmare)
+  // give double ammo in trainer mode
+  if (_g_gameskill == sk_baby)
     num <<= 1;
 
   oldammo = player->ammo[ammo];

@@ -52,8 +52,6 @@ extern int32_t             _g_totalkills, _g_totallive, _g_totalitems, _g_totals
 extern wbstartstruct_t _g_wminfo;               // parms for world map / intermission
 
 
-extern boolean         _g_respawnmonsters;
-
 extern boolean         _g_usergame;      // ok to save / end game
 extern boolean         _g_timingdemo;    // if true, exit with report on completion
 extern boolean         _g_playeringame;

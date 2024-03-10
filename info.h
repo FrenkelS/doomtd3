@@ -435,7 +435,7 @@ typedef struct
   sfxenum_t seesound;     /* The sound it makes when waking */
   int16_t reactiontime; /* How many tics it waits after it wakes up
            before it will start to attack, in normal
-           skills (halved for nightmare) */
+           skills */
   sfxenum_t attacksound;  /* The sound it makes when it attacks */
   statenum_t painstate;    /* The state to indicate pain */
   uint8_t painchance;   /* A number that is checked against a random

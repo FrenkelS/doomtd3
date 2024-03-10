@@ -661,8 +661,7 @@ void A_Chase(mobj_t __far* actor)
     if (actor->flags & MF_JUSTATTACKED)
     {
         actor->flags &= ~MF_JUSTATTACKED;
-        if (_g_gameskill != sk_nightmare)
-            P_NewChaseDir(actor);
+        P_NewChaseDir(actor);
         return;
     }
 
@@ -683,7 +682,7 @@ void A_Chase(mobj_t __far* actor)
     // check for missile attack
     if (mobjinfo[actor->type].missilestate)
     {
-        if (!(_g_gameskill < sk_nightmare && actor->movecount))
+        if (!(actor->movecount))
         {
             if (P_CheckMissileRange(actor))
             {

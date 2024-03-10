@@ -678,82 +678,6 @@ static void P_ZMovement(mobj_t __far* mo)
     }
   }
 
-//
-// P_NightmareRespawn
-//
-
-static void P_NightmareRespawn(mobj_t __far* mobj)
-{
-    fixed_t      x;
-    fixed_t      y;
-    subsector_t __far* ss;
-    mobj_t __far*      mo;
-
-    /* haleyjd: stupid nightmare respawning bug fix
-   *
-   * 08/09/00: compatibility added, time to ramble :)
-   * This fixes the notorious nightmare respawning bug that causes monsters
-   * that didn't spawn at level startup to respawn at the point (0,0)
-   * regardless of that point's nature. SMMU and Eternity need this for
-   * script-spawned things like Halif Swordsmythe, as well.
-   *
-   * cph - copied from eternity, except comp_respawnfix becomes comp_respawn
-   *   and the logic is reversed (i.e. like the rest of comp_ it *disables*
-   *   the fix)
-   */
-
-    //ZLB: Everything respawns at its death point.
-    //The spawnpoint is removed from the mobj.
-
-    x = mobj->x;
-    y = mobj->y;
-
-    if(!x && !y)
-    {
-        return;
-    }
-
-    // something is occupying its position?
-
-    if (!P_CheckPosition (mobj, x, y) )
-        return; // no respwan
-
-    // spawn a teleport fog at old spot
-    // because of removal of the body?
-
-    mo = P_SpawnMobj (mobj->x,
-                      mobj->y,
-                      mobj->subsector->sector->floorheight,
-                      MT_TFOG);
-
-    // initiate teleport sound
-
-    S_StartSound (mo, sfx_telept);
-
-    // spawn a teleport fog at the new spot
-
-    ss = R_PointInSubsector (x,y);
-
-    mo = P_SpawnMobj (x, y, ss->sector->floorheight , MT_TFOG);
-
-    S_StartSound (mo, sfx_telept);
-
-    // spawn the new monster
-    // inherit attributes from deceased one
-
-    mo = P_SpawnMobj(x, y, ONFLOORZ, mobj->type);
-    mo->angle = mobj->angle;
-
-    /* killough 11/98: transfer friendliness from deceased */
-    mo->flags = (mo->flags & ~MF_FRIEND) | (mobj->flags & MF_FRIEND);
-
-    mo->reactiontime = 18;
-
-    // remove the old monster,
-
-    P_RemoveMobj (mobj);
-}
-
 
 static void P_MobjThinker (mobj_t __far* mobj)
 {
@@ -789,31 +713,6 @@ static void P_MobjThinker (mobj_t __far* mobj)
             if (!P_SetMobjState (mobj, mobj->state->nextstate) )
                 return;     // freed itself
     }
-    else
-    {
-
-        // check for nightmare respawn
-
-        if (! (mobj->flags & MF_COUNTKILL) )
-            return;
-
-        if (!_g_respawnmonsters)
-            return;
-
-        mobj->movecount++;
-
-        if (mobj->movecount < 12*35)
-            return;
-
-        if (_g_leveltime & 31)
-            return;
-
-        if (P_Random () > 4)
-            return;
-
-        P_NightmareRespawn (mobj);
-    }
-
 }
 
 
@@ -901,8 +800,7 @@ mobj_t __far* P_SpawnMobj(fixed_t x,fixed_t y,fixed_t z,mobjtype_t type)
 
     mobj->health = info->spawnhealth;
 
-    if (_g_gameskill != sk_nightmare)
-        mobj->reactiontime = info->reactiontime;
+    mobj->reactiontime = info->reactiontime;
 
     P_Random(); // only to call random for compatibiltiy
     // do not set the state with P_SetMobjState,
@@ -1100,7 +998,7 @@ void P_SpawnMapThing(const mapthing_t __far* mthing)
     // killough 11/98: simplify
     if (_g_gameskill == sk_baby || _g_gameskill == sk_easy ?
             !(options & MTF_EASY) :
-            _g_gameskill == sk_hard || _g_gameskill == sk_nightmare ?
+            _g_gameskill == sk_hard ?
             !(options & MTF_HARD) : !(options & MTF_NORMAL))
         return;
 

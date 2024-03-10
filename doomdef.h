@@ -98,8 +98,7 @@ typedef enum {
   sk_baby=0,
   sk_easy,
   sk_medium,
-  sk_hard,
-  sk_nightmare
+  sk_hard
 } skill_t;
 
 //

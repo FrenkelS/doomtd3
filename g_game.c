@@ -101,8 +101,6 @@ static byte  savegameslot;         // Slot to load if gameaction == ga_loadgame
 
 static boolean secretexit;
 
-boolean         _g_respawnmonsters;
-
 boolean         _g_usergame;      // ok to save / end game
 boolean         _g_timingdemo;    // if true, exit with report on completion
 boolean         _g_playeringame;
@@ -634,8 +632,8 @@ static void G_DoNewGame (void)
 
 static void G_InitNew(skill_t skill, int16_t map)
 {
-    if (skill > sk_nightmare)
-        skill = sk_nightmare;
+    if (skill > sk_hard)
+        skill = sk_hard;
 
     if (map < 1)
         map = 1;
@@ -643,8 +641,6 @@ static void G_InitNew(skill_t skill, int16_t map)
         map = 9;
 
     M_ClearRandom();
-
-    _g_respawnmonsters = skill == sk_nightmare;
 
     _g_player.playerstate = PST_REBORN;
 
