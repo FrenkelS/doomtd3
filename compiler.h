@@ -57,6 +57,11 @@ typedef uint32_t segment_t;
 //DJGPP
 #include <sys/nearptr.h>
 
+//DJGPP doesn't inline inp, outp and outpw,
+//but it does inline inportb, outportb and outportw
+#define inp(port)			inportb(port)
+#define outp(port,data)		outportb(port,data)
+
 
 #else
 //Watcom and gcc-ia16

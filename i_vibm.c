@@ -49,6 +49,21 @@ static uint8_t __far* _s_statusbar;
 static uint8_t __far* videomemory;
 
 
+static const int8_t colors[14] =
+{
+	15,							// normal
+	4, 4, 4, 4, 12, 12, 12, 12,	// red
+	6, 6, 14, 14,				// yellow
+	2							// green
+};
+
+
+static void I_UploadNewPalette(int8_t pal)
+{
+	outp(0x3d9, colors[pal]);
+}
+
+
 static void I_SetScreenMode(uint16_t mode)
 {
 	union REGS regs;
@@ -60,6 +75,7 @@ static void I_SetScreenMode(uint16_t mode)
 void I_InitGraphicsHardwareSpecificCode(void)
 {
 	I_SetScreenMode(6);
+	I_UploadNewPalette(0);
 
 	__djgpp_nearptr_enable();
 	videomemory = D_MK_FP(0xb800, ((SCREENWIDTH_VGA - SCREENWIDTH) / 2) / 4 + (((SCREENHEIGHT_VGA - SCREENHEIGHT) / 2) * PLANEWIDTH) / 2 + __djgpp_conventional_base);
@@ -75,9 +91,12 @@ void I_ShutdownGraphics(void)
 }
 
 
+static int8_t newpal;
+
+
 void I_SetPalette(int8_t pal)
 {
-	UNUSED(pal);
+	newpal = pal;
 }
 
 
@@ -102,8 +121,17 @@ static const uint8_t VGA_TO_BW_LUT[256] =
 };
 
 
+#define NO_PALETTE_CHANGE 100
+
+
 void I_FinishUpdate(void)
 {
+	if (newpal != NO_PALETTE_CHANGE)
+	{
+		I_UploadNewPalette(newpal);
+		newpal = NO_PALETTE_CHANGE;
+	}
+
 	uint8_t __far* src = _s_viewwindow;
 	uint8_t __far* dst = videomemory;
 
