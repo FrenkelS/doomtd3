@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -50,7 +50,6 @@
  */
 void HU_Init(void);
 void HU_Start(void);
-void HU_Ticker(void);
 void HU_Drawer(void);
 void HU_Erase(void);
 

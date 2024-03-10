@@ -53,7 +53,6 @@
 #include "w_wad.h"
 #include "s_sound.h"
 #include "v_video.h"
-#include "m_menu.h"
 #include "i_system.h"
 #include "g_game.h"
 #include "hu_stuff.h"
@@ -135,9 +134,6 @@ static void D_Display (void)
 
     oldgamestate = wipegamestate = _g_gamestate;
 
-    // menus go directly to the screen
-    M_Drawer();          // menu is drawn even on top of everything
-
     D_BuildNewTiccmds();
 
     // normal update
@@ -162,7 +158,6 @@ static void TryRunTics (void)
         {
             if (I_GetTime() - entertime > 10)
             {
-                M_Ticker();
                 return;
             }
         }
@@ -176,7 +171,6 @@ static void TryRunTics (void)
         if (advancedemo)
             D_DoAdvanceDemo ();
 
-        M_Ticker ();
         G_Ticker ();
         _g_gametic++;
     }
@@ -208,7 +202,6 @@ static void D_DoomLoop(void)
             if (advancedemo)
                 D_DoAdvanceDemo ();
 
-            M_Ticker ();
             G_Ticker ();
 
             _g_gametic++;
@@ -347,16 +340,6 @@ void D_DoAdvanceDemo(void)
     demostates[demosequence].func(demostates[demosequence].name);
 }
 
-//
-// D_StartTitle
-//
-void D_StartTitle (void)
-{
-    _g_gameaction = ga_nothing;
-    demosequence = -1;
-    D_AdvanceDemo();
-}
-
 
 static int myargc;
 static const char * const * myargv;
@@ -383,8 +366,6 @@ static void D_DoomMainSetup(void)
     D_InitNetGame();
 
     W_Init(); // CPhipps - handling of wadfiles init changed
-
-    M_Init();
 
     R_Init();
 

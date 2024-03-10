@@ -665,7 +665,7 @@ const uint8_t __far* R_LoadColorMap(int16_t lightlevel)
                 lightlevel += 1 << LIGHTSEGSHIFT;
         }
 
-        lightlevel += (extralight +_g_gamma) << LIGHTSEGSHIFT;
+        lightlevel += extralight << LIGHTSEGSHIFT;
 
         int16_t cm = ((256-lightlevel)>>2) - 24;
 

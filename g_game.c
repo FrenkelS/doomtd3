@@ -50,7 +50,6 @@
 #include "compiler.h"
 #include "d_player.h"
 #include "doomtype.h"
-#include "m_menu.h"
 #include "m_random.h"
 #include "p_setup.h"
 #include "p_tick.h"
@@ -201,7 +200,7 @@ void G_BuildTiccmd(void)
     memset(&netcmd,0,sizeof(ticcmd_t));
 
     //Use button negates the always run setting.
-    speed = (gamekeydown[key_use] ^ _g_alwaysRun);
+    speed = gamekeydown[key_use];
 
     forward = side = 0;
 
@@ -355,18 +354,15 @@ void G_Ticker (void)
         }
     }
 
-    if (!_g_demoplayback && _g_menuactive)
-        _g_basetic++;  // For revenant tracers and RNG -- we must maintain sync
-    else
-    {
-        if (_g_playeringame)
-        {
-            memcpy(&_g_player.cmd, &netcmd, sizeof(ticcmd_t));
 
-            if (_g_demoplayback)
-                G_ReadDemoTiccmd ();
-        }
+    if (_g_playeringame)
+    {
+        memcpy(&_g_player.cmd, &netcmd, sizeof(ticcmd_t));
+   
+        if (_g_demoplayback)
+            G_ReadDemoTiccmd ();
     }
+
 
     // cph - if the gamestate changed, we may need to clean up the old gamestate
     if (_g_gamestate != prevgamestate)
@@ -394,7 +390,6 @@ void G_Ticker (void)
     case GS_LEVEL:
         P_Ticker ();
         ST_Ticker ();
-        HU_Ticker ();
         break;
 
     case GS_DEMOSCREEN:
@@ -483,10 +478,13 @@ inline static void LoadSRAM(byte __far* eeprom, uint16_t size, uint16_t offset)
 }
 
 
+static char _g_savegamestrings[8][8];
+
+
 //
 // Update the strings displayed in the load-save menu.
 //
-void G_UpdateSaveGameStrings()
+static void G_UpdateSaveGameStrings(void)
 {
     uint16_t savebuffersize = sizeof(gba_save_data_t) * 8;
 
@@ -514,14 +512,6 @@ void G_UpdateSaveGameStrings()
     Z_Free(loadbuffer);
 }
 
-// killough 3/16/98: add slot info
-void G_LoadGame(int16_t slot)
-{
-    savegameslot = slot;
-    _g_demoplayback = false;
-
-    G_DoLoadGame();
-}
 
 static void G_DoLoadGame(void)
 {
@@ -596,22 +586,6 @@ static void G_DoSaveGame(void)
     G_UpdateSaveGameStrings();
 }
 
-void G_SaveSettings()
-{
-    gba_save_settings_t settings;
-
-    settings.cookie = settings_cookie;
-
-    settings.gamma = _g_gamma;
-    settings.alwaysRun = _g_alwaysRun;
-
-    settings.showMessages = showMessages;
-
-    settings.musicVolume = snd_MusicVolume;
-    settings.soundVolume = snd_SfxVolume;
-
-    SaveSRAM((byte __far*)&settings, sizeof(settings), settings_sram_offset);
-}
 
 void G_LoadSettings()
 {
@@ -621,11 +595,6 @@ void G_LoadSettings()
 
     if(settings.cookie == settings_cookie)
     {
-        _g_gamma = (settings.gamma > 5) ? 5 : settings.gamma;
-        _g_alwaysRun = (settings.alwaysRun > 0) ? 1 : 0;
-
-        showMessages = (settings.showMessages > 0) ? 1 : 0;
-
         snd_SfxVolume   = (settings.soundVolume > 15) ? 15 : settings.soundVolume;
         snd_MusicVolume = (settings.musicVolume > 15) ? 15 : settings.musicVolume;
 		
@@ -633,11 +602,6 @@ void G_LoadSettings()
     }
 }
 
-void G_DeferedInitNew(skill_t skill)
-{
-    d_skill = skill;
-    _g_gameaction = ga_newgame;
-}
 
 // killough 3/1/98: function to reload all the default parameter
 // settings before a new game begins
@@ -696,6 +660,8 @@ static void G_InitNew(skill_t skill, int16_t map)
 //
 // DEMO RECORDING
 //
+
+static void G_CheckDemoStatus (void);
 
 #define DEMOMARKER    0x80
 
@@ -851,7 +817,7 @@ static void G_DoPlayDemo(void)
  *
  * Called after a death or level completion to allow demos to be cleaned up
  */
-void G_CheckDemoStatus (void)
+static void G_CheckDemoStatus (void)
 {
     if (_g_timingdemo)
     {

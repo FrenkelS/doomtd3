@@ -7,7 +7,6 @@
 #include "g_game.h"
 #include "r_defs.h"
 #include "hu_stuff.h"
-#include "m_menu.h"
 #include "p_spec.h"
 #include "p_enemy.h"
 #include "p_map.h"
@@ -30,7 +29,6 @@
 
 extern boolean _g_fps_show;
 
-extern uint16_t _g_gamma;
 
 //fps counter stuff
 extern int16_t _g_fps_framerate;
@@ -61,27 +59,6 @@ extern boolean         _g_timingdemo;    // if true, exit with report on complet
 extern boolean         _g_playeringame;
 extern boolean         _g_demoplayback;
 extern boolean         _g_singledemo;           // quit after playing a demo from cmdline
-
-
-//******************************************************************************
-//hu_stuff.c
-//******************************************************************************
-
-extern boolean    _g_message_dontfuckwithme;
-
-
-//******************************************************************************
-//m_menu.c
-//******************************************************************************
-
-//
-// defaulted values
-//
-extern int16_t _g_alwaysRun;
-
-extern boolean _g_menuactive;    // The menus are up
-
-extern char _g_savegamestrings[8][8];
 
 
 //******************************************************************************
@@ -210,9 +187,6 @@ extern int32_t _g_leveltime; // tics in game play for par
 
 
 extern gamestate_t wipegamestate;
-
-
-extern int16_t showMessages;    // Show messages has default, 0 = off, 1 = on
 
 
 extern uint16_t validcount;         // increment every time a check is made

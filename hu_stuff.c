@@ -79,9 +79,6 @@ typedef struct
 static hu_textline_t  w_title;
 static hu_stext_t     w_message;
 
-static boolean    message_on;
-boolean    _g_message_dontfuckwithme;
-
 
 // global heads up display controls
 
@@ -216,8 +213,7 @@ void HU_Start(void)
 {
     const char* s;
 
-    message_on = false;
-    _g_message_dontfuckwithme = false;
+    static boolean message_on = false;
 
     // create the message widget
     // messages to player in upper-left of screen
@@ -306,68 +302,4 @@ static void HUlib_drawSText(hu_stext_t* s)
 void HU_Drawer(void)
 {
     HUlib_drawSText(&w_message);
-}
-
-
-//
-// HUlib_addMessageToSText()
-//
-// Adds a message line to a hu_stext_t widget
-//
-// Passed a hu_stext_t and a message string
-// Returns nothing
-//
-static void HUlib_addMessageToSText(hu_stext_t* s, const char* msg)
-{
-	HUlib_clearTextLine(&s->l);
-
-	while (*msg)
-		HUlib_addCharToTextLine(&s->l, *(msg++));
-}
-
-
-//
-// HU_Ticker()
-//
-// Update the hud displays once per frame
-//
-// Passed nothing, returns nothing
-//
-
-#define HU_MSGTIMEOUT   (4*TICRATE)
-
-void HU_Ticker(void)
-{
-    static int16_t        message_counter = 0;
-
-    player_t* plr = &_g_player;
-
-    // tick down message counter if message is up
-    if (message_counter && !--message_counter)
-    {
-        message_on = false;
-    }
-
-
-    // if messages on, or "Messages Off" is being displayed
-    // this allows the notification of turning messages off to be seen
-    if (showMessages || _g_message_dontfuckwithme)
-    {
-        // display message if necessary
-        if (plr->message)
-        {
-            //post the message to the message widget
-            HUlib_addMessageToSText(&w_message, plr->message);
-
-            // clear the message to avoid posting multiple times
-            plr->message = NULL;
-            // note a message is displayed
-            message_on = true;
-            // start the message persistence counter
-            message_counter = HU_MSGTIMEOUT;
-
-            // clear the flag that "Messages Off" is being posted
-            _g_message_dontfuckwithme = false;
-        }
-    }
 }

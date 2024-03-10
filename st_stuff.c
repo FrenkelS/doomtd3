@@ -577,11 +577,6 @@ static void ST_doPaletteStuff(void)
         if (palette >= NUMREDPALS)
             palette = NUMREDPALS - 1;
 
-        /* cph 2006/08/06 - if in the menu, reduce the red tint - navigating to
-       * load a game can be tricky if the screen is all red */
-        if (_g_menuactive)
-            palette >>= 1;
-
         palette += STARTREDPALS;
     }
     else if (_g_player.bonuscount)

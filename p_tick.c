@@ -195,18 +195,6 @@ static void P_RunThinkers (void)
 
 void P_Ticker (void)
 {
-  /* pause if in menu and at least one tic has been run
-   *
-   * killough 9/29/98: note that this ties in with basetic,
-   * since G_Ticker does the pausing during recording or
-   * playback, and compenates by incrementing basetic.
-   *
-   * All of this complicated mess is used to preserve demo sync.
-   */
-
-  if (_g_menuactive && !_g_demoplayback && _g_player.viewz != 1)
-    return;
-
   P_MapStart();
                // not if this is an intermission screen
   if(_g_gamestate==GS_LEVEL)
