@@ -253,6 +253,9 @@ static void D_UpdateFPS()
 // D_PageTicker
 // Handles timing for warped projection
 //
+
+static void D_AdvanceDemo (void);
+
 void D_PageTicker(void)
 {
     if (--pagetic < 0)
@@ -273,7 +276,7 @@ static void D_PageDrawer(void)
 // D_AdvanceDemo
 // Called after each demo or intro demosequence finishes
 //
-void D_AdvanceDemo (void)
+static void D_AdvanceDemo (void)
 {
     advancedemo = true;
 }
@@ -377,7 +380,6 @@ static void D_DoomMainSetup(void)
     I_InitGraphics();
 
     singletics = true;
-    _g_timingdemo = true;            // show stats after quit
     G_DeferedPlayDemo("demo3");
     _g_singledemo = true;            // quit after one demo
 }

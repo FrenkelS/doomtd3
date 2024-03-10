@@ -40,10 +40,6 @@
 #include "w_wad.h"
 
 
-// Demo stuff
-void D_AdvanceDemo(void);
-
-
 //
 // BASE LEVEL
 //

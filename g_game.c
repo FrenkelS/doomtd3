@@ -101,7 +101,6 @@ static byte  savegameslot;         // Slot to load if gameaction == ga_loadgame
 static boolean secretexit;
 
 boolean         _g_usergame;      // ok to save / end game
-boolean         _g_timingdemo;    // if true, exit with report on completion
 boolean         _g_playeringame;
 boolean         _g_demoplayback;
 boolean         _g_singledemo;           // quit after playing a demo from cmdline
@@ -813,24 +812,10 @@ static void G_DoPlayDemo(void)
  */
 static void G_CheckDemoStatus (void)
 {
-    if (_g_timingdemo)
-    {
-        uint32_t realtics = (clock() * TICRATE) / CLOCKS_PER_SEC;
-        uint32_t resultfps = TICRATE * 1000L * _g_gametic / realtics;
-        I_Error ("Timed %lu gametics in %lu realtics = %lu.%.3lu frames per second",
-                 (uint32_t) _g_gametic,realtics,
-                 resultfps / 1000, resultfps % 1000);
-    }
-
-    Z_ChangeTagToCache(demobuffer);
-
-    if (_g_demoplayback)
-    {
-        if (_g_singledemo)
-            exit(0);  // killough
-
-        G_ReloadDefaults();    // killough 3/1/98
-        D_AdvanceDemo ();
-    }
+    uint32_t realtics = (clock() * TICRATE) / CLOCKS_PER_SEC;
+    uint32_t resultfps = TICRATE * 1000L * _g_gametic / realtics;
+    I_Error ("Timed %lu gametics in %lu realtics = %lu.%.3lu frames per second",
+             (uint32_t) _g_gametic,realtics,
+             resultfps / 1000, resultfps % 1000);
 }
 

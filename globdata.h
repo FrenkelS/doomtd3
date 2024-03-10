@@ -50,7 +50,6 @@ extern wbstartstruct_t _g_wminfo;               // parms for world map / intermi
 
 
 extern boolean         _g_usergame;      // ok to save / end game
-extern boolean         _g_timingdemo;    // if true, exit with report on completion
 extern boolean         _g_playeringame;
 extern boolean         _g_demoplayback;
 extern boolean         _g_singledemo;           // quit after playing a demo from cmdline
