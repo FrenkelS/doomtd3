@@ -1203,7 +1203,7 @@ static boolean PIT_GetSectors(const line_t __far* ld)
   P_AddSecnode(LN_FRONTSECTOR(ld),tmthing);
 
   /* Don't assume all lines are 2-sided, since some Things
-   * like MT_TFOG are allowed regardless of whether their radius takes
+   * are allowed regardless of whether their radius takes
    * them beyond an impassable linedef.
    *
    * killough 3/27/98, 4/4/98:

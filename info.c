@@ -60,7 +60,7 @@
 const char * const sprnames[NUMSPRITES] = {
   "TROO","SHTG","PISG","PISF","SHTF",
   "BLUD","PUFF","BAL1",
-  "TFOG","PLAY","POSS",
+  "PLAY","POSS",
   "SPOS","SARG",
   "ARM1","ARM2","BAR1","BEXP",
   "BON1","BON2","BKEY","RKEY","YKEY","STIM","MEDI",
@@ -126,18 +126,6 @@ const state_t states[NUMSTATES] = {
   {SPR_BAL1,32770,6,NULL,S_TBALLX2},  // S_TBALLX1
   {SPR_BAL1,32771,6,NULL,S_TBALLX3},  // S_TBALLX2
   {SPR_BAL1,32772,6,NULL,S_NULL}, // S_TBALLX3
-  {SPR_TFOG,32768,6,NULL,S_TFOG01}, // S_TFOG
-  {SPR_TFOG,32769,6,NULL,S_TFOG02}, // S_TFOG01
-  {SPR_TFOG,32768,6,NULL,S_TFOG2},  // S_TFOG02
-  {SPR_TFOG,32769,6,NULL,S_TFOG3},  // S_TFOG2
-  {SPR_TFOG,32770,6,NULL,S_TFOG4},  // S_TFOG3
-  {SPR_TFOG,32771,6,NULL,S_TFOG5},  // S_TFOG4
-  {SPR_TFOG,32772,6,NULL,S_TFOG6},  // S_TFOG5
-  {SPR_TFOG,32773,6,NULL,S_TFOG7},  // S_TFOG6
-  {SPR_TFOG,32774,6,NULL,S_TFOG8},  // S_TFOG7
-  {SPR_TFOG,32775,6,NULL,S_TFOG9},  // S_TFOG8
-  {SPR_TFOG,32776,6,NULL,S_TFOG10}, // S_TFOG9
-  {SPR_TFOG,32777,6,NULL,S_NULL}, // S_TFOG10
   {SPR_PLAY,0,-1,NULL,S_NULL},  // S_PLAY
   {SPR_PLAY,0,4,NULL,S_PLAY_RUN2},  // S_PLAY_RUN1
   {SPR_PLAY,1,4,NULL,S_PLAY_RUN3},  // S_PLAY_RUN2
@@ -610,31 +598,6 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     0,    // damage
     sfx_None,   // activesound
     MF_NOBLOCKMAP    // flags
-  },
-
-  {   // MT_TFOG
-    -1,   // doomednum
-    S_TFOG,   // spawnstate
-    1000,   // spawnhealth
-    S_NULL,   // seestate
-    sfx_None,   // seesound
-    8,    // reactiontime
-    sfx_None,   // attacksound
-    S_NULL,   // painstate
-    0,    // painchance
-    sfx_None,   // painsound
-    S_NULL,   // meleestate
-    S_NULL,   // missilestate
-    S_NULL,   // deathstate
-    S_NULL,   // xdeathstate
-    sfx_None,   // deathsound
-    0,    // speed
-    20*FRACUNIT,    // radius
-    16*FRACUNIT,    // height
-    100,    // mass
-    0,    // damage
-    sfx_None,   // activesound
-    MF_NOBLOCKMAP|MF_NOGRAVITY // flags
   },
 
   {   // MT_MISC0
