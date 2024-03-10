@@ -390,13 +390,6 @@ void P_TouchSpecialThing(mobj_t __far* special, mobj_t __far* toucher)
       sound = sfx_getpow;
       break;
 
-    case SPR_PVIS:
-      if (!P_GivePower (player, pw_infrared))
-        return;
-      player->message = GOTVISOR; // Ty 03/22/98 - externalized
-      sound = sfx_getpow;
-      break;
-
 
       // ammo
     case SPR_CLIP:
