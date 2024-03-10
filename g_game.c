@@ -95,8 +95,6 @@ static boolean gamekeydown[NUMKEYS];
 
 static skill_t d_skill;
 
-static byte  savegameslot;         // Slot to load if gameaction == ga_loadgame
-
 
 static boolean secretexit;
 
@@ -130,8 +128,6 @@ static const int16_t angleturn[3]  = {640, 1280, 320};  // + slow turn
 
 static void G_DoReborn (void);
 static void G_DoWorldDone(void);
-static void G_DoLoadGame(void);
-static void G_DoSaveGame (void);
 static void G_DoNewGame (void);
 static void G_DoPlayDemo(void);
 static void G_InitNew(skill_t skill, int16_t map);
@@ -163,7 +159,6 @@ typedef struct gba_save_settings_t
 
 static const uint32_t settings_cookie = 0xbaddead1;
 
-static const uint16_t settings_sram_offset = sizeof(gba_save_data_t) * 8;
 
 //
 // G_BuildTiccmd
@@ -331,12 +326,6 @@ void G_Ticker (void)
         case ga_newgame:
             G_DoNewGame ();
             break;
-        case ga_loadgame:
-            G_DoLoadGame ();
-            break;
-        case ga_savegame:
-            G_DoSaveGame ();
-            break;
         case ga_playdemo:
             G_DoPlayDemo ();
             break;
@@ -460,128 +449,9 @@ static void G_DoWorldDone (void)
 #define MIN_MAXPLAYERS 4
 
 
-inline static void LoadSRAM(byte __far* eeprom, uint16_t size, uint16_t offset)
-{
-	UNUSED(eeprom);
-	UNUSED(size);
-	UNUSED(offset);
-}
-
-
-static char _g_savegamestrings[8][8];
-
-
-//
-// Update the strings displayed in the load-save menu.
-//
-static void G_UpdateSaveGameStrings(void)
-{
-    uint16_t savebuffersize = sizeof(gba_save_data_t) * 8;
-
-
-    byte __far* loadbuffer = Z_MallocStatic(savebuffersize);
-
-    LoadSRAM(loadbuffer, savebuffersize, 0);
-
-    gba_save_data_t __far* saveslots = (gba_save_data_t __far*)loadbuffer;
-
-    for(int16_t i = 0; i < 8; i++)
-    {
-        if(saveslots[i].save_present != 1)
-        {
-            strcpy(_g_savegamestrings[i], "EMPTY");
-        }
-        else
-        {
-            strcpy(_g_savegamestrings[i], "E1My");
-
-            _g_savegamestrings[i][3] = '0' + saveslots[i].gamemap;
-        }
-    }
-
-    Z_Free(loadbuffer);
-}
-
-
-static void G_DoLoadGame(void)
-{
-    uint16_t savebuffersize = sizeof(gba_save_data_t) * 8;
-
-
-    byte __far* loadbuffer = Z_MallocStatic(savebuffersize);
-
-    LoadSRAM(loadbuffer, savebuffersize, 0);
-
-    gba_save_data_t __far* saveslots = (gba_save_data_t __far*)loadbuffer;
-
-    gba_save_data_t __far* savedata = &saveslots[savegameslot];
-
-    if(savedata->save_present != 1)
-        return;
-
-    _g_gameskill = savedata->gameskill;
-    _s_gamemap = savedata->gamemap;
-	
-    G_InitNew (_g_gameskill, _s_gamemap);
-
-    totalleveltimes = savedata->totalleveltimes;
-    _fmemcpy(_g_player.weaponowned, savedata->weaponowned, sizeof(savedata->weaponowned));
-    _fmemcpy(_g_player.ammo, savedata->ammo, sizeof(savedata->ammo));
-    _fmemcpy(_g_player.maxammo, savedata->maxammo, sizeof(savedata->maxammo));
-	
-    //If stored maxammo is more than no backpack ammo, player had a backpack.
-    if(_g_player.maxammo[am_clip] > maxammo[am_clip])
-		_g_player.backpack = true;
-
-    Z_Free(loadbuffer);
-}
-
-
-inline static void SaveSRAM(const byte __far* eeprom, uint16_t size, uint16_t offset)
-{
-	UNUSED(eeprom);
-	UNUSED(size);
-	UNUSED(offset);
-}
-
-
-static void G_DoSaveGame(void)
-{
-    uint16_t savebuffersize = sizeof(gba_save_data_t) * 8;
-
-    byte __far* savebuffer = Z_MallocStatic(savebuffersize);
-
-    LoadSRAM(savebuffer, savebuffersize, 0);
-
-    gba_save_data_t __far* saveslots = (gba_save_data_t __far*)savebuffer;
-
-    gba_save_data_t __far* savedata = &saveslots[savegameslot];
-
-    savedata->save_present = 1;
-
-    savedata->gameskill = _g_gameskill;
-    savedata->gamemap = _s_gamemap;
-    savedata->totalleveltimes = totalleveltimes;
-
-    _fmemcpy(savedata->weaponowned, _g_player.weaponowned, sizeof(savedata->weaponowned));
-    _fmemcpy(savedata->ammo, _g_player.ammo, sizeof(savedata->ammo));
-    _fmemcpy(savedata->maxammo, _g_player.maxammo, sizeof(savedata->maxammo));
-
-    SaveSRAM(savebuffer, savebuffersize, 0);
-
-    Z_Free(savebuffer);
-
-    _g_player.message = GGSAVED;
-
-    G_UpdateSaveGameStrings();
-}
-
-
 void G_LoadSettings()
 {
     gba_save_settings_t settings;
-
-    LoadSRAM((byte __far*)&settings, sizeof(settings), settings_sram_offset);
 
     if(settings.cookie == settings_cookie)
     {
