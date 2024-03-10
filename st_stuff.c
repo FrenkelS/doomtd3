@@ -486,8 +486,7 @@ static void ST_updateFaceWidget(void)
     if (priority < 5)
     {
         // invulnerability
-        if ((_g_player.cheats & CF_GODMODE)
-                || _g_player.powers[pw_invulnerability])
+        if (_g_player.powers[pw_invulnerability])
         {
             priority = 4;
 

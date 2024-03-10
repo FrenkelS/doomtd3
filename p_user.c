@@ -332,11 +332,7 @@ void P_PlayerThink (player_t* player)
   ticcmd_t*    cmd;
   weapontype_t newweapon;
 
-  // killough 2/8/98, 3/21/98:
-  if (player->cheats & CF_NOCLIP)
-    player->mo->flags |= MF_NOCLIP;
-  else
-    player->mo->flags &= ~MF_NOCLIP;
+  player->mo->flags &= ~MF_NOCLIP;
 
   // chain saw run forward
 

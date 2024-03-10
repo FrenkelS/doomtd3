@@ -63,6 +63,5 @@ void A_SPosAttack();
 void A_TroopAttack();
 void A_SargAttack();
 void A_BruisAttack();
-void A_CyberAttack();
 
 #endif // __P_ENEMY__

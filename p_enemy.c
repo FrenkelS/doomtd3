@@ -840,15 +840,6 @@ void A_SargAttack(mobj_t __far* actor)
 }
 
 
-void A_CyberAttack(mobj_t __far* actor)
-{
-  if (!actor->target)
-    return;
-  A_FaceTarget(actor);
-  S_StartSound(actor, sfx_rlaunc);
-  P_SpawnMissile(actor, actor->target, MT_ROCKET);
-}
-
 void A_BruisAttack(mobj_t __far* actor)
 {
   if (!actor->target)

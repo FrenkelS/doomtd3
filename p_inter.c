@@ -255,7 +255,7 @@ static boolean P_GivePower(player_t *player, powertype_t power)
         break;
     }
 
-  // Unless player has infinite duration cheat, set duration (killough)
+  // set duration (killough)
 
   if (player->powers[power] >= 0)
     player->powers[power] = tics[power];
@@ -555,26 +555,20 @@ static void P_KillMobj(mobj_t __far* source, mobj_t __far* target)
   // This determines the kind of object spawned
   // during the death frame of a thing.
 
-  if( (_g_player.cheats & CF_ENEMY_ROCKETS) && (target->type >= MT_POSSESSED) && (target->type <= MT_BRUISERSHOT) )
+  switch (target->type)
   {
-    item = MT_MISC27; //Everyone drops a rocket launcher.
-  }
-  else
-  {
-      switch (target->type)
-      {
-      case MT_POSSESSED:
-          item = MT_CLIP;
-          break;
+  case MT_POSSESSED:
+      item = MT_CLIP;
+      break;
 
-      case MT_SHOTGUY:
-          item = MT_SHOTGUN;
-          break;
+  case MT_SHOTGUY:
+      item = MT_SHOTGUN;
+      break;
 
-      default:
-          return;
-      }
+  default:
+      return;
   }
+  
 
   mo = P_SpawnMobj (target->x,target->y,ONFLOORZ, item);
   mo->flags |= MF_DROPPED;    // special versions of items
@@ -645,8 +639,8 @@ void P_DamageMobj(mobj_t __far* target, mobj_t __far* inflictor, mobj_t __far* s
       // ignore damage in GOD mode, or with INVUL power.
       // killough 3/26/98: make god mode 100% god mode in non-compat mode
 
-      if ((damage < 1000 || ((player->cheats&CF_GODMODE))) &&
-          (player->cheats&CF_GODMODE || player->powers[pw_invulnerability]))
+      if ((damage < 1000) &&
+          (player->powers[pw_invulnerability]))
         return;
 
       if (player->armortype)

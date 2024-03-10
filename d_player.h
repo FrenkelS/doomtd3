@@ -71,21 +71,6 @@ typedef enum
 
 
 //
-// Player internal flags, for cheats and debug.
-//
-typedef enum
-{
-  // No clipping, walk through barriers.
-  CF_NOCLIP           = 1,
-  // No damage, no health loss.
-  CF_GODMODE          = 2,
-  //You played goldeneye right?
-  CF_ENEMY_ROCKETS    = 4
-
-} cheat_t;
-
-
-//
 // Extended player object info: player_t
 //
 typedef struct player_s
@@ -137,10 +122,6 @@ typedef struct player_s
   // True if button down last tic.
   boolean                 attackdown;
   boolean                 usedown;
-
-  // Bit flags, for cheats and debug.
-  // See cheat_t, above.
-  int16_t                 cheats;
 
   // Refired shots are less accurate.
   int16_t                 refire;

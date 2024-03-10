@@ -424,9 +424,7 @@ void G_PlayerReborn (void)
 
     p = &_g_player;
 
-    int16_t cheats = p->cheats;
     memset (p, 0, sizeof(*p));
-    p->cheats = cheats;
 
     _g_player.killcount = killcount;
     _g_player.itemcount = itemcount;
@@ -794,8 +792,6 @@ static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
     if (_g_gameaction != ga_loadgame) { /* killough 12/98: support -loadgame */
         G_InitNew(skill, map);
     }
-
-    _g_player.cheats = 0;
 
     return demo_p;
 }

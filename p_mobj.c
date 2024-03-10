@@ -59,9 +59,6 @@
 static mapthing_t playerstart;
 
 
-void A_CyberAttack(mobj_t __far* actor);
-
-
 //
 // P_SetMobjState
 // Returns true if the mobj is still present.
@@ -90,17 +87,7 @@ boolean P_SetMobjState(mobj_t __far* mobj, statenum_t state)
         // Call action functions when the state is set
         if(st->action)
         {
-            if(!(_g_player.cheats & CF_ENEMY_ROCKETS))
-            {
-                st->action(mobj);
-            }
-            else
-            {
-                if(mobjinfo[mobj->type].missilestate && (state >= mobjinfo[mobj->type].missilestate) && (state < mobjinfo[mobj->type].painstate))
-                    A_CyberAttack(mobj);
-                else
-                    st->action(mobj);
-            }
+            st->action(mobj);
         }
 
         state = st->nextstate;
