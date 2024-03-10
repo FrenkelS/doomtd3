@@ -63,7 +63,6 @@
 
 static void D_DoAdvanceDemo(void);
 static void D_PageDrawer(void);
-static void D_UpdateFPS(void);
 
 
 static int32_t maketic;
@@ -73,10 +72,6 @@ static int16_t  pagetic;
 
 static boolean singletics; // debug flag to cancel adaptiveness
 static boolean advancedemo;
-boolean _g_fps_show;
-
-//fps counter stuff
-int16_t _g_fps_framerate;
 
 
 static void D_BuildNewTiccmds(void)
@@ -209,40 +204,9 @@ static void D_DoomLoop(void)
 
         // Update display, next frame, with current state.
         D_Display();
-
-
-        if(_g_fps_show)
-        {
-            D_UpdateFPS();
-        }
     }
 }
 
-static void D_UpdateFPS()
-{
-    static uint32_t fps_frames = 0;
-    static uint32_t fps_timebefore = 0;
-
-    fps_frames++;
-
-    uint32_t timenow = I_GetTime();
-    if(timenow >= (fps_timebefore + TICRATE))
-    {
-        uint32_t tics_elapsed = timenow - fps_timebefore;
-        fixed_t f_realfps = FixedApproxDiv((fps_frames*(TICRATE*10)) << FRACBITS, tics_elapsed <<FRACBITS);
-
-        _g_fps_framerate = (f_realfps >> FRACBITS);
-
-        fps_frames = 0;
-        fps_timebefore = timenow;
-    }
-    else if(timenow < fps_timebefore)
-    {
-        //timer overflow.
-        fps_timebefore = timenow;
-        fps_frames = 0;
-    }
-}
 
 //
 //  DEMO LOOP
@@ -374,8 +338,6 @@ static void D_DoomMainSetup(void)
     ST_Init();
 
     G_LoadSettings();
-
-    _g_fps_show = false;
 
     I_InitGraphics();
 
