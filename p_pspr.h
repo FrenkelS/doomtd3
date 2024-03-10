@@ -95,6 +95,6 @@ void A_FirePistol();
 void A_Light1();
 void A_FireShotgun();
 void A_Light2();
-void A_FireCGun();
+
 
 #endif

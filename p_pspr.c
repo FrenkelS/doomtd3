@@ -730,28 +730,6 @@ void A_FireShotgun(player_t *player, pspdef_t *psp)
 }
 
 
-//
-// A_FireCGun
-//
-
-void A_FireCGun(player_t *player, pspdef_t *psp)
-{
-  if (player->ammo[weaponinfo[player->readyweapon].ammo])
-    S_StartSound(player->mo, sfx_pistol);
-
-  if (!player->ammo[weaponinfo[player->readyweapon].ammo])
-    return;
-
-  P_SetMobjState(player->mo, S_PLAY_ATK2);
-  player->ammo[weaponinfo[player->readyweapon].ammo]--;
-
-  A_FireSomething(player,psp->state - &states[S_CHAIN1]);           // phares
-
-  P_BulletSlope(player->mo);
-
-  P_GunShot(player->mo, !player->refire);
-}
-
 void A_Light0(player_t *player, pspdef_t *psp)
 {
 	UNUSED(psp);
