@@ -464,7 +464,6 @@ static void P_CrossSpecialLine(const line_t __far* line, mobj_t __far* thing)
     // Things that should NOT trigger specials...
     switch(thing->type)
     {
-      case MT_ROCKET:
       case MT_TROOPSHOT:
       case MT_BRUISERSHOT:
         return;
