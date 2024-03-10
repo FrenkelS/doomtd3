@@ -606,43 +606,6 @@ static void A_FireSomething(player_t* player,int16_t adder)
 // WEAPON ATTACKS
 //
 
-//
-// A_Punch
-//
-
-void A_Punch(player_t *player, pspdef_t *psp)
-{
-	angle_t	angle, t;
-	fixed_t	slope;
-	int16_t	damage = (P_Random()%10+1)<<1;
-
-	UNUSED(psp);
-
-	if (player->powers[pw_strength])
-		damage *= 10;
-
-	angle = player->mo->angle;
-
-	// killough 5/5/98: remove dependence on order of evaluation:
-	t = P_Random();
-	angle += (t - P_Random())<<18;
-
-	/* killough 8/2/98: make autoaiming prefer enemies */
-	if ((slope = P_AimLineAttack(player->mo, angle, MELEERANGE, true), !_g_linetarget))
-		slope = P_AimLineAttack(player->mo, angle, MELEERANGE, false);
-
-	P_LineAttack(player->mo, angle, MELEERANGE, slope, damage);
-
-	if (!_g_linetarget)
-		return;
-
-	S_StartSound(player->mo, sfx_punch);
-
-	// turn to face target
-	player->mo->angle = R_PointToAngle2(player->mo->x, player->mo->y, _g_linetarget->x, _g_linetarget->y);
-}
-
-
 static fixed_t bulletslope;
 
 

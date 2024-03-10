@@ -56,12 +56,12 @@
 const weaponinfo_t weaponinfo[NUMWEAPONS] =
 {
     {
-        // fist
+        // pistol, was fist
         am_noammo,
-        S_PUNCHUP,
-        S_PUNCHDOWN,
-        S_PUNCH,
-        S_PUNCH1,
+        S_PISTOLUP,
+        S_PISTOLDOWN,
+        S_PISTOL,
+        S_PISTOL1,
         S_NULL
     },
     {
@@ -119,12 +119,12 @@ const weaponinfo_t weaponinfo[NUMWEAPONS] =
         S_SGUNFLASH1
     },
     {
-        // fist, was chainsaw
+        // pistol, was chainsaw
         am_noammo,
-        S_PUNCHUP,
-        S_PUNCHDOWN,
-        S_PUNCH,
-        S_PUNCH1,
+        S_PISTOLUP,
+        S_PISTOLDOWN,
+        S_PISTOL,
+        S_PISTOL1,
         S_NULL
     },
     {

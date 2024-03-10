@@ -50,7 +50,6 @@ typedef enum
 {
   SPR_TROO,
   SPR_SHTG,
-  SPR_PUNG,
   SPR_PISG,
   SPR_PISF,
   SPR_SHTF,
@@ -109,14 +108,6 @@ typedef enum
 {
   S_NULL,
   S_LIGHTDONE,
-  S_PUNCH,
-  S_PUNCHDOWN,
-  S_PUNCHUP,
-  S_PUNCH1,
-  S_PUNCH2,
-  S_PUNCH3,
-  S_PUNCH4,
-  S_PUNCH5,
   S_PISTOL,
   S_PISTOLDOWN,
   S_PISTOLUP,

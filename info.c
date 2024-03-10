@@ -58,7 +58,7 @@
 // as SPR_xxxx
 
 const char * const sprnames[NUMSPRITES] = {
-  "TROO","SHTG","PUNG","PISG","PISF","SHTF",
+  "TROO","SHTG","PISG","PISF","SHTF",
   "BLUD","PUFF","BAL1",
   "TFOG","IFOG","PLAY","POSS",
   "SPOS","SARG",
@@ -94,14 +94,6 @@ const char * const sprnames[NUMSPRITES] = {
 const state_t states[NUMSTATES] = {
   {SPR_TROO,0,-1,NULL,S_NULL},  // S_NULL
   {SPR_SHTG,4,0,A_Light0,S_NULL}, // S_LIGHTDONE
-  {SPR_PUNG,0,1,A_WeaponReady,S_PUNCH}, // S_PUNCH
-  {SPR_PUNG,0,1,A_Lower,S_PUNCHDOWN}, // S_PUNCHDOWN
-  {SPR_PUNG,0,1,A_Raise,S_PUNCHUP}, // S_PUNCHUP
-  {SPR_PUNG,1,4,NULL,S_PUNCH2},   // S_PUNCH1
-  {SPR_PUNG,2,4,A_Punch,S_PUNCH3},  // S_PUNCH2
-  {SPR_PUNG,3,5,NULL,S_PUNCH4},   // S_PUNCH3
-  {SPR_PUNG,2,4,NULL,S_PUNCH5},   // S_PUNCH4
-  {SPR_PUNG,1,5,A_ReFire,S_PUNCH},  // S_PUNCH5
   {SPR_PISG,0,1,A_WeaponReady,S_PISTOL},// S_PISTOL
   {SPR_PISG,0,1,A_Lower,S_PISTOLDOWN},  // S_PISTOLDOWN
   {SPR_PISG,0,1,A_Raise,S_PISTOLUP},  // S_PISTOLUP

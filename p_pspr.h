@@ -89,7 +89,6 @@ void A_Light0();
 void A_WeaponReady();
 void A_Lower();
 void A_Raise();
-void A_Punch();
 void A_ReFire();
 void A_FirePistol();
 void A_Light1();
