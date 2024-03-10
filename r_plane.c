@@ -79,15 +79,12 @@ void R_InitFlats(void)
 
 	animated_flat_basepic = R_FlatNumForName("NUKAGE1");
 
-	byte __far* source = Z_MallocStatic(64 * 64);
-
 	for (int16_t i = 0; i < numflats; i++)
 	{
-		W_ReadLumpByNum(firstflat + i, source);
-		flattranslation[i] = source[(64 / 2) * 64 + (64 / 2)];
+		byte b;
+		W_ReadLumpByNum(firstflat + i, &b);
+		flattranslation[i] = b;
 	}
-
-	Z_Free(source);
 
 	animated_flat_basepic_color[0] = flattranslation[animated_flat_basepic + 0];
 	animated_flat_basepic_color[1] = flattranslation[animated_flat_basepic + 1];
