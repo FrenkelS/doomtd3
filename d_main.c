@@ -87,8 +87,6 @@ static void D_BuildNewTiccmds(void)
 //  draw current display, possibly wiping it from the previous
 //
 
-gamestate_t wipegamestate = GS_DEMOSCREEN; // wipegamestate can be set to -1 to force a wipe on the next draw
-
 static void D_Display (void)
 {
     static gamestate_t oldgamestate = GS_LEVEL;
@@ -106,7 +104,7 @@ static void D_Display (void)
         ST_Drawer();
     }
 
-    oldgamestate = wipegamestate = _g_gamestate;
+    oldgamestate = _g_gamestate;
 
     D_BuildNewTiccmds();
 
@@ -178,11 +176,9 @@ static void D_DoomMainSetup(void)
 
     ST_Init();
 
-    G_LoadSettings();
-
     I_InitGraphics();
 
-    G_DeferedPlayDemo("demo3");
+    G_DeferedPlayDemo();
 }
 
 //

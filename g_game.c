@@ -93,8 +93,6 @@ static int32_t             totalleveltimes;      // CPhipps - total time for all
 
 static boolean gamekeydown[NUMKEYS];
 
-static boolean secretexit;
-
 boolean         _g_playeringame;
 boolean         _g_demoplayback;
 
@@ -122,37 +120,9 @@ static const int8_t forwardmove[2] = {0x19, 0x32};
 static const int8_t sidemove[2]    = {0x18, 0x28};
 static const int16_t angleturn[3]  = {640, 1280, 320};  // + slow turn
 
-static void G_DoReborn (void);
-static void G_DoWorldDone(void);
 static void G_DoPlayDemo(void);
 static void G_InitNew(skill_t skill, int16_t map);
 static void G_ReadDemoTiccmd (void);
-
-
-typedef struct gba_save_data_t
-{
-    int32_t save_present;
-    skill_t gameskill;
-    int32_t gamemap;
-    int32_t totalleveltimes;
-
-    int32_t weaponowned[NUMWEAPONS];
-    int32_t ammo[NUMAMMO];
-    int32_t maxammo[NUMAMMO];
-} gba_save_data_t;
-
-
-typedef struct gba_save_settings_t
-{
-    uint32_t cookie;
-    uint32_t alwaysRun;
-    uint32_t gamma;
-    uint32_t showMessages;
-    uint32_t musicVolume;
-    uint32_t soundVolume;
-} gba_save_settings_t;
-
-static const uint32_t settings_cookie = 0xbaddead1;
 
 
 //
@@ -262,9 +232,6 @@ void G_BuildTiccmd(void)
 
 static void G_DoLoadLevel (void)
 {
-    if (wipegamestate == GS_LEVEL)
-        wipegamestate = -1;             // force a wipe
-
     _g_gamestate = GS_LEVEL;
 
 
@@ -304,29 +271,12 @@ void G_Ticker (void)
 
     P_MapStart();
 
-    if(_g_playeringame && _g_player.playerstate == PST_REBORN)
-        G_DoReborn ();
-
     P_MapEnd();
 
     // do things to change the game state
     while (_s_gameaction != ga_nothing)
     {
-        switch (_s_gameaction)
-        {
-        case ga_loadlevel:
-            _g_player.playerstate = PST_REBORN;
-            G_DoLoadLevel ();
-            break;
-        case ga_playdemo:
-            G_DoPlayDemo ();
-            break;
-        case ga_worlddone:
-            G_DoWorldDone ();
-            break;
-        case ga_nothing:
-            break;
-        }
+        G_DoPlayDemo();
     }
 
 
@@ -340,33 +290,11 @@ void G_Ticker (void)
 
 
     // cph - if the gamestate changed, we may need to clean up the old gamestate
-    if (_g_gamestate != prevgamestate)
-    {
-        switch (prevgamestate)
-        {
-        case GS_LEVEL:
-            // This causes crashes at level end - Neil Stevens
-            // The crash is because the sounds aren't stopped before freeing them
-            // the following is a possible fix
-            // This fix does avoid the crash however, with this fix in, the exit
-            // switch sound is cut off
-            // S_Stop();
-            // Z_FreeTags(PU_LEVEL, PU_PURGELEVEL-1);
-            break;
-        default:
-            break;
-        }
-        prevgamestate = _g_gamestate;
-    }
+    prevgamestate = _g_gamestate;
 
     // do main actions
-    switch (_g_gamestate)
-    {
-    case GS_LEVEL:
-        P_Ticker ();
-        ST_Ticker ();
-        break;
-    }
+    P_Ticker ();
+    ST_Ticker ();
 }
 
 
@@ -408,50 +336,10 @@ void G_PlayerReborn (void)
         p->maxammo[i] = maxammo[i];
 }
 
-//
-// G_DoReborn
-//
-
-void G_DoReborn (void)
-{
-    _s_gameaction = ga_loadlevel;      // reload the level from scratch
-}
-
 
 void G_ExitLevel (void)
 {
-    secretexit = false;
     _s_gameaction = ga_completed;
-}
-
-
-static void G_DoWorldDone (void)
-{
-    _g_gamestate = GS_LEVEL;
-    _s_gamemap = _g_wminfo.next+1;
-    G_DoLoadLevel();
-    _s_gameaction = ga_nothing;
-}
-
-// killough 2/28/98: A ridiculously large number
-// of players, the most you'll ever need in a demo
-// or savegame. This is used to prevent problems, in
-// case more players in a game are supported later.
-
-#define MIN_MAXPLAYERS 4
-
-
-void G_LoadSettings()
-{
-    gba_save_settings_t settings;
-
-    if(settings.cookie == settings_cookie)
-    {
-        snd_SfxVolume   = (settings.soundVolume > 15) ? 15 : settings.soundVolume;
-        snd_MusicVolume = (settings.musicVolume > 15) ? 15 : settings.musicVolume;
-		
-        I_SetPalette(0);
-    }
 }
 
 
@@ -463,7 +351,6 @@ void G_ReloadDefaults(void)
     // killough 3/1/98: Initialize options based on config file
     // (allows functions above to load different values for demos
     // and savegames without messing up defaults).
-
     _g_demoplayback = false;
 }
 
@@ -530,11 +417,8 @@ static void G_ReadDemoTiccmd (void)
 // G_PlayDemo
 //
 
-static const char *defdemoname;
-
-void G_DeferedPlayDemo (const char* name)
+void G_DeferedPlayDemo (void)
 {
-    defdemoname = name;
     _s_gameaction = ga_playdemo;
 }
 
@@ -549,11 +433,17 @@ static void CheckForOverrun(const byte __far* start_p, const byte __far* current
     }
 }
 
+
+// killough 2/28/98: A ridiculously large number
+// of players, the most you'll ever need in a demo
+// or savegame. This is used to prevent problems, in
+// case more players in a game are supported later.
+
+#define MIN_MAXPLAYERS 4
+
+
 static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
 {
-    skill_t skill;
-    int16_t map;
-
     // e6y
     // The local variable should be used instead of demobuffer,
     // because demobuffer can be uninitialized
@@ -578,9 +468,9 @@ static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
     //e6y: check for overrun
     CheckForOverrun(header_p, demo_p, 8);
 
-    skill = *demo_p++;
+    skill_t skill = *demo_p++;
     demo_p++;
-    map = *demo_p++;
+    int16_t map = *demo_p++;
     demo_p++;
     demo_p++;
     demo_p++;
@@ -602,43 +492,9 @@ static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
 }
 
 
-static void ExtractFileBase (const char *path, char *dest)
-{
-    const char *src = path + strlen(path) - 1;
-    int16_t length;
-
-    // back up until a \ or the start
-    while (src != path && src[-1] != ':' // killough 3/22/98: allow c:filename
-           && *(src-1) != '\\'
-           && *(src-1) != '/')
-    {
-        src--;
-    }
-
-    // copy up to eight characters
-    memset(dest,0,8);
-    length = 0;
-
-    while ((*src) && (*src != '.') && (++length<9))
-    {
-        *dest++ = toupper(*src);
-        src++;
-    }
-    /* cph - length check removed, just truncate at 8 chars.
-   * If there are 8 or more chars, we'll copy 8, and no zero termination
-   */
-}
-
-
 static void G_DoPlayDemo(void)
 {
-    char basename[9];
-
-    ExtractFileBase(defdemoname,basename);           // killough
-    basename[8] = 0;
-
-    /* cph - store lump number for unlocking later */
-    int16_t demolumpnum = W_GetNumForName(basename);
+    int16_t demolumpnum = W_GetNumForName("DEMO3");
     demobuffer = W_GetLumpByNum(demolumpnum);
     demolength = W_LumpLength(demolumpnum);
 

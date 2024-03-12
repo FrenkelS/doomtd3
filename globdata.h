@@ -168,11 +168,6 @@ extern int32_t _g_leveltime; // tics in game play for par
 
 
 
-
-
-extern gamestate_t wipegamestate;
-
-
 extern uint16_t validcount;         // increment every time a check is made
 
 
