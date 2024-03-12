@@ -51,7 +51,6 @@
 #include "sounds.h"
 #include "z_zone.h"
 #include "w_wad.h"
-#include "s_sound.h"
 #include "v_video.h"
 #include "i_system.h"
 #include "g_game.h"

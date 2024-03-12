@@ -41,7 +41,6 @@ file r_data.obj
 file r_draw.obj
 file r_plane.obj
 file r_things.obj
-file s_sound.obj
 file st_stuff.obj
 file tables.obj
 file v_video.obj

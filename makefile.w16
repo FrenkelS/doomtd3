@@ -66,7 +66,6 @@ GLOBOBJS = &
  r_draw.obj &
  r_plane.obj &
  r_things.obj &
- s_sound.obj &
  st_stuff.obj &
  tables.obj &
  v_video.obj &

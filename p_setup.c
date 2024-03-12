@@ -48,7 +48,6 @@
 #include "p_spec.h"
 #include "p_tick.h"
 #include "p_enemy.h"
-#include "s_sound.h"
 #include "i_system.h"
 #include "v_video.h"
 

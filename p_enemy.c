@@ -42,7 +42,6 @@
 #include "p_map.h"
 #include "p_setup.h"
 #include "p_spec.h"
-#include "s_sound.h"
 #include "sounds.h"
 #include "p_inter.h"
 #include "g_game.h"

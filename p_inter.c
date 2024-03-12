@@ -37,7 +37,6 @@
 #include "d_englsh.h"
 #include "m_random.h"
 #include "r_main.h"
-#include "s_sound.h"
 #include "sounds.h"
 #include "p_tick.h"
 #include "i_system.h"

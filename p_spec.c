@@ -55,7 +55,6 @@
 #include "g_game.h"
 #include "p_inter.h"
 #include "p_user.h"
-#include "s_sound.h"
 #include "sounds.h"
 #include "i_system.h"
 

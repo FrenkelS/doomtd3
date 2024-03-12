@@ -38,7 +38,6 @@ set CFLAGS=%CFLAGS% -D__far=
 @set GLOBOBJS=%GLOBOBJS% r_draw.c
 @set GLOBOBJS=%GLOBOBJS% r_plane.c
 @set GLOBOBJS=%GLOBOBJS% r_things.c
-@set GLOBOBJS=%GLOBOBJS% s_sound.c
 @set GLOBOBJS=%GLOBOBJS% st_stuff.c
 @set GLOBOBJS=%GLOBOBJS% tables.c
 @set GLOBOBJS=%GLOBOBJS% v_video.c

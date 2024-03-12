@@ -39,7 +39,6 @@
 #include "r_main.h"
 #include "p_spec.h"
 #include "g_game.h"
-#include "s_sound.h"
 #include "sounds.h"
 #include "i_system.h"
 

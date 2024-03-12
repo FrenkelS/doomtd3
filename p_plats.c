@@ -40,7 +40,6 @@
 #include "r_main.h"
 #include "p_spec.h"
 #include "p_tick.h"
-#include "s_sound.h"
 #include "sounds.h"
 
 #include "globdata.h"
