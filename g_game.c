@@ -76,7 +76,6 @@ static uint16_t demolength; // check for overrun (missing DEMOMARKER)
 static const byte __far* demo_p;
 
 static gameaction_t    _s_gameaction;
-gamestate_t     _g_gamestate;
 skill_t         _g_gameskill;
 
 static int16_t             _s_gamemap;
@@ -231,9 +230,6 @@ void G_BuildTiccmd(void)
 
 static void G_DoLoadLevel (void)
 {
-    _g_gamestate = GS_LEVEL;
-
-
     if (_g_playeringame && _g_player.playerstate == PST_DEAD)
         _g_player.playerstate = PST_REBORN;
 
@@ -266,8 +262,6 @@ static void G_DoLoadLevel (void)
 
 void G_Ticker (void)
 {
-    static gamestate_t prevgamestate = 0;
-
     P_MapStart();
 
     P_MapEnd();
@@ -286,10 +280,6 @@ void G_Ticker (void)
         if (_g_demoplayback)
             G_ReadDemoTiccmd ();
     }
-
-
-    // cph - if the gamestate changed, we may need to clean up the old gamestate
-    prevgamestate = _g_gamestate;
 
     // do main actions
     P_Ticker ();

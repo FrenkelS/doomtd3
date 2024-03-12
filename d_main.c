@@ -88,13 +88,7 @@ static void D_BuildNewTiccmds(void)
 
 static void D_Display (void)
 {
-    static gamestate_t oldgamestate = GS_LEVEL;
-
-    if (_g_gamestate != GS_LEVEL) { // Not a level
-        if (oldgamestate == GS_LEVEL)
-            I_SetPalette(0); // cph - use default (basic) palette
-    }
-    else if (_g_gametic != _g_basetic)
+    if (_g_gametic != _g_basetic)
     { // In a level
 
         // Now do the drawing
@@ -102,8 +96,6 @@ static void D_Display (void)
 
         ST_Drawer();
     }
-
-    oldgamestate = _g_gamestate;
 
     D_BuildNewTiccmds();
 

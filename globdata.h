@@ -28,7 +28,6 @@
 //g_game.c
 //******************************************************************************
 
-extern gamestate_t     _g_gamestate;
 extern skill_t         _g_gameskill;
 
 extern player_t        _g_player;
