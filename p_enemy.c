@@ -831,15 +831,6 @@ void A_Scream(mobj_t __far* actor)
     }
 }
 
-void A_XScream(mobj_t __far* actor)
-{
-
-}
-
-void A_Pain(mobj_t __far* actor)
-{
-
-}
 
 void A_Fall(mobj_t __far* actor)
 {
@@ -853,10 +844,4 @@ void A_Fall(mobj_t __far* actor)
 void A_Explode(mobj_t __far* thingy)
 {
   P_RadiusAttack( thingy, thingy->target, 128 );
-}
-
-
-void A_PlayerScream(mobj_t __far* mo)
-{
-
 }
