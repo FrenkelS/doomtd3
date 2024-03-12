@@ -104,9 +104,6 @@ static void P_BringUpWeapon(player_t *player)
   if (player->pendingweapon == wp_nochange)
     player->pendingweapon = player->readyweapon;
 
-  if (player->pendingweapon == wp_chainsaw)
-    S_StartSound (player->mo, sfx_sawup);
-
   newstate = weaponinfo[player->pendingweapon].upstate;
 
   player->pendingweapon = wp_nochange;
@@ -659,8 +656,6 @@ void A_FirePistol(player_t *player, pspdef_t *psp)
 {
 	UNUSED(psp);
 
-	S_StartSound(player->mo, sfx_pistol);
-
 	P_SetMobjState(player->mo, S_PLAY_ATK2);
 	player->ammo[weaponinfo[player->readyweapon].ammo]--;
 
@@ -679,7 +674,6 @@ void A_FireShotgun(player_t *player, pspdef_t *psp)
 
 	UNUSED(psp);
 
-	S_StartSound(player->mo, sfx_shotgn);
 	P_SetMobjState(player->mo, S_PLAY_ATK2);
 
 	player->ammo[weaponinfo[player->readyweapon].ammo]--;

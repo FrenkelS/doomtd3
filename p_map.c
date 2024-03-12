@@ -889,8 +889,6 @@ static boolean PTR_UseTraverse (intercept_t* in)
     P_LineOpening (in->d.line);
     if (_g_openrange <= 0)
       {
-      S_StartSound (usething, sfx_noway);
-
       // can't use through a wall
       return false;
       }
@@ -958,8 +956,7 @@ void P_UseLines (player_t*  player)
   // This added test makes the "oof" sound work on 2s lines -- killough:
 
   if (P_PathTraverse ( x1, y1, x2, y2, PT_ADDLINES, PTR_UseTraverse ))
-    if (!P_PathTraverse ( x1, y1, x2, y2, PT_ADDLINES, PTR_NoWayTraverse ))
-      S_StartSound (usething, sfx_noway);
+    P_PathTraverse ( x1, y1, x2, y2, PT_ADDLINES, PTR_NoWayTraverse );
   }
 
 

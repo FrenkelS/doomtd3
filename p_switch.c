@@ -261,7 +261,6 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
       if (!player->cards[it_bluecard] && !player->cards[it_blueskull])
       {
           player->message = PD_BLUEK;         // Ty 03/27/98 - externalized
-          S_StartSound(player->mo,sfx_oof);     // killough 3/20/98
           return;
       }
       break;
@@ -273,7 +272,6 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
       if (!player->cards[it_yellowcard] && !player->cards[it_yellowskull])
       {
           player->message = PD_YELLOWK;       // Ty 03/27/98 - externalized
-          S_StartSound(player->mo,sfx_oof);     // killough 3/20/98
           return;
       }
       break;
@@ -284,7 +282,6 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
       if (!player->cards[it_redcard] && !player->cards[it_redskull])
       {
           player->message = PD_REDK;          // Ty 03/27/98 - externalized
-          S_StartSound(player->mo,sfx_oof);     // killough 3/20/98
           return;
       }
       break;
@@ -296,7 +293,6 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
   // if the wrong side of door is pushed, give oof sound
   if (line->sidenum[1]==NO_INDEX)                     // killough
   {
-    S_StartSound(player->mo,sfx_oof);           // killough 3/20/98
     return;
   }
 
@@ -449,7 +445,6 @@ boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line)
        */
       if (P_MobjIsPlayer(thing) && P_MobjIsPlayer(thing)->health <= 0)
       {
-        S_StartSound(thing, sfx_noway);
         return false;
       }
 

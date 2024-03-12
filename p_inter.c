@@ -487,12 +487,6 @@ void P_TouchSpecialThing(mobj_t __far* special, mobj_t __far* toucher)
     player->itemcount++;
   P_RemoveMobj (special);
   player->bonuscount += BONUSADD;
-
-  /* cph 20028/10 - for old-school DM addicts, allow old behavior
-   * where only consoleplayer's pickup sounds are heard */
-  // displayplayer, not consoleplayer, for viewing multiplayer demos
-  if (player == &_g_player)
-    S_StartSound (player->mo, sound | PICKUP_SOUND);   // killough 4/25/98
 }
 
 //

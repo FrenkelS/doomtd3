@@ -595,25 +595,13 @@ void A_Look(mobj_t __far* actor)
 
     if (mobjinfo[actor->type].seesound)
     {
-        sfxenum_t sound;
         switch (mobjinfo[actor->type].seesound)
         {
         case sfx_posit1:
         case sfx_posit2:
-        //case sfx_posit3:
-            sound = sfx_posit1+P_Random()%3;
-            break;
-
         case sfx_bgsit1:
-        //case sfx_bgsit2:
-            sound = sfx_bgsit1+P_Random()%2;
-            break;
-
-        default:
-            sound = mobjinfo[actor->type].seesound;
-            break;
+            P_Random();
         }
-        S_StartSound(actor, sound);
     }
     P_SetMobjState(actor, mobjinfo[actor->type].seestate);
 }
@@ -668,9 +656,6 @@ void A_Chase(mobj_t __far* actor)
     // check for melee attack
     if (mobjinfo[actor->type].meleestate && P_CheckMeleeRange(actor))
     {
-        if (mobjinfo[actor->type].attacksound)
-            S_StartSound(actor, mobjinfo[actor->type].attacksound);
-
         P_SetMobjState(actor, mobjinfo[actor->type].meleestate);
         /* killough 8/98: remember an attack
       * cph - DEMOSYNC? */
@@ -738,8 +723,8 @@ void A_Chase(mobj_t __far* actor)
         P_NewChaseDir(actor);
 
     // make active sound
-    if (mobjinfo[actor->type].activesound && P_Random()<3)
-        S_StartSound(actor, mobjinfo[actor->type].activesound);
+    if (mobjinfo[actor->type].activesound)
+        P_Random();
 }
 
 //
@@ -775,7 +760,6 @@ void A_PosAttack(mobj_t __far* actor)
   A_FaceTarget(actor);
   angle = actor->angle;
   slope = P_AimLineAttack(actor, angle, MISSILERANGE, false);
-  S_StartSound(actor, sfx_pistol);
 
   // killough 5/5/98: remove dependence on order of evaluation:
   t = P_Random();
@@ -792,7 +776,7 @@ void A_SPosAttack(mobj_t __far* actor)
 
   if (!actor->target)
     return;
-  S_StartSound(actor, sfx_shotgn);
+
   A_FaceTarget(actor);
   bangle = actor->angle;
   slope = P_AimLineAttack(actor, bangle, MISSILERANGE, false);
@@ -817,9 +801,7 @@ void A_TroopAttack(mobj_t __far* actor)
   A_FaceTarget(actor);
   if (P_CheckMeleeRange(actor))
     {
-      int16_t damage;
-      S_StartSound(actor, sfx_claw);
-      damage = (P_Random()%8+1)*3;
+      int16_t damage = (P_Random()%8+1)*3;
       P_DamageMobj(actor->target, actor, actor, damage);
       return;
     }
@@ -841,41 +823,23 @@ void A_SargAttack(mobj_t __far* actor)
 
 void A_Scream(mobj_t __far* actor)
 {
-  sfxenum_t sound;
-
   switch (mobjinfo[actor->type].deathsound)
     {
-    case 0:
-      return;
-
     case sfx_podth1:
     case sfx_podth2:
-    //case sfx_podth3:
-      sound = sfx_podth1 + P_Random()%3;
-      break;
-
     case sfx_bgdth1:
-    //case sfx_bgdth2:
-      sound = sfx_bgdth1 + P_Random()%2;
-      break;
-
-    default:
-      sound = mobjinfo[actor->type].deathsound;
-      break;
+      P_Random();
     }
-
-  S_StartSound(actor, sound);
 }
 
 void A_XScream(mobj_t __far* actor)
 {
-  S_StartSound(actor, sfx_slop);
+
 }
 
 void A_Pain(mobj_t __far* actor)
 {
-  if (mobjinfo[actor->type].painsound)
-    S_StartSound(actor, mobjinfo[actor->type].painsound);
+
 }
 
 void A_Fall(mobj_t __far* actor)
@@ -895,6 +859,5 @@ void A_Explode(mobj_t __far* thingy)
 
 void A_PlayerScream(mobj_t __far* mo)
 {
-  sfxenum_t sound = sfx_pldeth;  // Default death sound.
-  S_StartSound(mo, sound);
+
 }

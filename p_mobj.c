@@ -113,9 +113,6 @@ static void P_ExplodeMissile(mobj_t __far* mo)
     mo->tics = 1;
 
   mo->flags &= ~MF_MISSILE;
-
-  if (mobjinfo[mo->type].deathsound)
-    S_StartSound (mo, mobjinfo[mo->type].deathsound);
   }
 
 
@@ -632,8 +629,6 @@ static void P_ZMovement(mobj_t __far* mo)
         // and utter appropriate sound.
 
         P_MobjIsPlayer(mo)->deltaviewheight = mo->momz>>3;
-        if (mo->health > 0) /* cph - prevent "oof" when dead */
-    S_StartSound (mo, sfx_oof);
       }
   mo->momz = 0;
       }
@@ -1115,9 +1110,6 @@ mobj_t __far* P_SpawnMissile(mobj_t __far* source, mobj_t __far* dest, mobjtype_
   fixed_t     dist;
 
   th = P_SpawnMobj (source->x,source->y,source->z + 4*8*FRACUNIT,type);
-
-  if (mobjinfo[th->type].seesound)
-    S_StartSound (th, mobjinfo[th->type].seesound);
 
   th->target = source;    // where it came from
   an = R_PointToAngle2 (source->x, source->y, dest->x, dest->y);
