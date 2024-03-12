@@ -592,15 +592,12 @@ void A_Look(mobj_t __far* actor)
 
     // go into chase state
 
-    if (mobjinfo[actor->type].seesound)
+    switch (mobjinfo[actor->type].seesound)
     {
-        switch (mobjinfo[actor->type].seesound)
-        {
         case sfx_posit1:
         case sfx_posit2:
         case sfx_bgsit1:
             P_Random();
-        }
     }
     P_SetMobjState(actor, mobjinfo[actor->type].seestate);
 }
