@@ -422,7 +422,6 @@ typedef struct
   int16_t reactiontime; /* How many tics it waits after it wakes up
            before it will start to attack, in normal
            skills */
-  sfxenum_t attacksound;  /* The sound it makes when it attacks */
   statenum_t painstate;    /* The state to indicate pain */
   uint8_t painchance;   /* A number that is checked against a random
            number 0-255 to see if the Thing is supposed
@@ -430,7 +429,6 @@ typedef struct
            has absolutely nothing to do with the chance
            it will get hurt, just the chance of it
            reacting visibly. */
-  sfxenum_t painsound;    /* The sound it emits when it feels pain */
   statenum_t meleestate;   /* Melee==close attack */
   statenum_t missilestate; /* What states to use when it's in the air, if
            in fact it is ever used as a missile */
