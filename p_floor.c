@@ -379,9 +379,6 @@ static void T_MoveFloor(floormove_t __far* floor)
   // move the floor
   res = T_MovePlaneFloor(floor->sector, floor->speed, floor->floordestheight, floor->direction);
 
-  if (!(_g_leveltime&7))     // make the floormove sound
-    S_StartSound2(&floor->sector->soundorg, sfx_stnmov);
-
   if (res == pastdest)    // if destination height is reached
   {
     if (floor->direction == 1)       // going up
@@ -399,9 +396,6 @@ static void T_MoveFloor(floormove_t __far* floor)
 
     floor->sector->floordata = NULL; //jff 2/22/98
     P_RemoveThinker(&floor->thinker);//remove this floor from list of movers
-
-    // make floor stop sound
-    S_StartSound2(&floor->sector->soundorg, sfx_pstop);
   }
 }
 

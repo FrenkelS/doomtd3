@@ -315,7 +315,6 @@ void P_UpdateSpecials (void)
                         break;
                 }
 
-                S_StartSound2(_g_buttonlist[i].soundorg, sfx_swtchn);
                 memset(&_g_buttonlist[i],0,sizeof(button_t));
             }
         }

@@ -232,8 +232,6 @@ static void P_ChangeSwitchTexture(const line_t __far* line, boolean useAgain)
             break;
     }
 
-    S_StartSound2(&LN_FRONTSECTOR(line)->soundorg, sfx_swtchn);
-
     if (useAgain)
         P_StartButton(line, position, switchlist[i], BUTTONTIME);
 }
@@ -354,9 +352,6 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
      */
     return;
   }
-
-  // emit proper sound
-  S_StartSound2(&sec->soundorg,sfx_doropn); // normal or locked door sound
 
   // new door thinker
   door = Z_CallocLevSpec(sizeof(*door));

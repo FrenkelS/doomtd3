@@ -79,19 +79,11 @@ void T_PlatRaise(plat_t __far* plat)
     case up: // plat moving up
       res = T_MovePlaneFloor(plat->sector,plat->speed,plat->high,1);
 
-      // if a pure raise type, make the plat moving sound
-      if (plat->type == raiseToNearestAndChange)
-      {
-        if (!(_g_leveltime&7))
-          S_StartSound2(&plat->sector->soundorg, sfx_stnmov);
-      }
-
       // if encountered an obstacle, and not a crush type, reverse direction
       if (res == crushed)
       {
         plat->count = plat->wait;
         plat->status = down;
-        S_StartSound2(&plat->sector->soundorg, sfx_pstart);
       }
       else  // else handle reaching end of up stroke
       {
@@ -100,7 +92,6 @@ void T_PlatRaise(plat_t __far* plat)
           // not an instant toggle type, wait, make plat stop sound
           plat->count = plat->wait;
           plat->status = waiting;
-          S_StartSound2(&plat->sector->soundorg, sfx_pstop);
 
           // lift types and pure raise types are done at end of up stroke
           // only the perpetual type waits then goes back up
@@ -125,7 +116,6 @@ void T_PlatRaise(plat_t __far* plat)
         // not an instant toggle, start waiting, make plat stop sound
         plat->count = plat->wait;
         plat->status = waiting;
-        S_StartSound2(&plat->sector->soundorg,sfx_pstop);
 
         //jff 1/26/98 remove the plat if it bounced so it can be tried again
         //only affects plats that raise and bounce
@@ -149,9 +139,6 @@ void T_PlatRaise(plat_t __far* plat)
           plat->status = up;     // if at bottom, start up
         else
           plat->status = down;   // if at top, start down
-
-        // make plat start sound
-        S_StartSound2(&plat->sector->soundorg,sfx_pstart);
       }
       break;
   }
@@ -213,8 +200,6 @@ boolean EV_DoPlat(const line_t __far* line, plattype_e type)
         plat->wait = 0;
         plat->status = up;
         sec->special = 0;
-
-        S_StartSound2(&sec->soundorg,sfx_stnmov);
         break;
 
       case downWaitUpStay:
@@ -227,7 +212,6 @@ boolean EV_DoPlat(const line_t __far* line, plattype_e type)
         plat->high = sec->floorheight;
         plat->wait = 35*PLATWAIT;
         plat->status = down;
-        S_StartSound2(&sec->soundorg,sfx_pstart);
         break;
 
       default:
