@@ -59,6 +59,6 @@ int main(int argc, const char * const * argv)
 {
 	Z_Init();                  /* 1/18/98 killough: start up memory stuff first */
 
-	D_DoomMain(argc, argv);
+	D_DoomMain();
 	return 0;
 }

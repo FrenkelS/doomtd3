@@ -44,7 +44,7 @@
 // BASE LEVEL
 //
 
-void D_DoomMain(int argc, const char * const * argv);
+void D_DoomMain(void);
 
 
 
