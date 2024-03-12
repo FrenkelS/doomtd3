@@ -39,7 +39,8 @@
 #include "globdata.h"
 
 
-#define PLANEWIDTH 80
+#define PLANEWIDTH			 80
+#define SCREENHEIGHT_CGA	200
 
  
 extern const int16_t CENTERY;
@@ -78,7 +79,7 @@ void I_InitGraphicsHardwareSpecificCode(void)
 	I_UploadNewPalette(0);
 
 	__djgpp_nearptr_enable();
-	videomemory = D_MK_FP(0xb800, ((SCREENWIDTH_VGA - SCREENWIDTH) / 2) / 4 + (((SCREENHEIGHT_VGA - SCREENHEIGHT) / 2) * PLANEWIDTH) / 2 + __djgpp_conventional_base);
+	videomemory = D_MK_FP(0xb800, ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + (((SCREENHEIGHT_CGA - SCREENHEIGHT) / 2) * PLANEWIDTH) / 2 + __djgpp_conventional_base);
 
 	_s_viewwindow = Z_MallocStatic(VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT);
 	_s_statusbar = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
@@ -100,26 +101,156 @@ void I_SetPalette(int8_t pal)
 }
 
 
+#if defined __WATCOMC__
+#define P0 0x00
+#define P1 0x10
+#define P2 0x42
+#define P3 0x25
+#define P4 0x5a
+#define P5 0xab
+#define P6 0xdb
+#define P7 0xef
+#define P8 0xff
+#else
+#define P0 0b00000000
+#define P1 0b00010000
+#define P2 0b01000010
+#define P3 0b00100101
+#define P4 0b01011010
+#define P5 0b10101011
+#define P6 0b11011011
+#define P7 0b11101111
+#define P8 0b11111111
+#endif
+
 static const uint8_t VGA_TO_BW_LUT[256] =
 {
-	0x00, 0x00, 0x00, 0x25, 0xff, 0x10, 0x00, 0x00, 0x00, 0x44, 0x10, 0x00, 0x00, 0x44, 0x44, 0x10,
-	0xef, 0xef, 0xef, 0xef, 0x77, 0x77, 0x77, 0x77, 0x83, 0x83, 0x83, 0x83, 0x55, 0x55, 0x55, 0x55,
-	0x25, 0x25, 0x25, 0x44, 0x44, 0x44, 0x44, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xef, 0xef, 0xef, 0xef, 0xef, 0xef, 0x77, 0x77, 0x77, 0x77,
-	0x77, 0x83, 0x83, 0x83, 0x55, 0x55, 0x55, 0x55, 0x25, 0x25, 0x25, 0x44, 0x44, 0x10, 0x10, 0x10,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xef, 0xef, 0xef, 0xef, 0xef, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77,
-	0x83, 0x83, 0x83, 0x55, 0x55, 0x55, 0x55, 0x25, 0x25, 0x25, 0x44, 0x44, 0x44, 0x10, 0x10, 0x10,
-	0xef, 0xef, 0xef, 0x77, 0x77, 0x83, 0x83, 0x83, 0x55, 0x55, 0x25, 0x44, 0x44, 0x10, 0x10, 0x00,
-	0x77, 0x77, 0x77, 0x77, 0x77, 0x83, 0x83, 0x83, 0x83, 0x55, 0x55, 0x55, 0x25, 0x25, 0x25, 0x25,
-	0x83, 0x83, 0x55, 0x55, 0x25, 0x25, 0x44, 0x44, 0x83, 0x55, 0x55, 0x55, 0x25, 0x25, 0x44, 0x44,
-	0xff, 0xef, 0xef, 0x77, 0x83, 0x55, 0x25, 0x44, 0xff, 0xff, 0xef, 0xef, 0x77, 0x77, 0x83, 0x55,
-	0x25, 0x25, 0x25, 0x44, 0x44, 0x44, 0x44, 0x44, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x00, 0x00,
-	0xff, 0xef, 0xef, 0x77, 0x83, 0x55, 0x25, 0x44, 0x10, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0xff, 0xff, 0xef, 0xef, 0x77, 0x77, 0x77, 0x83, 0x83, 0x83, 0x83, 0x55, 0x55, 0x55,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x25, 0x25, 0x25, 0x44, 0x44, 0x44, 0x10, 0x10,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xef, 0xff, 0xef, 0x55, 0x25, 0x44, 0x10, 0x83
+	P0, P0, P0, P3, P8, P1, P0, P0, P0, P2, P1, P0, P0, P2, P2, P1,
+	P7, P7, P7, P7, P6, P6, P6, P6, P5, P5, P5, P5, P4, P4, P4, P4,
+	P3, P3, P3, P2, P2, P2, P2, P1, P1, P1, P1, P1, P1, P0, P0, P0,
+	P8, P8, P8, P8, P8, P8, P7, P7, P7, P7, P7, P7, P6, P6, P6, P6,
+	P6, P5, P5, P5, P4, P4, P4, P4, P3, P3, P3, P2, P2, P1, P1, P1,
+	P8, P8, P8, P8, P8, P7, P7, P7, P7, P7, P6, P6, P6, P6, P6, P6,
+	P5, P5, P5, P4, P4, P4, P4, P3, P3, P3, P2, P2, P2, P1, P1, P1,
+	P7, P7, P7, P6, P6, P5, P5, P5, P4, P4, P3, P2, P2, P1, P1, P0,
+	P6, P6, P6, P6, P6, P5, P5, P5, P5, P4, P4, P4, P3, P3, P3, P3,
+	P5, P5, P4, P4, P3, P3, P2, P2, P5, P4, P4, P4, P3, P3, P2, P2,
+	P8, P7, P7, P6, P5, P4, P3, P2, P8, P8, P7, P7, P6, P6, P5, P4,
+	P3, P3, P3, P2, P2, P2, P2, P2, P1, P1, P1, P1, P1, P1, P0, P0,
+	P8, P7, P7, P6, P5, P4, P3, P2, P1, P1, P0, P0, P0, P0, P0, P0,
+	P8, P8, P8, P8, P7, P7, P6, P6, P6, P5, P5, P5, P5, P4, P4, P4,
+	P8, P8, P8, P8, P8, P8, P8, P8, P3, P3, P3, P2, P2, P2, P1, P1,
+	P0, P0, P0, P0, P0, P0, P0, P0, P7, P8, P7, P4, P3, P2, P1, P5
 };
 
+
+#define B0 (0 << 0)
+#define B1 (1 << 0)
+#define B2 (3 << 0)
+
+static const uint8_t VGA_TO_BW_LUT_0[256] =
+{
+	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
+	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
+	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
+	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
+	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
+};
+
+#undef B0
+#undef B1
+#undef B2
+
+#define B0 (0 << 2)
+#define B1 (1 << 2)
+#define B2 (3 << 2)
+
+static const uint8_t VGA_TO_BW_LUT_1[256] =
+{
+	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
+	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
+	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
+	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
+	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
+};
+
+#undef B0
+#undef B1
+#undef B2
+
+#define B0 (0 << 4)
+#define B1 (1 << 4)
+#define B2 (3 << 4)
+
+static const uint8_t VGA_TO_BW_LUT_2[256] =
+{
+	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
+	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
+	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
+	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
+	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
+};
+
+#undef B0
+#undef B1
+#undef B2
+
+#define B0 (0 << 6)
+#define B1 (1 << 6)
+#define B2 (3 << 6)
+
+static const uint8_t VGA_TO_BW_LUT_3[256] =
+{
+	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
+	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
+	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
+	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
+	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
+};
 
 #define NO_PALETTE_CHANGE 100
 
@@ -152,18 +283,15 @@ void I_FinishUpdate(void)
 
 #if !defined DISABLE_STATUS_BAR
 	src = _s_statusbar;
-	for (uint_fast8_t y = (SCREENHEIGHT - ST_HEIGHT) / 2; y < SCREENHEIGHT / 2; y++) {
+	for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 		for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-			*dst++ = VGA_TO_BW_LUT[*src];
-			src += 4;
+			*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
 		}
 
 		dst += 0x2000 - VIEWWINDOWWIDTH;
 
 		for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-			uint8_t b = VGA_TO_BW_LUT[*src];
-			*dst++ = (b << 4 | b >> 4);
-			src += 4;
+			*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
 		}
 
 		dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
