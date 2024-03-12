@@ -524,7 +524,6 @@ void P_SetupLevel(int16_t map)
     int16_t   lumpnum;
 
     _g_totallive = _g_totalkills = _g_totalitems = _g_totalsecret = 0;
-    _g_wminfo.partime = 180;
 
     for (i=0; i<MAXPLAYERS; i++)
         _g_player.killcount = _g_player.secretcount = _g_player.itemcount = 0;

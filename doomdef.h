@@ -81,13 +81,6 @@
 // State updates, number of tics / second.
 #define TICRATE          35
 
-// The current state of the game: whether we are playing, gazing
-// at the intermission screen, the game final animation, or a demo.
-
-typedef enum {
-  GS_LEVEL,
-  GS_DEMOSCREEN
-} gamestate_t;
 
 //
 // Difficulty/skill settings/filters.

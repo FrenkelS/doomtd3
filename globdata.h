@@ -35,7 +35,6 @@ extern player_t        _g_player;
 extern int32_t             _g_gametic;
 extern int32_t             _g_basetic;       /* killough 9/29/98: for demo sync */
 extern int32_t             _g_totalkills, _g_totallive, _g_totalitems, _g_totalsecret;    // for intermission
-extern wbstartstruct_t _g_wminfo;               // parms for world map / intermission
 
 
 extern boolean         _g_playeringame;

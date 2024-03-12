@@ -85,7 +85,6 @@ player_t        _g_player;
 int32_t             _g_gametic;
 int32_t             _g_basetic;       /* killough 9/29/98: for demo sync */
 int32_t             _g_totalkills, _g_totallive, _g_totalitems, _g_totalsecret;    // for intermission
-wbstartstruct_t _g_wminfo;               // parms for world map / intermission
 static int32_t             totalleveltimes;      // CPhipps - total time for all completed levels
 
 

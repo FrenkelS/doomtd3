@@ -157,43 +157,4 @@ typedef struct player_s
 } player_t;
 
 
-//
-// INTERMISSION
-// Structure passed e.g. to WI_Start(wb)
-//
-typedef struct
-{
-  boolean     in;     // whether the player is in game
-
-  // Player stats, kills, collected items etc.
-  int32_t         skills;
-  int32_t         sitems;
-  int32_t         ssecret;
-  int32_t         stime;
-} wbplayerstruct_t;
-
-typedef struct
-{
-  // if true, splash the secret level
-  boolean     didsecret;
-
-  // previous and next levels, origin 0
-  int16_t         last;
-  int16_t         next;
-
-  int32_t         maxkills;
-  int32_t         maxitems;
-  int32_t         maxsecret;
-
-  // the par time
-  int16_t         partime;
-
-  wbplayerstruct_t    plyr[MAXPLAYERS];
-
-  // CPhipps - total game time for completed levels so far
-  int32_t         totaltimes;
-
-} wbstartstruct_t;
-
-
 #endif
