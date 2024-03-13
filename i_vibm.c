@@ -254,6 +254,7 @@ static const uint8_t VGA_TO_BW_LUT_3[256] =
 
 #define NO_PALETTE_CHANGE 100
 
+static boolean refreshStatusBar;
 
 void I_FinishUpdate(void)
 {
@@ -284,19 +285,24 @@ void I_FinishUpdate(void)
 	}
 
 	// status bar
-	src = _s_statusbar;
-	for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
-		for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-			*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
+	if (refreshStatusBar)
+	{
+		refreshStatusBar = false;
+
+		src = _s_statusbar;
+		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
+			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
+			}
+
+			dst += 0x2000 - VIEWWINDOWWIDTH;
+
+			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
+			}
+
+			dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
 		}
-
-		dst += 0x2000 - VIEWWINDOWWIDTH;
-
-		for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-			*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
-		}
-
-		dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
 	}
 }
 
@@ -417,6 +423,8 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 
 void V_DrawRaw(int16_t num, uint16_t offset)
 {
+	refreshStatusBar = true;
+
 	const uint8_t __far* lump = W_TryGetLumpByNum(num);
 
 	if (lump != NULL)
