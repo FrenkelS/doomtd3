@@ -257,12 +257,14 @@ static const uint8_t VGA_TO_BW_LUT_3[256] =
 
 void I_FinishUpdate(void)
 {
+	// palette
 	if (newpal != NO_PALETTE_CHANGE)
 	{
 		I_UploadNewPalette(newpal);
 		newpal = NO_PALETTE_CHANGE;
 	}
 
+	// view window
 	uint8_t __far* src = _s_viewwindow;
 	uint8_t __far* dst = videomemory;
 
@@ -281,7 +283,7 @@ void I_FinishUpdate(void)
 		dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
 	}
 
-#if !defined DISABLE_STATUS_BAR
+	// status bar
 	src = _s_statusbar;
 	for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 		for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
@@ -296,7 +298,6 @@ void I_FinishUpdate(void)
 
 		dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
 	}
-#endif
 }
 
 
