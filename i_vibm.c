@@ -387,7 +387,7 @@ static uint16_t nearcolormapoffset = 0xffff;
 
 void R_DrawColumn(const draw_column_vars_t *dcvars)
 {
-	int16_t count = (dcvars->yh - dcvars->yl) + 1;
+	const int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	// Zero length, column does not exceed a pixel.
 	if (count <= 0)
@@ -406,11 +406,48 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
 
-	while (count--)
+	int16_t l = count >> 4;
+
+	while (l--)
 	{
-		*dest = nearcolormap[source[frac>>COLBITS]];
-		dest += VIEWWINDOWWIDTH;
-		frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+	}
+
+	switch (count & 15)
+	{
+		case 15: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case 14: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case 13: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case 12: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case 11: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case 10: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  9: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  8: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  7: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  6: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  5: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  4: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  3: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  2: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case  1: *dest = nearcolormap[source[frac>>COLBITS]];
 	}
 }
 
@@ -426,7 +463,7 @@ void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 	const uint8_t color1 = texture;
 	const uint8_t color2 = (color1 << 4 | color1 >> 4);
 	const uint8_t colort = color1 + color2;
-	      uint8_t color = (dcvars->yl & 1) ? color1 : color2;
+	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
 
 	uint8_t __far* dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
 
