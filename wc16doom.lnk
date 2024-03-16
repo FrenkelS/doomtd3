@@ -18,7 +18,7 @@ file d_main.obj
 file g_game.obj
 file i_main.obj
 file i_system.obj
-file i_vibm.obj
+file i_ibm.obj
 file info.obj
 file m_random.obj
 file p_doors.obj

@@ -19,7 +19,7 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *      Video code for the IBM PC
+ *      Code for the IBM PC
  *
  *-----------------------------------------------------------------------------*/
  
@@ -580,4 +580,44 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch)
 			column = (const column_t __far*)((const byte __far*)column + column->length + 4);
 		}
 	}
+}
+
+
+#if defined __DJGPP__ || defined _M_I386
+static unsigned int _dos_allocmem(unsigned int __size, unsigned int *__seg)
+{
+	static uint8_t* ptr;
+
+	if (__size == 0xffff)
+	{
+		int32_t paragraphs = 640 * 1024L / PARAGRAPH_SIZE;
+		ptr = malloc(paragraphs * PARAGRAPH_SIZE);
+
+		// align ptr
+		uint32_t m = (uint32_t) ptr;
+		if ((m & (PARAGRAPH_SIZE - 1)) != 0)
+		{
+			paragraphs--;
+			while ((m & (PARAGRAPH_SIZE - 1)) != 0)
+				m = (uint32_t) ++ptr;
+		}
+
+
+		*__seg = paragraphs;
+	}
+	else
+		*__seg = D_FP_SEG(ptr);
+
+	return 0;
+}
+#endif
+
+
+unsigned int I_ZoneBase(unsigned int *size)
+{
+	unsigned int max, segment;
+	_dos_allocmem(0xffff, &max);
+	_dos_allocmem(max, &segment);
+	*size = max;
+	return segment;
 }

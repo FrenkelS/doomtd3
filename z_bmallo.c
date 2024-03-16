@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -62,7 +62,7 @@ __inline static PUREFUNC uint32_t linearAddress(const void __far* ptr)
 {
 	uint32_t seg = D_FP_SEG(ptr);
 	uint16_t off = D_FP_OFF(ptr);
-	return seg * 16 + off;
+	return seg * PARAGRAPH_SIZE + off;
 }
 
 

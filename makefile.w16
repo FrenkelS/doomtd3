@@ -43,7 +43,7 @@ GLOBOBJS = &
  g_game.obj &
  i_main.obj &
  i_system.obj &
- i_vibm.obj &
+ i_ibm.obj &
  info.obj &
  m_random.obj &
  p_doors.obj &
@@ -84,7 +84,7 @@ WC16\DOOMTDWC.EXE : $(GLOBOBJS)
  wcc $(CCOPTSS) $[* /fo=WC16\$^&
 
 
-i_vibm.obj : i_vibm.c
+i_ibm.obj : i_ibm.c
  wcc $(CCOPTST) $[* /fo=WC16\$^&
 
 p_map.obj : p_map.c

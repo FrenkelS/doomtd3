@@ -5,7 +5,7 @@ unset CFLAGS
 #export RENDER_OPTIONS="-DONE_WALL_TEXTURE -DFLAT_WALL"
 export RENDER_OPTIONS=""
 
-ia16-elf-gcc -c i_vibm.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
+ia16-elf-gcc -c i_ibm.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_map.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_maputl.c $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_sight.c  $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
@@ -25,8 +25,8 @@ export GLOBOBJS+=" d_main.c"
 export GLOBOBJS+=" g_game.c"
 export GLOBOBJS+=" i_main.c"
 export GLOBOBJS+=" i_system.c"
-#export GLOBOBJS+=" i_vibm.c"
-export GLOBOBJS+=" i_vibm.o"
+#export GLOBOBJS+=" i_ibm.c"
+export GLOBOBJS+=" i_ibm.o"
 export GLOBOBJS+=" info.c"
 export GLOBOBJS+=" m_random.c"
 export GLOBOBJS+=" p_doors.c"
@@ -66,7 +66,7 @@ export GLOBOBJS+=" z_zone.o"
 
 ia16-elf-gcc $GLOBOBJS $CFLAGS $RENDER_OPTIONS -o GCCIA16/DOOMTD16.EXE
 
-rm i_vibm.o
+rm i_ibm.o
 rm p_map.o
 rm p_maputl.o
 rm p_sight.o

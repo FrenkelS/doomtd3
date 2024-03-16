@@ -38,6 +38,10 @@
 
 #include "config.h"
 
+
+#define PARAGRAPH_SIZE 16
+
+
 int32_t I_GetTime(void);
 
 void NORETURN_PRE I_Error(const char *error, ...) NORETURN_POST;
@@ -48,5 +52,7 @@ void I_ShutdownGraphics(void);
 void I_FinishUpdate(void);
 
 void I_SetPalette(int8_t pal);
+
+unsigned int I_ZoneBase(unsigned int *size);
 
 #endif

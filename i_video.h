@@ -19,7 +19,9 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *      Video hardware specific code
+ *      Hardware specific code
+ *
+ * TODO: merge i_system.h and i_video.h
  *
  *-----------------------------------------------------------------------------*/
 
@@ -30,17 +32,21 @@
 #include "r_main.h"
 
 void I_InitGraphicsHardwareSpecificCode(void);
+void I_ShutdownGraphics(void);
 void I_SetPalette(int8_t pal);
 void I_FinishUpdate(void);
 
 
-void R_DrawColumn (const draw_column_vars_t *dcvars);
+void R_DrawColumn(const draw_column_vars_t *dcvars);
 void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars);
-void R_DrawFuzzColumn (const draw_column_vars_t *dcvars);
+void R_DrawFuzzColumn(const draw_column_vars_t *dcvars);
 
 
 void V_DrawRaw(int16_t num, uint16_t offset);
 void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);
+
+
+unsigned int I_ZoneBase(unsigned int *size);
 
 
 #endif
