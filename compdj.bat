@@ -13,7 +13,6 @@ set CFLAGS=%CFLAGS% -D__far=
 @set GLOBOBJS=%GLOBOBJS% d_items.c
 @set GLOBOBJS=%GLOBOBJS% d_main.c
 @set GLOBOBJS=%GLOBOBJS% g_game.c
-@set GLOBOBJS=%GLOBOBJS% i_main.c
 @set GLOBOBJS=%GLOBOBJS% i_system.c
 @set GLOBOBJS=%GLOBOBJS% i_ibm.c
 @set GLOBOBJS=%GLOBOBJS% info.c

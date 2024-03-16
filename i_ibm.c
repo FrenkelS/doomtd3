@@ -29,6 +29,7 @@
 
 #include "compiler.h"
 
+#include "d_main.h"
 #include "i_system.h"
 #include "i_video.h"
 #include "m_random.h"
@@ -343,7 +344,7 @@ void I_FinishUpdate(void)
 	uint8_t __far* src = _s_viewwindow;
 	uint8_t __far* dst = videomemory;
 
-	for (uint_fast8_t y = 0; y < (SCREENHEIGHT - ST_HEIGHT) / 2; y++) {
+	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT / 2; y++) {
 		_fmemcpy(dst, src, VIEWWINDOWWIDTH);
 
 		dst += 0x2000;
@@ -620,4 +621,15 @@ unsigned int I_ZoneBase(unsigned int *size)
 	_dos_allocmem(max, &segment);
 	*size = max;
 	return segment;
+}
+
+
+int main(int argc, const char * const * argv)
+{
+	UNUSED(argc);
+	UNUSED(argv);
+
+	Z_Init();
+	D_DoomMain();
+	return 0;
 }

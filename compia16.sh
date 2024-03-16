@@ -23,7 +23,6 @@ export CFLAGS="-march=i8088 -mcmodel=medium -li86 -mnewlib-nano-stdio -Os -fomit
 export GLOBOBJS="  d_items.c"
 export GLOBOBJS+=" d_main.c"
 export GLOBOBJS+=" g_game.c"
-export GLOBOBJS+=" i_main.c"
 export GLOBOBJS+=" i_system.c"
 #export GLOBOBJS+=" i_ibm.c"
 export GLOBOBJS+=" i_ibm.o"
