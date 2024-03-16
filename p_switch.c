@@ -369,7 +369,7 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
     case 26:
     case 27:
     case 28:
-      door->type = normal;
+      door->type = dnormal;
       break;
 
     case 31:
@@ -473,7 +473,7 @@ boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line)
 
     case 63:
       // Raise Door
-      if (EV_DoDoor(line,normal))
+      if (EV_DoDoor(line,dnormal))
         P_ChangeSwitchTexture(line,true);
       break;
 

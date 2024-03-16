@@ -113,7 +113,7 @@ void T_VerticalDoor(vldoor_t __far* door)
       {
         switch(door->type)
         {
-          case normal:
+          case dnormal:
             door->direction = -1; // time to go back down
             break;
 
@@ -148,7 +148,7 @@ void T_VerticalDoor(vldoor_t __far* door)
         switch(door->type)
         {
           // regular open and close doors are all done, remove them
-          case normal:
+          case dnormal:
             door->sector->ceilingdata = NULL; //jff 2/22/98
             P_RemoveThinker (&door->thinker);  // unlink and free
             break;
@@ -193,7 +193,7 @@ void T_VerticalDoor(vldoor_t __far* door)
       {
         switch(door->type)
         {
-          case normal:           // regular open/close doors start waiting
+          case dnormal:          // regular open/close doors start waiting
             door->direction = 0; // wait at top with delay
             door->topcountdown = door->topwait;
             break;
@@ -266,7 +266,7 @@ boolean EV_DoDoor(const line_t __far* line, vldoor_e type)
         door->direction = -1;
         break;
 
-      case normal:
+      case dnormal:
       case dopen:
         door->direction = 1;
         door->topheight = P_FindLowestCeilingSurrounding(sec);

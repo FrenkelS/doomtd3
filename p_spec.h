@@ -98,7 +98,7 @@ typedef enum
 
 typedef enum
 {
-  normal,
+  dnormal,
   close30ThenOpen,
   dopen,
 } vldoor_e;

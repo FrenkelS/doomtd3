@@ -515,7 +515,7 @@ static void P_CrossSpecialLine(const line_t __far* line, mobj_t __far* thing)
 
     case 90:
       // Raise Door
-      EV_DoDoor(line,normal);
+      EV_DoDoor(line,dnormal);
       break;
 
     case 91:
