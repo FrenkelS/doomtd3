@@ -50,7 +50,6 @@ int32_t I_GetTime(void);
 void NORETURN_PRE I_Error(const char *error, ...) NORETURN_POST;
 
 void I_InitGraphics(void);
-void I_ShutdownGraphics(void);
 void I_SetPalette(int8_t pal);
 void I_FinishUpdate(void);
 

@@ -91,7 +91,7 @@ void I_InitGraphics(void)
 }
 
 
-void I_ShutdownGraphics(void)
+static void I_ShutdownGraphics(void)
 {
 	I_SetScreenMode(3);
 }
