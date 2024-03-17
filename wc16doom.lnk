@@ -16,7 +16,7 @@ name DOOMTDWC
 file d_items.obj
 file d_main.obj
 file g_game.obj
-file i_system.obj
+file i_timer.obj
 file i_ibm.obj
 file info.obj
 file m_random.obj

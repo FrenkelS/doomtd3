@@ -25,13 +25,13 @@
  
 #include <conio.h>
 #include <dos.h>
+#include <stdarg.h>
 #include <stdint.h>
 
 #include "compiler.h"
 
 #include "d_main.h"
 #include "i_system.h"
-#include "i_video.h"
 #include "m_random.h"
 #include "r_defs.h"
 #include "v_video.h"
@@ -49,6 +49,8 @@ extern const int16_t CENTERY;
 static uint8_t __far* _s_viewwindow;
 static uint8_t __far* _s_statusbar;
 static uint8_t __far* videomemory;
+
+static boolean isGraphicsModeSet = false;
 
 
 static const int8_t colors[14] =
@@ -74,7 +76,7 @@ static void I_SetScreenMode(uint16_t mode)
 }
 
 
-void I_InitGraphicsHardwareSpecificCode(void)
+void I_InitGraphics(void)
 {
 	I_SetScreenMode(6);
 	I_UploadNewPalette(0);
@@ -84,6 +86,8 @@ void I_InitGraphicsHardwareSpecificCode(void)
 
 	_s_viewwindow = Z_MallocStatic(VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT);
 	_s_statusbar = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
+
+	isGraphicsModeSet = true;
 }
 
 
@@ -621,6 +625,27 @@ unsigned int I_ZoneBase(unsigned int *size)
 	_dos_allocmem(max, &segment);
 	*size = max;
 	return segment;
+}
+
+
+static void I_Shutdown(void)
+{
+	if (isGraphicsModeSet)
+		I_ShutdownGraphics();
+}
+
+
+void I_Error(const char *error, ...)
+{
+	va_list argptr;
+
+	I_Shutdown();
+
+	va_start(argptr, error);
+	vprintf(error, argptr);
+	va_end(argptr);
+	printf("\n");
+	exit(1);
 }
 
 

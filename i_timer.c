@@ -19,34 +19,17 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *      Hardware specific code
- *
- * TODO: merge i_system.h and i_video.h
+ *      Timer
  *
  *-----------------------------------------------------------------------------*/
 
-#ifndef __I_VIDEO__
-#define __I_VIDEO__
+#include <stdint.h>
 
-#include "r_defs.h"
-#include "r_main.h"
+#include "i_system.h"
 
-void I_InitGraphicsHardwareSpecificCode(void);
-void I_ShutdownGraphics(void);
-void I_SetPalette(int8_t pal);
-void I_FinishUpdate(void);
+static volatile int32_t ticcount;
 
-
-void R_DrawColumn(const draw_column_vars_t *dcvars);
-void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars);
-void R_DrawFuzzColumn(const draw_column_vars_t *dcvars);
-
-
-void V_DrawRaw(int16_t num, uint16_t offset);
-void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);
-
-
-unsigned int I_ZoneBase(unsigned int *size);
-
-
-#endif
+int32_t I_GetTime(void)
+{
+    return ++ticcount;
+}

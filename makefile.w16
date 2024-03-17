@@ -41,7 +41,7 @@ GLOBOBJS = &
  d_items.obj &
  d_main.obj &
  g_game.obj &
- i_system.obj &
+ i_timer.obj &
  i_ibm.obj &
  info.obj &
  m_random.obj &

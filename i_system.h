@@ -38,6 +38,9 @@
 
 #include "config.h"
 
+#include "r_defs.h"
+#include "r_main.h"
+
 
 #define PARAGRAPH_SIZE 16
 
@@ -48,10 +51,18 @@ void NORETURN_PRE I_Error(const char *error, ...) NORETURN_POST;
 
 void I_InitGraphics(void);
 void I_ShutdownGraphics(void);
-
+void I_SetPalette(int8_t pal);
 void I_FinishUpdate(void);
 
-void I_SetPalette(int8_t pal);
+
+void R_DrawColumn(const draw_column_vars_t *dcvars);
+void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars);
+void R_DrawFuzzColumn(const draw_column_vars_t *dcvars);
+
+
+void V_DrawRaw(int16_t num, uint16_t offset);
+void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);
+
 
 unsigned int I_ZoneBase(unsigned int *size);
 
