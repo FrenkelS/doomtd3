@@ -654,7 +654,6 @@ int main(int argc, const char * const * argv)
 	UNUSED(argc);
 	UNUSED(argv);
 
-	Z_Init();
 	D_DoomMain();
 	return 0;
 }

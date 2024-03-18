@@ -151,6 +151,8 @@ static void D_DoomMainSetup(void)
 {
     // init subsystems
 
+    Z_Init();
+
     G_ReloadDefaults();    // killough 3/4/98: set defaults just loaded.
 
     // CPhipps - move up netgame init
