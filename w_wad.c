@@ -54,8 +54,6 @@
 
 #include "globdata.h"
 
-//#define BACKWARDS
-
 
 //
 // TYPES
@@ -170,11 +168,7 @@ int16_t PUREFUNC W_GetNumForName(const char *name)
 	int64_t nameint;
 	strncpy((char*)&nameint, name, 8);
 
-#if BACKWARDS
-	for (int16_t i = numlumps - 1; i >= 0; i--)
-#else
 	for (int16_t i = 0; i < numlumps; i++)
-#endif
 	{
 		if (nameint == *(int64_t __far*)(fileinfo[i].name))
 		{
