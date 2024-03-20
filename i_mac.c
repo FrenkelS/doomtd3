@@ -19,7 +19,7 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *      Code for the Macintosh 512K
+ *      Code for the Macintosh Plus
  *
  *-----------------------------------------------------------------------------*/
 
