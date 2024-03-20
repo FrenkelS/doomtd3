@@ -153,11 +153,21 @@ static void P_MakeDivline(const line_t __far* li, divline_t *dl)
 
 union int64_u {
 	int64_t ll;
+#if BYTE_ORDER == LITTLE_ENDIAN
 	PACKEDATTR_PRE struct {
 		int16_t wl;
 		fixed_t dw;
 		int16_t wh;
 	} PACKEDATTR_POST s;
+#elif BYTE_ORDER == BIG_ENDIAN
+	PACKEDATTR_PRE struct {
+		int16_t wh;
+		fixed_t dw;
+		int16_t wl;
+	} PACKEDATTR_POST s;
+#else
+#error unknown byte order
+#endif
 };
 
 typedef char assertInt64_uSize[sizeof(union int64_u) == 8 ? 1 : -1];
