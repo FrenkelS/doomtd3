@@ -45,9 +45,12 @@
 #define PARAGRAPH_SIZE 16
 
 
-int32_t I_GetTime(void);
-
-void NORETURN_PRE I_Error(const char *error, ...) NORETURN_POST;
+#if defined __m68k__
+#define I_Error(...) I_Error2("\p"__VA_ARGS__)
+#else
+#define I_Error(...) I_Error2(__VA_ARGS__)
+#endif
+void NORETURN_PRE I_Error2(const char *error, ...) NORETURN_POST;
 
 void I_InitGraphics(void);
 void I_SetPalette(int8_t pal);
