@@ -53,6 +53,7 @@
 #include "w_wad.h"
 #include "v_video.h"
 #include "i_system.h"
+#include "i_timer.h"
 #include "g_game.h"
 #include "st_stuff.h"
 #include "p_setup.h"

@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------
  *
  *
- *  Copyright (C) 2023-2024 Frenkel Smeijers
+ *  Copyright (C) 2024 Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -23,13 +23,9 @@
  *
  *-----------------------------------------------------------------------------*/
 
-#include <stdint.h>
+#ifndef __I_TIMER__
+#define __I_TIMER__
 
-#include "i_timer.h"
+int32_t I_GetTime(void);
 
-static int32_t ticcount;
-
-int32_t I_GetTime(void)
-{
-    return ++ticcount;
-}
+#endif
