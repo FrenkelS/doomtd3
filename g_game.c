@@ -480,6 +480,9 @@ static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
 }
 
 
+static time_t starttime;
+
+
 static void G_DoPlayDemo(void)
 {
     int16_t demolumpnum = W_GetNumForName("DEMO3");
@@ -492,7 +495,7 @@ static void G_DoPlayDemo(void)
 
     _g_demoplayback = true;
 
-    clock();
+    starttime = time(NULL);
 }
 
 /* G_CheckDemoStatus
@@ -501,10 +504,10 @@ static void G_DoPlayDemo(void)
  */
 static void G_CheckDemoStatus (void)
 {
-    uint32_t realtics = (clock() * TICRATE) / CLOCKS_PER_SEC;
-    uint32_t resultfps = TICRATE * 1000L * _g_gametic / realtics;
-    I_Error ("Timed %lu gametics in %lu realtics = %lu.%.3lu frames per second",
-             (uint32_t) _g_gametic,realtics,
-             resultfps / 1000, resultfps % 1000);
+    time_t endtime = time(NULL);
+    time_t seconds = endtime - starttime;
+    uint32_t resultfps = _g_gametic / seconds;
+    I_Error ("%lu frames in %lu seconds = %lu frames per second",
+             (uint32_t) _g_gametic, (uint32_t) seconds, resultfps);
 }
 
