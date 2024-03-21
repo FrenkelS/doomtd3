@@ -19,7 +19,7 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *      Code for the Macintosh Plus
+ *      Code specific for the Macintosh Plus
  *
  *-----------------------------------------------------------------------------*/
 
@@ -32,6 +32,7 @@
 
 #include <stdarg.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "compiler.h"
 
@@ -548,6 +549,22 @@ unsigned int I_ZoneBase(unsigned int *size)
 
 	*size = paragraphs;
 	return D_FP_SEG(ptr);
+}
+
+
+static time_t starttime;
+
+
+void I_StartClock(void)
+{
+	starttime = time(NULL);
+}
+
+
+uint32_t I_EndClock(void)
+{
+	time_t endtime = time(NULL);
+	return (endtime - starttime) * TICRATE;
 }
 
 

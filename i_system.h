@@ -68,4 +68,8 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);
 
 unsigned int I_ZoneBase(unsigned int *size);
 
+
+void I_StartClock(void);
+uint32_t I_EndClock(void);
+
 #endif

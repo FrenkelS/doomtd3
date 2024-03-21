@@ -19,7 +19,7 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *      Code for the IBM PC
+ *      Code specific for the IBM PC
  *
  *-----------------------------------------------------------------------------*/
  
@@ -27,6 +27,7 @@
 #include <dos.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "compiler.h"
 
@@ -625,6 +626,18 @@ unsigned int I_ZoneBase(unsigned int *size)
 	_dos_allocmem(max, &segment);
 	*size = max;
 	return segment;
+}
+
+
+void I_StartClock(void)
+{
+	clock();
+}
+
+
+uint32_t I_EndClock(void)
+{
+	return (clock() * TICRATE) / CLOCKS_PER_SEC;
 }
 
 
