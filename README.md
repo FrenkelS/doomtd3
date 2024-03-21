@@ -10,6 +10,7 @@ Well, enough parts of Doom to run timedemo 3.
 32-bit CPU, 16-bit CPU.
 Little-endian, big-endian.
 It's all possible.
+No FPU required.
 
 ## How to add other platforms
 Implement `i_system.h`. Look at `i_ibm.c` and `i_mac.c` for examples.
