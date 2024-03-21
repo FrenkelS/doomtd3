@@ -10,3 +10,12 @@ Well, enough parts of Doom to run timedemo 3.
 32-bit CPU, 16-bit CPU.
 Little-endian, big-endian.
 It's all possible.
+
+## How to add other platforms
+Implement `i_system.h`. Look at `i_ibm.c` and `i_mac.c` for examples.
+
+|Platform      |Compiler                                          |Set environment variables|Compile code    |
+|--------------|--------------------------------------------------|-------------------------|----------------|
+|IBM PC 16-bit |[gcc-ia16](https://github.com/tkchia/gcc-ia16)    |n/a                      |`compia16.sh`   |
+|IBM PC 32-bit |[DJGPP](https://github.com/andrewwutw/build-djgpp)|`setenvdj.bat`           |`compdj.bat`    |
+|Macintosh Plus|[Retro68](https://github.com/autc04/Retro68)      |n/a                      |`CMakeLists.txt`|
