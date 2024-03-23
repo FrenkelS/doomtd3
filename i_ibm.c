@@ -598,6 +598,11 @@ static unsigned int _dos_allocmem(unsigned int __size, unsigned int *__seg)
 	{
 		int32_t paragraphs = 640 * 1024L / PARAGRAPH_SIZE;
 		ptr = malloc(paragraphs * PARAGRAPH_SIZE);
+		while (!ptr)
+		{
+			paragraphs--;
+			ptr = malloc(paragraphs * PARAGRAPH_SIZE);
+		}
 
 		// align ptr
 		uint32_t m = (uint32_t) ptr;
