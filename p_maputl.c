@@ -715,7 +715,7 @@ boolean P_PathTraverse(fixed_t x1, fixed_t y1, fixed_t x2, fixed_t y2,
   mapx = xt1;
   mapy = yt1;
 
-  for (count = 0; count < 64; count++)
+  for (count = 0; count < 24; count++)
     {
       if (flags & PT_ADDLINES)
         if (!P_BlockLinesIterator(mapx, mapy,PIT_AddLineIntercepts))
