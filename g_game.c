@@ -491,6 +491,7 @@ static void G_DoPlayDemo(void)
 
     _g_demoplayback = true;
 
+    W_CacheLumps();
     I_StartClock();
 }
 

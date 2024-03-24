@@ -249,3 +249,24 @@ const void __far* PUREFUNC W_TryGetLumpByNum(int16_t num)
 	else
 		return NULL;
 }
+
+
+void W_CacheLumps(void)
+{
+	int16_t cachelumpnum = W_GetNumForName("CACHE");
+	uint16_t cachelumplength = W_LumpLength(cachelumpnum);
+	const uint64_t __far* lumpsToCache = W_GetLumpByNum(cachelumpnum);
+	for (int16_t i = 0; i < cachelumplength / sizeof(uint64_t); i++)
+	{
+		uint64_t nameint = *(uint64_t __far*)&lumpsToCache[i];
+		char* name = (char*)&nameint;
+		int16_t num = W_GetNumForName(name);
+		uint16_t length = W_LumpLength(num);
+		if (length <= Z_GetLargestFreeBlockSize())
+		{
+			const void __far* lump = W_GetLumpByNum(num);
+			Z_ChangeTagToCache(lump);
+		}
+	}
+	Z_ChangeTagToCache(lumpsToCache);
+}

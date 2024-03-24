@@ -31,6 +31,7 @@
 
 void Z_Init(void);
 boolean Z_IsEnoughFreeMemory(uint16_t size);
+uint32_t Z_GetLargestFreeBlockSize(void);
 void __far* Z_MallocStatic(uint16_t size);
 void __far* Z_MallocStaticWithUser(uint16_t size, void __far*__far* user); 
 void __far* Z_MallocLevel(uint16_t size, void __far*__far* user);

@@ -596,7 +596,7 @@ static unsigned int _dos_allocmem(unsigned int __size, unsigned int *__seg)
 
 	if (__size == 0xffff)
 	{
-		int32_t paragraphs = 640 * 1024L / PARAGRAPH_SIZE;
+		int32_t paragraphs = 560 * 1024L / PARAGRAPH_SIZE;
 		ptr = malloc(paragraphs * PARAGRAPH_SIZE);
 		while (!ptr)
 		{
