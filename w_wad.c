@@ -262,11 +262,12 @@ void W_CacheLumps(void)
 		char* name = (char*)&nameint;
 		int16_t num = W_GetNumForName(name);
 		uint16_t length = W_LumpLength(num);
-		if (length <= Z_GetLargestFreeBlockSize())
-		{
-			const void __far* lump = W_GetLumpByNum(num);
-			Z_ChangeTagToCache(lump);
-		}
+
+		if (length > Z_GetLargestFreeBlockSize())
+			break;
+
+		const void __far* lump = W_GetLumpByNum(num);
+		Z_ChangeTagToCache(lump);
 	}
 	Z_ChangeTagToCache(lumpsToCache);
 }
