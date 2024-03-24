@@ -5,7 +5,7 @@ Does your computer have 320 kB free contiguous memory?
 And is there a C compiler for it that supports 64-bit integers?
 
 Then you can port Doom to it.
-Well, enough parts of Doom to run timedemo 3.
+Well, enough parts of Doom to run timedemo 3 in black and white.
 
 32-bit CPU, 16-bit CPU.
 Little-endian, big-endian.
