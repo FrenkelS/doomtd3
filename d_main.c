@@ -95,6 +95,7 @@ static void D_Display (void)
         // Now do the drawing
         R_RenderPlayerView (&_g_player);
 
+        ST_doPaletteStuff();
         ST_Drawer();
     }
 

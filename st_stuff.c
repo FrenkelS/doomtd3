@@ -555,7 +555,8 @@ void ST_Ticker(void)
 #define RADIATIONPAL            13
 
 
-static void ST_doPaletteStuff(void)
+// Do red-/gold-shifts from damage/items
+void ST_doPaletteStuff(void)
 {
     int8_t  palette;
     int16_t cnt = _g_player.damagecount;
@@ -712,7 +713,7 @@ static void ST_refreshBackground(void)
 }
 
 
-static void ST_doRefresh(void)
+void ST_doRefresh(void)
 {
   // draw status bar background to off-screen buff
   ST_refreshBackground();
@@ -721,7 +722,8 @@ static void ST_doRefresh(void)
   ST_drawWidgets();
 }
 
-static boolean ST_NeedUpdate()
+
+boolean ST_NeedUpdate(void)
 {
 	// ready weapon ammo
 	if(w_ready.oldnum != *w_ready.num)
@@ -760,33 +762,6 @@ static boolean ST_NeedUpdate()
 
     return false;
 }
-
-void ST_Drawer(void)
-{
-    static uint16_t st_needrefresh = 0;
-
-    ST_doPaletteStuff();  // Do red-/gold-shifts from damage/items
-
-    boolean needupdate = false;
-
-    if(ST_NeedUpdate())
-    {
-        needupdate = true;
-        st_needrefresh = 2; //2 screen buffers
-    }
-    else if(st_needrefresh)
-    {
-        needupdate = true;
-    }
-
-    if(needupdate)
-    {
-        ST_doRefresh();
-
-        st_needrefresh--;
-    }
-}
-
 
 
 //
