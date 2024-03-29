@@ -52,11 +52,13 @@
 #endif
 void NORETURN_PRE I_Error2(const char *error, ...) NORETURN_POST;
 
+
 void I_InitGraphics(void);
 void I_SetPalette(int8_t pal);
 void I_FinishUpdate(void);
 
 
+void R_InitColormaps(void);
 void R_DrawColumn(const draw_column_vars_t *dcvars);
 void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars);
 void R_DrawFuzzColumn(const draw_column_vars_t *dcvars);

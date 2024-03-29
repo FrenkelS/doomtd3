@@ -335,6 +335,7 @@ static const uint8_t VGA_TO_BW_LUT_3b[256] =
 #define NO_PALETTE_CHANGE 100
 
 static boolean refreshStatusBar;
+static uint8_t lcd = 0;
 
 void I_FinishUpdate(void)
 {
@@ -369,16 +370,34 @@ void I_FinishUpdate(void)
 		src = _s_statusbar;
 		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
+				*dst++ = (VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++]) ^ lcd;
 			}
 
 			dst += 0x2000 - VIEWWINDOWWIDTH;
 
 			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-				*dst++ = VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++];
+				*dst++ = (VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++]) ^ lcd;
 			}
 
 			dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
+		}
+	}
+}
+
+
+void R_InitColormaps(void)
+{
+	int16_t num = W_GetNumForName("COLORMAP");
+	fullcolormap = W_GetLumpByNum(num); // Never freed
+
+	if (lcd)
+	{
+		uint16_t length = W_LumpLength(num);
+		uint8_t __far* ptr = (uint8_t __far*) fullcolormap;
+		for (int i = 0; i < length; i++)
+		{
+			uint8_t b = *ptr;
+			*ptr++ = ~b;
 		}
 	}
 }
@@ -702,8 +721,9 @@ void I_Error2(const char *error, ...)
 
 int main(int argc, const char * const * argv)
 {
-	UNUSED(argc);
-	UNUSED(argv);
+	for (int16_t i = 1; i < argc; i++)
+		if (!stricmp("lcd", argv[i]))
+			lcd = 0xff;
 
 	D_DoomMain();
 	return 0;

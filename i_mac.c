@@ -340,6 +340,20 @@ void I_FinishUpdate(void)
 }
 
 
+void R_InitColormaps(void)
+{
+	int16_t num     = W_GetNumForName("COLORMAP");
+	fullcolormap    = W_GetLumpByNum(num); // Never freed
+	uint16_t length = W_LumpLength(num);
+	uint8_t *ptr = (uint8_t *) fullcolormap;
+	for (int i = 0; i < length; i++)
+	{
+		uint8_t b = *ptr;
+		*ptr++ = ~b;
+	}
+}
+
+
 #define COLEXTRABITS (8 - 1)
 #define COLBITS (8 + 1)
 

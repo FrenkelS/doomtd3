@@ -732,24 +732,6 @@ static void R_DrawMaskedColumn(R_DrawColumn_f colfunc, draw_column_vars_t *dcvar
 
 
 //
-// R_InitColormaps
-//
-void R_InitColormaps(void)
-{
-	fullcolormap = W_GetLumpByName("COLORMAP"); // Never freed
-
-#if defined __m68k__
-	uint8_t __far* ptr = (uint8_t __far*) fullcolormap;
-	for (int i = 0; i < 34 * 256; i++)
-	{
-		uint8_t b = *ptr;
-		*ptr++ = ~b;
-	}
-#endif
-}
-
-
-//
 // A vissprite_t is a thing that will be drawn during a refresh.
 // i.e. a sprite object that is partly visible.
 //
