@@ -15,14 +15,17 @@ ia16-elf-gcc -c tables.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib
 ia16-elf-gcc -c w_wad.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c z_zone.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 
-#export CFLAGS="-march=i8088 -mcmodel=medium -li86 -mnewlib-nano-stdio -Os -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=stc"
-export CFLAGS="-march=i8088 -mcmodel=medium -li86 -mnewlib-nano-stdio -Os -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall                       -funroll-loops -freorder-blocks-algorithm=stc"
+ia16-elf-gcc -c g_game.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Os    -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall                       -funroll-loops -freorder-blocks-algorithm=stc
+ia16-elf-gcc -c p_spec.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Os    -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall                       -funroll-loops -freorder-blocks-algorithm=stc
+
+export CFLAGS="-march=i8088 -mcmodel=medium -li86 -mnewlib-nano-stdio -Os -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=stc"
 #export CFLAGS="$CFLAGS -Ofast -flto -fwhole-program -fomit-frame-pointer -funroll-loops -fgcse-sm -fgcse-las -fipa-pta -Wno-attributes -Wpedantic"
 #export CFLAGS="$CFLAGS -Wall -Wextra"
 
 export GLOBOBJS="  d_items.c"
 export GLOBOBJS+=" d_main.c"
-export GLOBOBJS+=" g_game.c"
+#export GLOBOBJS+=" g_game.c"
+export GLOBOBJS+=" g_game.o"
 export GLOBOBJS+=" i_timer.c"
 #export GLOBOBJS+=" i_ibm.c"
 export GLOBOBJS+=" i_ibm.o"
@@ -43,7 +46,8 @@ export GLOBOBJS+=" p_pspr.c"
 export GLOBOBJS+=" p_setup.c"
 #export GLOBOBJS+=" p_sight.c"
 export GLOBOBJS+=" p_sight.o"
-export GLOBOBJS+=" p_spec.c"
+#export GLOBOBJS+=" p_spec.c"
+export GLOBOBJS+=" p_spec.o"
 export GLOBOBJS+=" p_switch.c"
 export GLOBOBJS+=" p_tick.c"
 export GLOBOBJS+=" p_user.c"
@@ -74,3 +78,6 @@ rm r_plane.o
 rm tables.o
 rm w_wad.o
 rm z_zone.o
+
+rm g_game.o
+rm p_spec.o
