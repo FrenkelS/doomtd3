@@ -49,7 +49,7 @@
 #define PLANEWIDTH			 64
 #define SCREENHEIGHT_MAC	342
 
- 
+
 extern const int16_t CENTERY;
 
 static uint8_t *_s_viewwindow;
@@ -296,8 +296,6 @@ static const uint8_t VGA_TO_BW_LUT_3b[256] =
 #undef B1
 #undef B2
 
-
-#define NO_PALETTE_CHANGE 100
 
 static boolean refreshStatusBar;
 

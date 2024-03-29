@@ -22,7 +22,7 @@
  *      Code specific for the IBM PC
  *
  *-----------------------------------------------------------------------------*/
- 
+
 #include <conio.h>
 #include <dos.h>
 #include <stdarg.h>
@@ -44,7 +44,7 @@
 #define PLANEWIDTH			 80
 #define SCREENHEIGHT_CGA	200
 
- 
+
 extern const int16_t CENTERY;
 
 static uint8_t __far* _s_viewwindow;

@@ -45,7 +45,11 @@
 #define PARAGRAPH_SIZE 16
 
 
-#if defined __m68k__
+#if defined pascal && defined __embedded__
+#define macintosh
+#endif
+
+#if defined macintosh
 #define I_Error(...) I_Error2("\p"__VA_ARGS__)
 #else
 #define I_Error(...) I_Error2(__VA_ARGS__)
