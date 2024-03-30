@@ -19,16 +19,13 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *      Code specific to the Macintosh Plus
+ *      Code specific to the Amiga 500
  *
  *-----------------------------------------------------------------------------*/
 
-#include <Quickdraw.h>
-#include <MacMemory.h>
-#include <Sound.h>
-#include <Events.h>
-#include <Fonts.h>
-#include <NumberFormatting.h>
+#include <clib/exec_protos.h>
+#include <clib/intuition_protos.h>
+#include <clib/graphics_protos.h>
 
 #include <stdarg.h>
 #include <stdint.h>
@@ -46,9 +43,10 @@
 #include "globdata.h"
 
 
-#define PLANEWIDTH			 64
-#define SCREENHEIGHT_MAC	342
+#define PLANEWIDTH			 80
 
+extern struct GfxBase *GfxBase;
+extern struct Custom custom;
 
 extern const int16_t CENTERY;
 
@@ -56,13 +54,100 @@ static uint8_t *_s_viewwindow;
 static uint8_t *_s_statusbar;
 static uint8_t *videomemory;
 
+static boolean isGraphicsModeSet = false;
+
+
+#define FMODE	0x1fc
+
+#define DDFSTRT			0x092
+#define DDFSTOP			0x094
+#define DDFSTRT_VALUE	0x003c
+#define DDFSTOP_VALUE	0x00d4
+
+#define DIWSTRT				0x08e
+#define DIWSTOP				0x090
+#define DIWSTRT_VALUE		0x2c81
+#define DIWSTOP_VALUE_PAL	0x2cc1
+#define DIWSTOP_VALUE_NTSC	0xf4c1
+
+#define BPLCON0			0x100
+#define BPLCON0_VALUE	0b1001000000000000
+
+#define BPL1MOD	0x108
+
+#define COLOR00	0x180
+#define COLOR01	0x182
+
+#define BPL1PTH	0x0e0
+#define BPL1PTL	0x0e2
+
+#define COPLIST_IDX_DIWSTOP_VALUE 9
+#define COPLIST_IDX_BPL1PTH_VALUE 19
+#define COPLIST_IDX_BPL1PTL_VALUE 21
+
+
+static uint16_t __chip coplist[] = {
+	FMODE,   0,
+	DDFSTRT, DDFSTRT_VALUE,
+	DDFSTOP, DDFSTOP_VALUE,
+	DIWSTRT, DIWSTRT_VALUE,
+	DIWSTOP, DIWSTOP_VALUE_PAL,
+	BPLCON0, BPLCON0_VALUE,
+	BPL1MOD, 0,
+
+	COLOR00, 0x000,
+	COLOR01, 0xfff,
+
+	BPL1PTH, 0,
+	BPL1PTL, 0,
+
+	0xffff, 0xfffe, // COP_WAIT_END
+	0xffff, 0xfffe  // COP_WAIT_END
+};
+
 
 void I_InitGraphics(void)
 {
-	videomemory = qd.screenBits.baseAddr + ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + (((SCREENHEIGHT_MAC - SCREENHEIGHT * 2) / 2) * PLANEWIDTH);
+	LoadView(NULL);
+	WaitTOF();
+	WaitTOF();
+
+	boolean pal = (((struct GfxBase *) GfxBase)->DisplayFlags & PAL) == PAL;
+	int16_t screenHeightAmiga;
+	if (pal) {
+		coplist[COPLIST_IDX_DIWSTOP_VALUE] = DIWSTOP_VALUE_PAL;
+		screenHeightAmiga = 256;
+	} else {
+		coplist[COPLIST_IDX_DIWSTOP_VALUE] = DIWSTOP_VALUE_NTSC;
+		screenHeightAmiga = 200;
+	}
+
+	videomemory = Z_MallocStatic(PLANEWIDTH * screenHeightAmiga);
+	memset(videomemory, 0, PLANEWIDTH * screenHeightAmiga);
+
+	uint32_t addr = (uint32_t) videomemory;
+	coplist[COPLIST_IDX_BPL1PTH_VALUE] = addr >> 16;
+	coplist[COPLIST_IDX_BPL1PTL_VALUE] = addr;
+
+	videomemory +=  + ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
+
+	custom.dmacon = 0x0020;
+	custom.cop1lc = (uint32_t) coplist;
 
 	_s_viewwindow = Z_MallocStatic(VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT);
 	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
+
+	isGraphicsModeSet = true;
+}
+
+
+static void I_ShutdownGraphics(void)
+{
+	LoadView(((struct GfxBase *) GfxBase)->ActiView);
+	WaitTOF();
+	WaitTOF();
+	custom.cop1lc = (uint32_t) ((struct GfxBase *) GfxBase)->copinit;
+	RethinkDisplay();
 }
 
 
@@ -72,9 +157,9 @@ void I_SetPalette(int8_t pal)
 }
 
 
-#define B2 (0 << 0)
+#define B0 (0 << 0)
 #define B1 (1 << 0)
-#define B0 (3 << 0)
+#define B2 (3 << 0)
 
 static const uint8_t VGA_TO_BW_LUT_0[256] =
 {
@@ -100,9 +185,9 @@ static const uint8_t VGA_TO_BW_LUT_0[256] =
 #undef B1
 #undef B2
 
-#define B2 (0 << 0)
+#define B0 (0 << 0)
 #define B1 (2 << 0)
-#define B0 (3 << 0)
+#define B2 (3 << 0)
 
 static const uint8_t VGA_TO_BW_LUT_0b[256] =
 {
@@ -128,9 +213,9 @@ static const uint8_t VGA_TO_BW_LUT_0b[256] =
 #undef B1
 #undef B2
 
-#define B2 (0 << 2)
+#define B0 (0 << 2)
 #define B1 (1 << 2)
-#define B0 (3 << 2)
+#define B2 (3 << 2)
 
 static const uint8_t VGA_TO_BW_LUT_1[256] =
 {
@@ -156,9 +241,9 @@ static const uint8_t VGA_TO_BW_LUT_1[256] =
 #undef B1
 #undef B2
 
-#define B2 (0 << 2)
+#define B0 (0 << 2)
 #define B1 (2 << 2)
-#define B0 (3 << 2)
+#define B2 (3 << 2)
 
 static const uint8_t VGA_TO_BW_LUT_1b[256] =
 {
@@ -184,9 +269,9 @@ static const uint8_t VGA_TO_BW_LUT_1b[256] =
 #undef B1
 #undef B2
 
-#define B2 (0 << 4)
+#define B0 (0 << 4)
 #define B1 (1 << 4)
-#define B0 (3 << 4)
+#define B2 (3 << 4)
 
 static const uint8_t VGA_TO_BW_LUT_2[256] =
 {
@@ -212,9 +297,9 @@ static const uint8_t VGA_TO_BW_LUT_2[256] =
 #undef B1
 #undef B2
 
-#define B2 (0 << 4)
+#define B0 (0 << 4)
 #define B1 (2 << 4)
-#define B0 (3 << 4)
+#define B2 (3 << 4)
 
 static const uint8_t VGA_TO_BW_LUT_2b[256] =
 {
@@ -240,9 +325,9 @@ static const uint8_t VGA_TO_BW_LUT_2b[256] =
 #undef B1
 #undef B2
 
-#define B2 (0 << 6)
+#define B0 (0 << 6)
 #define B1 (1 << 6)
-#define B0 (3 << 6)
+#define B2 (3 << 6)
 
 static const uint8_t VGA_TO_BW_LUT_3[256] =
 {
@@ -268,9 +353,9 @@ static const uint8_t VGA_TO_BW_LUT_3[256] =
 #undef B1
 #undef B2
 
-#define B2 (0 << 6)
+#define B0 (0 << 6)
 #define B1 (2 << 6)
-#define B0 (3 << 6)
+#define B2 (3 << 6)
 
 static const uint8_t VGA_TO_BW_LUT_3b[256] =
 {
@@ -297,6 +382,8 @@ static const uint8_t VGA_TO_BW_LUT_3b[256] =
 #undef B2
 
 
+#define NO_PALETTE_CHANGE 100
+
 static boolean refreshStatusBar;
 
 void I_FinishUpdate(void)
@@ -306,10 +393,8 @@ void I_FinishUpdate(void)
 	uint8_t *dst = videomemory;
 
 	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT; y++) {
-		memcpy(dst,              src, VIEWWINDOWWIDTH);
-		memcpy(dst + PLANEWIDTH, src, VIEWWINDOWWIDTH);
-
-		dst += PLANEWIDTH * 2;
+		memcpy(dst, src, VIEWWINDOWWIDTH);
+		dst += PLANEWIDTH;
 		src += VIEWWINDOWWIDTH;
 	}
 
@@ -319,20 +404,18 @@ void I_FinishUpdate(void)
 		refreshStatusBar = false;
 
 		src = _s_statusbar;
-		for (uint_fast8_t y = 0; y < ST_HEIGHT; y++) {
+		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-				uint8_t s1 = *src++;
-				uint8_t s2 = *src++;
-				uint8_t s3 = *src++;
-				uint8_t s4 = *src++;
-				uint8_t b  = VGA_TO_BW_LUT_3[s1]  | VGA_TO_BW_LUT_2[s2]  | VGA_TO_BW_LUT_1[s3]  | VGA_TO_BW_LUT_0[s4];
-				uint8_t bb = VGA_TO_BW_LUT_3b[s1] | VGA_TO_BW_LUT_2b[s2] | VGA_TO_BW_LUT_1b[s3] | VGA_TO_BW_LUT_0b[s4];
-				*dst                = b;
-				*(dst + PLANEWIDTH) = bb;
-				dst++;
+				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
 			}
 
-			dst += PLANEWIDTH * 2 - VIEWWINDOWWIDTH;
+			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
+
+			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+				*dst++ = VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++];
+			}
+
+			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
 		}
 	}
 }
@@ -340,15 +423,7 @@ void I_FinishUpdate(void)
 
 void R_InitColormaps(void)
 {
-	int16_t num     = W_GetNumForName("COLORMAP");
-	fullcolormap    = W_GetLumpByNum(num); // Never freed
-	uint16_t length = W_LumpLength(num);
-	uint8_t *ptr = (uint8_t *) fullcolormap;
-	for (int i = 0; i < length; i++)
-	{
-		uint8_t b = *ptr;
-		*ptr++ = ~b;
-	}
+	fullcolormap = W_GetLumpByName("COLORMAP"); // Never freed
 }
 
 
@@ -519,7 +594,7 @@ void ST_Drawer(void)
 }
 
 
-void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch)
+void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t *patch)
 {
 	y -= patch->topoffset;
 	x -= patch->leftoffset;
@@ -576,69 +651,48 @@ unsigned int I_ZoneBase(unsigned int *size)
 }
 
 
-static time_t starttime;
+static clock_t starttime;
 
 
 void I_StartClock(void)
 {
-	starttime = time(NULL);
+	starttime = clock();
 }
 
 
 uint32_t I_EndClock(void)
 {
-	time_t endtime = time(NULL);
-	return (endtime - starttime) * TICRATE;
+	clock_t endtime = clock();
+	return ((endtime - starttime) * TICRATE) / CLOCKS_PER_SEC;
 }
 
 
-static Rect r;
+static void I_Shutdown(void)
+{
+	if (isGraphicsModeSet)
+		I_ShutdownGraphics();
+}
 
 
 void I_Error2(const char *error, ...)
 {
 	va_list argptr;
-	Str255 pstr;
+
+	I_Shutdown();
 
 	va_start(argptr, error);
-	vsprintf(pstr, error, argptr);
+	vprintf(error, argptr);
 	va_end(argptr);
-
-	SetRect(&r, 10, 10, 10 + StringWidth(pstr) + 10, 30);
-	PaintRect(&r);
-	PenMode(patXor);
-	FrameRect(&r);
-	MoveTo(15, 25);
-	TextMode(srcBic);
-	DrawString(pstr);
-
-	while (!Button())
-	{
-	}
-	FlushEvents(everyEvent, -1);
-
+	printf("\n");
 	exit(1);
 }
 
 
-int main(void)
+int main(int argc, const char * const * argv)
 {
-	InitGraf(&qd.thePort);
-	InitFonts();
-	InitWindows();
-	InitMenus();
-
-	r = qd.screenBits.bounds;
-    
-	SetRect(&r, r.left + 5, r.top + 45, r.right - 5, r.bottom - 5);
-	WindowPtr win = NewWindow(NULL, &r, "\pDOOM -timedemo demo3", true, 0, (WindowPtr)-1, false, 0);
-    
-	SetPort(win);
-	r = win->portRect;
-
-	EraseRect(&r);
+	UNUSED(argc);
+	UNUSED(argv);
 
 	D_DoomMain();
-
 	return 0;
 }

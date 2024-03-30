@@ -19,7 +19,7 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *      Code specific for the IBM PC
+ *      Code specific to the IBM PC
  *
  *-----------------------------------------------------------------------------*/
 
@@ -579,29 +579,29 @@ void V_DrawRaw(int16_t num, uint16_t offset)
 void ST_Drawer(void)
 {
 #if SCREENPAGES == 1
-    if (ST_NeedUpdate())
-        ST_doRefresh();
+	if (ST_NeedUpdate())
+		ST_doRefresh();
 #elif SCREENPAGES == 2
-    static uint16_t st_needrefresh = 0;
+	static uint16_t st_needrefresh = 0;
 
-    boolean needupdate = false;
+	boolean needupdate = false;
 
-    if (ST_NeedUpdate())
-    {
-        needupdate = true;
-        st_needrefresh = 2; //2 screen pages
-    }
-    else if(st_needrefresh)
-    {
-        needupdate = true;
-    }
+	if (ST_NeedUpdate())
+	{
+		needupdate = true;
+		st_needrefresh = 2; //2 screen pages
+	}
+	else if(st_needrefresh)
+	{
+		needupdate = true;
+	}
 
-    if(needupdate)
-    {
-        ST_doRefresh();
+	if(needupdate)
+	{
+		ST_doRefresh();
 
-        st_needrefresh--;
-    }
+		st_needrefresh--;
+	}
 #else
 #error SCREENPAGES undefined
 #endif
