@@ -686,15 +686,19 @@ unsigned int I_ZoneBase(unsigned int *size)
 }
 
 
+static clock_t starttime;
+
+
 void I_StartClock(void)
 {
-	clock();
+	starttime = clock();
 }
 
 
 uint32_t I_EndClock(void)
 {
-	return (clock() * TICRATE) / CLOCKS_PER_SEC;
+	clock_t endtime = clock();
+	return ((endtime - starttime) * TICRATE) / CLOCKS_PER_SEC;
 }
 
 
