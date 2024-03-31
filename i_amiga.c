@@ -415,7 +415,7 @@ static const uint8_t VGA_TO_BW_LUT_3b[256] =
 
 #define NO_PALETTE_CHANGE 100
 
-static boolean refreshStatusBar;
+static uint16_t st_needrefresh = 0;
 
 void I_FinishUpdate(void)
 {
@@ -427,9 +427,9 @@ void I_FinishUpdate(void)
 	}
 
 	// status bar
-	if (refreshStatusBar)
+	if (st_needrefresh)
 	{
-		refreshStatusBar = false;
+		st_needrefresh--;
 
 		uint8_t *src = _s_statusbar;
 		uint8_t *dst = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
@@ -608,8 +608,6 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 
 void V_DrawRaw(int16_t num, uint16_t offset)
 {
-	refreshStatusBar = true;
-
 	const uint8_t *lump = W_TryGetLumpByNum(num);
 
 	if (lump != NULL)
@@ -625,25 +623,10 @@ void V_DrawRaw(int16_t num, uint16_t offset)
 
 void ST_Drawer(void)
 {
-	static uint16_t st_needrefresh = 0;
-
-	boolean needupdate = false;
-
 	if (ST_NeedUpdate())
 	{
-		needupdate = true;
-		st_needrefresh = 2; //2 screen pages
-	}
-	else if(st_needrefresh)
-	{
-		needupdate = true;
-	}
-
-	if(needupdate)
-	{
 		ST_doRefresh();
-
-		st_needrefresh--;
+		st_needrefresh = 2; //2 screen pages
 	}
 }
 
