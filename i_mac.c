@@ -484,7 +484,7 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 
 	do
 	{
-		*dest = nearcolormap[dest[fuzzoffset[fuzzpos] * 4]];
+		*dest = nearcolormap[dest[fuzzoffset[fuzzpos]]];
 		dest += VIEWWINDOWWIDTH;
 
 		fuzzpos++;
