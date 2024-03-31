@@ -126,11 +126,6 @@ typedef struct player_s
   // Refired shots are less accurate.
   int16_t                 refire;
 
-   // For intermission stats.
-  int16_t                 killcount;
-  int16_t                 itemcount;
-  int16_t                 secretcount;
-
   // Hint messages. // CPhipps - const
   const char*         message;
 

@@ -311,8 +311,7 @@ static void P_PlayerInSpecialSector (player_t* player)
         break;
 
       case 9:
-        // Tally player in secret sector, clear secret special
-        player->secretcount++;
+        // clear secret special
         sector->special = 0;
         break;
 

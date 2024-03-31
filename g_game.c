@@ -83,8 +83,6 @@ player_t        _g_player;
 
 int32_t             _g_gametic;
 int32_t             _g_basetic;       /* killough 9/29/98: for demo sync */
-int32_t             _g_totalkills, _g_totallive, _g_totalitems, _g_totalsecret;    // for intermission
-static int32_t             totalleveltimes;      // CPhipps - total time for all completed levels
 
 
 static boolean gamekeydown[NUMKEYS];
@@ -295,21 +293,10 @@ void G_PlayerReborn (void)
 {
     player_t *p;
     int16_t i;
-    int16_t killcount;
-    int16_t itemcount;
-    int16_t secretcount;
-
-    killcount   = _g_player.killcount;
-    itemcount   = _g_player.itemcount;
-    secretcount = _g_player.secretcount;
 
     p = &_g_player;
 
     memset (p, 0, sizeof(*p));
-
-    _g_player.killcount = killcount;
-    _g_player.itemcount = itemcount;
-    _g_player.secretcount = secretcount;
 
     p->usedown = p->attackdown = true;  // don't do anything immediately
     p->playerstate = PST_LIVE;
@@ -364,8 +351,6 @@ static void G_InitNew(skill_t skill, int16_t map)
 
     _s_gamemap = map;
     _g_gameskill = skill;
-
-    totalleveltimes = 0;
 
     G_DoLoadLevel ();
 }

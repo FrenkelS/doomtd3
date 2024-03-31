@@ -482,8 +482,6 @@ void P_TouchSpecialThing(mobj_t __far* special, mobj_t __far* toucher)
       I_Error ("P_SpecialThing: Unknown gettable thing");
     }
 
-  if (special->flags & MF_COUNTITEM)
-    player->itemcount++;
   P_RemoveMobj (special);
   player->bonuscount += BONUSADD;
 }
@@ -500,25 +498,6 @@ static void P_KillMobj(mobj_t __far* source, mobj_t __far* target)
   target->flags &= ~MF_NOGRAVITY;
   target->flags |= MF_CORPSE|MF_DROPOFF;
   target->height >>= 2;
-
-
-  if (!((target->flags ^ MF_COUNTKILL) & (MF_FRIEND | MF_COUNTKILL)))
-    _g_totallive--;
-
-  if (source && P_MobjIsPlayer(source))
-    {
-      // count for intermission
-      if (target->flags & MF_COUNTKILL)
-        P_MobjIsPlayer(source)->killcount++;
-    }
-  else if (target->flags & MF_COUNTKILL)
-  { /* Add to kills tally */
-
-      // count all monster deaths,
-      // even those caused by other monsters
-      _g_player.killcount++;
-
-  }
 
   if (P_MobjIsPlayer(target))
     {

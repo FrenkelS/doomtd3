@@ -523,11 +523,6 @@ void P_SetupLevel(int16_t map)
     char  lumpname[9];
     int16_t   lumpnum;
 
-    _g_totallive = _g_totalkills = _g_totalitems = _g_totalsecret = 0;
-
-    for (i=0; i<MAXPLAYERS; i++)
-        _g_player.killcount = _g_player.secretcount = _g_player.itemcount = 0;
-
     // Initial height of PointOfView will be set by player think.
     _g_player.viewz = 1;
 
@@ -536,7 +531,6 @@ void P_SetupLevel(int16_t map)
     P_InitThinkers();
 
     _g_leveltime = 0;
-    _g_totallive = 0;
 
     // find map name
     sprintf(lumpname, "E1M%d", map);   // killough 1/24/98: simplify

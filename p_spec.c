@@ -368,10 +368,10 @@ void P_SpawnSpecials (void)
         // glowing light
         P_SpawnGlowingLight(sector);
         break;
-      case 9:
+
+      //case 9:
         // secret sector
-        _g_totalsecret++;
-        break;
+        //break;
 
       case 12:
         // sync strobe slow

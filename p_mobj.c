@@ -822,8 +822,6 @@ mobj_t __far* P_SpawnMobj(fixed_t x,fixed_t y,fixed_t z,mobjtype_t type)
 
     mobj->target = mobj->tracer = mobj->lastenemy = NULL;
     P_AddThinker (&mobj->thinker);
-    if (!((mobj->flags ^ MF_COUNTKILL) & (MF_FRIEND | MF_COUNTKILL)))
-        _g_totallive++;
     return mobj;
 }
 
@@ -1005,13 +1003,6 @@ void P_SpawnMapThing(const mapthing_t __far* mthing)
 
     if (mobj->tics > 0)
         mobj->tics = 1 + (P_Random () % mobj->tics);
-
-    /* killough 7/20/98: exclude friends */
-    if (!((mobj->flags ^ MF_COUNTKILL) & (MF_FRIEND | MF_COUNTKILL)))
-        _g_totalkills++;
-
-    if (mobj->flags & MF_COUNTITEM)
-        _g_totalitems++;
 
     mobj->angle = ANG45 * (mthing->angle/45);
     if (options & MTF_AMBUSH)

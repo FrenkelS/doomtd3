@@ -176,15 +176,6 @@
 //  don't auto float to target's height.
 #define MF_INFLOAT      0x00200000UL
 
-// On kill, count this enemy object
-//  towards intermission kill total.
-// Happy gathering.
-#define MF_COUNTKILL    0x00400000UL
-
-// On picking up, count this item object
-//  towards intermission item total.
-#define MF_COUNTITEM    0x00800000UL
-
 // Special handling: skull in flight.
 // Neither a cacodemon nor a missile.
 #define MF_SKULLFLY     0x01000000UL

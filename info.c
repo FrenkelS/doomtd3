@@ -393,7 +393,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     100,    // mass
     0,    // damage
     sfx_posact,   // activesound
-    MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL   // flags
+    MF_SOLID|MF_SHOOTABLE   // flags
   },
 
   {   // MT_SHOTGUY
@@ -416,7 +416,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     100,    // mass
     0,    // damage
     sfx_posact,   // activesound
-    MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL   // flags
+    MF_SOLID|MF_SHOOTABLE   // flags
   },
 
   {   // MT_TROOP
@@ -439,7 +439,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     100,    // mass
     0,    // damage
     sfx_bgact,    // activesound
-    MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL   // flags
+    MF_SOLID|MF_SHOOTABLE   // flags
   },
 
   {   // MT_SERGEANT
@@ -462,7 +462,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     400,    // mass
     0,    // damage
     sfx_dmact,    // activesound
-    MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL   // flags
+    MF_SOLID|MF_SHOOTABLE   // flags
   },
 
   {   // MT_SHADOWS
@@ -485,7 +485,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     400,    // mass
     0,    // damage
     sfx_dmact,    // activesound
-    MF_SOLID|MF_SHOOTABLE|MF_SHADOW|MF_COUNTKILL   // flags
+    MF_SOLID|MF_SHOOTABLE|MF_SHADOW   // flags
   },
 
   {   // MT_BARREL
@@ -646,7 +646,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     100,    // mass
     0,    // damage
     sfx_None,   // activesound
-    MF_SPECIAL|MF_COUNTITEM    // flags
+    MF_SPECIAL    // flags
   },
 
   {   // MT_MISC3
@@ -669,7 +669,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     100,    // mass
     0,    // damage
     sfx_None,   // activesound
-    MF_SPECIAL|MF_COUNTITEM    // flags
+    MF_SPECIAL    // flags
   },
 
   {   // MT_MISC4
@@ -807,7 +807,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     100,    // mass
     0,    // damage
     sfx_None,   // activesound
-    MF_SPECIAL|MF_COUNTITEM    // flags
+    MF_SPECIAL    // flags
   },
 
   {   // MT_INS
@@ -830,7 +830,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     100,    // mass
     0,    // damage
     sfx_None,   // activesound
-    MF_SPECIAL|MF_COUNTITEM    // flags
+    MF_SPECIAL    // flags
   },
 
   {   // MT_MISC14
@@ -876,7 +876,7 @@ const mobjinfo_t mobjinfo[NUMMOBJTYPES] = {
     100,    // mass
     0,    // damage
     sfx_None,   // activesound
-    MF_SPECIAL|MF_COUNTITEM    // flags
+    MF_SPECIAL    // flags
   },
 
   {   // MT_CLIP
