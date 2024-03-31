@@ -105,11 +105,9 @@ static memblock_t __far* segmentToPointer(segment_t seg)
 void Z_Init (void)
 {
 	// allocate all available conventional memory.
-	unsigned int max;
-	unsigned int segment = I_ZoneBase(&max);
+	uint32_t heapSize;
+	segment_t segment = I_ZoneBase(&heapSize);
 	static uint8_t __far* mainzone; mainzone = D_MK_FP(segment, 0);
-
-	uint32_t heapSize = (uint32_t)max * PARAGRAPH_SIZE;
 
 	// align blocklist
 	uint_fast8_t i = 0;
@@ -136,6 +134,35 @@ void Z_Init (void)
 #if defined ZONEIDCHECK
 	block->id   = ZONEID;
 #endif
+
+	uint32_t addMemSize;
+	segment_t addsegment = I_ZoneAdditional(&addMemSize);
+	if (addMemSize)
+	{
+		segment_t romblock_segment = mainzone_rover_segment + heapSize / PARAGRAPH_SIZE - 1;
+		memblock_t __far* romblock = segmentToPointer(romblock_segment);
+		romblock->size = (uint32_t)(addsegment - romblock_segment) * PARAGRAPH_SIZE;
+		romblock->tag  = PU_STATIC;
+		romblock->user = (void __far*)mainzone;
+		romblock->next = addsegment;
+		romblock->prev = mainzone_rover_segment;
+#if defined ZONEIDCHECK
+		romblock->id   = ZONEID;
+#endif
+
+		memblock_t __far* addblock = segmentToPointer(addsegment);
+		addblock->size = addMemSize;
+		addblock->tag  = 0;
+		addblock->user = NULL; // NULL indicates a free block.
+		addblock->next = block->next; // == pointerToSegment(mainzone_sentinal)
+		addblock->prev = romblock_segment;
+#if defined ZONEIDCHECK
+		addblock->id   = ZONEID;
+#endif
+
+		block->size -= PARAGRAPH_SIZE;
+		block->next = romblock_segment;
+	}
 }
 
 

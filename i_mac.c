@@ -552,9 +552,9 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch)
 }
 
 
-unsigned int I_ZoneBase(unsigned int *size)
+segment_t I_ZoneBase(uint32_t *size)
 {
-	int32_t paragraphs = 560 * 1024L / PARAGRAPH_SIZE;
+	uint32_t paragraphs = 560 * 1024L / PARAGRAPH_SIZE;
 	uint8_t *ptr = malloc(paragraphs * PARAGRAPH_SIZE);
 	while (!ptr)
 	{
@@ -571,8 +571,15 @@ unsigned int I_ZoneBase(unsigned int *size)
 			m = (uint32_t) ++ptr;
 	}
 
-	*size = paragraphs;
+	*size = paragraphs * PARAGRAPH_SIZE;
 	return D_FP_SEG(ptr);
+}
+
+
+segment_t I_ZoneAdditional(uint32_t *size)
+{
+	*size = 0;
+	return 0;
 }
 
 

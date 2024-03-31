@@ -94,7 +94,8 @@ void I_InitGraphics(void)
 
 static void I_ShutdownGraphics(void)
 {
-	I_SetScreenMode(3);
+	if (isGraphicsModeSet)
+		I_SetScreenMode(3);
 }
 
 
@@ -676,13 +677,112 @@ static unsigned int _dos_allocmem(unsigned int __size, unsigned int *__seg)
 #endif
 
 
-unsigned int I_ZoneBase(unsigned int *size)
+segment_t I_ZoneBase(uint32_t *size)
 {
 	unsigned int max, segment;
 	_dos_allocmem(0xffff, &max);
 	_dos_allocmem(max, &segment);
-	*size = max;
+	*size = (uint32_t)max * PARAGRAPH_SIZE;
+	printf("Standard: %ld bytes allocated for zone\n", *size);
 	return segment;
+}
+
+
+#define	EMS_INT			0x67
+
+#define	EMS_STATUS		0x40
+#define	EMS_GETFRAME	0x41
+#define	EMS_GETPAGES	0x42
+#define	EMS_ALLOCPAGES	0x43
+#define	EMS_MAPPAGE		0x44
+#define	EMS_FREEPAGES	0x45
+#define	EMS_VERSION		0x46
+
+static uint16_t emsHandle;
+
+segment_t I_ZoneAdditional(uint32_t *size)
+{
+	*size = 0;
+
+#if defined _M_I86
+	segment_t __far* emsInterruptVectorSegment = D_MK_FP(0, EMS_INT * 4 + 2);
+	uint64_t __far* actualEmsDeviceName = D_MK_FP(*emsInterruptVectorSegment, 0x000a);
+	uint64_t expectedEmsDeviceName = *(uint64_t*)"EMMXXXX0";
+	if (*actualEmsDeviceName != expectedEmsDeviceName)
+		return 0;
+
+	// EMS detected
+
+	union REGS regs;
+	regs.h.ah = EMS_STATUS;
+	int86(EMS_INT, &regs, &regs);
+	if (regs.h.ah)
+		return 0;
+
+	// EMS status is successful
+
+	regs.h.ah = EMS_VERSION;
+	int86(EMS_INT, &regs, &regs);
+	if (regs.h.ah || regs.h.al < 0x32)
+		return 0;
+
+	// EMS v3.2 or higher detected
+
+	regs.h.ah = EMS_GETFRAME;
+	int86(EMS_INT, &regs, &regs);
+	if (regs.h.ah)
+		return 0;
+
+	// EMS page frame address
+	segment_t emsSegment = regs.w.bx;
+
+	regs.h.ah = EMS_GETPAGES;
+	int86(EMS_INT, &regs, &regs);
+	if (regs.h.ah || regs.w.bx < 4)
+		return 0;
+
+	// There are at least 4 unallocated pages
+
+	regs.h.ah = EMS_ALLOCPAGES;
+	regs.w.bx = 4;
+	int86(EMS_INT, &regs, &regs);
+	if (regs.h.ah)
+		return 0;
+
+	// 4 logical pages are allocated
+
+	emsHandle = regs.w.dx;
+
+	for (int16_t pageNumber = 0; pageNumber < 4; pageNumber++)
+	{
+		regs.h.ah = EMS_MAPPAGE;
+		regs.h.al = pageNumber;	// physical page number
+		regs.w.bx = pageNumber;	//  logical page number
+		regs.w.dx = emsHandle;
+		int86(EMS_INT, &regs, &regs);
+		if (regs.h.ah)
+			return 0;
+	}
+	
+	// 64 kB of expanded memory is mapped
+	*size = 65536;
+	printf("Expanded:  65536 bytes allocated for zone\n");
+	return emsSegment;
+#else
+	return 0;
+#endif
+}
+
+
+static void I_ShutdownEMS(void)
+{
+	if (emsHandle)
+	{
+		union REGS regs;
+		regs.h.ah = EMS_FREEPAGES;
+		regs.w.dx = emsHandle;
+		int86(EMS_INT, &regs, &regs);
+	}
 }
 
 
@@ -702,18 +802,12 @@ uint32_t I_EndClock(void)
 }
 
 
-static void I_Shutdown(void)
-{
-	if (isGraphicsModeSet)
-		I_ShutdownGraphics();
-}
-
-
 void I_Error2(const char *error, ...)
 {
 	va_list argptr;
 
-	I_Shutdown();
+	I_ShutdownGraphics();
+	I_ShutdownEMS();
 
 	va_start(argptr, error);
 	vprintf(error, argptr);

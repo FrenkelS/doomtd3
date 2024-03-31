@@ -73,7 +73,8 @@ void ST_Drawer(void);
 void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch);
 
 
-unsigned int I_ZoneBase(unsigned int *size);
+segment_t I_ZoneBase(uint32_t *size);
+segment_t I_ZoneAdditional(uint32_t *size);
 
 
 void I_StartClock(void);
