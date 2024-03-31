@@ -15,7 +15,6 @@ ia16-elf-gcc -c tables.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib
 ia16-elf-gcc -c w_wad.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c z_zone.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 
-ia16-elf-gcc -c g_game.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Os    -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall                       -funroll-loops -freorder-blocks-algorithm=stc
 ia16-elf-gcc -c p_spec.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Os    -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall                       -funroll-loops -freorder-blocks-algorithm=stc
 
 export CFLAGS="-march=i8088 -mcmodel=medium -li86 -mnewlib-nano-stdio -Os -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=stc"
@@ -24,8 +23,7 @@ export CFLAGS="-march=i8088 -mcmodel=medium -li86 -mnewlib-nano-stdio -Os -fomit
 
 export GLOBOBJS="  d_items.c"
 export GLOBOBJS+=" d_main.c"
-#export GLOBOBJS+=" g_game.c"
-export GLOBOBJS+=" g_game.o"
+export GLOBOBJS+=" g_game.c"
 export GLOBOBJS+=" i_timer.c"
 #export GLOBOBJS+=" i_ibm.c"
 export GLOBOBJS+=" i_ibm.o"
@@ -79,5 +77,4 @@ rm tables.o
 rm w_wad.o
 rm z_zone.o
 
-rm g_game.o
 rm p_spec.o

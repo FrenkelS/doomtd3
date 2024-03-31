@@ -82,7 +82,7 @@ static int16_t             _s_gamemap;
 player_t        _g_player;
 
 int32_t             _g_gametic;
-int32_t             _g_basetic;       /* killough 9/29/98: for demo sync */
+static int32_t      _s_basetic;
 
 
 static boolean gamekeydown[NUMKEYS];
@@ -421,7 +421,7 @@ static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
     // because demobuffer can be uninitialized
     const byte __far* header_p = demo_p;
 
-    _g_basetic = _g_gametic;  // killough 9/29/98
+    _s_basetic = _g_gametic;
 
     // killough 2/22/98, 2/28/98: autodetect old demos and act accordingly.
     // Old demos turn on demo_compatibility => compatibility; new demos load
@@ -461,6 +461,12 @@ static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
     }
 
     return demo_p;
+}
+
+
+boolean G_IsGameticEqualToBasetic(void)
+{
+	return _g_gametic == _s_basetic;
 }
 
 

@@ -49,5 +49,6 @@ void G_ReloadDefaults(void);     // killough 3/1/98: loads game defaults
 void G_PlayerReborn(void);
 void G_BuildTiccmd (void);
 
+boolean G_IsGameticEqualToBasetic(void);
 
 #endif

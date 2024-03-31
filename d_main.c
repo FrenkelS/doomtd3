@@ -84,7 +84,7 @@ static void D_BuildNewTiccmds(void)
 
 static void D_Display (void)
 {
-    if (_g_gametic != _g_basetic)
+    if (!G_IsGameticEqualToBasetic())
     { // In a level
 
         // Now do the drawing

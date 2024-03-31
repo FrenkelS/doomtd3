@@ -33,7 +33,6 @@ extern skill_t         _g_gameskill;
 extern player_t        _g_player;
 
 extern int32_t             _g_gametic;
-extern int32_t             _g_basetic;       /* killough 9/29/98: for demo sync */
 
 
 extern boolean         _g_playeringame;
