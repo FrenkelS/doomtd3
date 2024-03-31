@@ -82,6 +82,7 @@ static boolean isGraphicsModeSet = false;
 #define BPL1PTL	0x0e2
 
 #define COPLIST_IDX_DIWSTOP_VALUE 9
+#define COPLIST_IDX_COLOR00_VALUE 15
 #define COPLIST_IDX_BPL1PTH_VALUE 19
 #define COPLIST_IDX_BPL1PTL_VALUE 21
 
@@ -106,6 +107,21 @@ static uint16_t __chip coplist[] = {
 };
 
 
+static const int16_t colors[14] =
+{
+	0x000,													// normal
+	0x800, 0x900, 0xa00, 0xb00, 0xc00, 0xd00, 0xe00, 0xf00,	// red
+	0x440, 0x550, 0x660, 0x770,								// yellow
+	0x070													// green
+};
+
+
+static void I_UploadNewPalette(int8_t pal)
+{
+	coplist[COPLIST_IDX_COLOR00_VALUE] = colors[pal];
+}
+
+
 void I_InitGraphics(void)
 {
 	LoadView(NULL);
@@ -128,6 +144,8 @@ void I_InitGraphics(void)
 	uint32_t addr = (uint32_t) videomemory;
 	coplist[COPLIST_IDX_BPL1PTH_VALUE] = addr >> 16;
 	coplist[COPLIST_IDX_BPL1PTL_VALUE] = addr;
+
+	I_UploadNewPalette(0);
 
 	videomemory +=  + ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
 
@@ -154,9 +172,12 @@ static void I_ShutdownGraphics(void)
 }
 
 
+static int8_t newpal;
+
+
 void I_SetPalette(int8_t pal)
 {
-
+	newpal = pal;
 }
 
 
@@ -391,6 +412,13 @@ static boolean refreshStatusBar;
 
 void I_FinishUpdate(void)
 {
+	// palette
+	if (newpal != NO_PALETTE_CHANGE)
+	{
+		I_UploadNewPalette(newpal);
+		newpal = NO_PALETTE_CHANGE;
+	}
+
 	// view window
 	uint8_t *src = _s_viewwindow;
 	uint8_t *dst = videomemory;
