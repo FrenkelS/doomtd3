@@ -427,24 +427,31 @@ void I_FinishUpdate(void)
 	}
 
 	// status bar
+	if (st_needrefresh == 2)
+	{
+		uint8_t *src = _s_statusbar;
+		uint8_t *dst = _s_statusbar;
+		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
+			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
+			}
+
+			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+				*dst++ = VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++];
+			}
+		}
+	}
+
 	if (st_needrefresh)
 	{
 		st_needrefresh--;
 
 		uint8_t *src = _s_statusbar;
 		uint8_t *dst = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
-		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
-			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
-			}
-
-			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
-
-			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-				*dst++ = VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++];
-			}
-
-			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
+		for (uint_fast8_t y = 0; y < ST_HEIGHT; y++) {
+			memcpy(dst, src, VIEWWINDOWWIDTH);
+			dst += PLANEWIDTH;
+			src += VIEWWINDOWWIDTH;
 		}
 	}
 
