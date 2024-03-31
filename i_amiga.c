@@ -50,9 +50,12 @@ extern struct Custom custom;
 
 extern const int16_t CENTERY;
 
+static uint16_t viewwindowtop;
 static uint8_t *_s_viewwindow;
 static uint8_t *_s_statusbar;
-static uint8_t *videomemory;
+
+static uint32_t screenpaget;
+static uint8_t *screenpage;
 
 static boolean isGraphicsModeSet = false;
 
@@ -138,21 +141,25 @@ void I_InitGraphics(void)
 		screenHeightAmiga = 200;
 	}
 
-	videomemory = Z_MallocStatic(PLANEWIDTH * screenHeightAmiga);
-	memset(videomemory, 0, PLANEWIDTH * screenHeightAmiga);
+	uint8_t *screenpage0 = Z_MallocStatic(PLANEWIDTH * screenHeightAmiga * 2);	
+	memset(screenpage0, 0, PLANEWIDTH * screenHeightAmiga * 2);
 
-	uint32_t addr = (uint32_t) videomemory;
+	uint8_t *screenpage1 = screenpage0 + PLANEWIDTH * screenHeightAmiga;
+	screenpaget = (uint32_t)screenpage0 + (uint32_t)screenpage1;
+	screenpage = screenpage1;
+
+	uint32_t addr = (uint32_t) screenpage1;
 	coplist[COPLIST_IDX_BPL1PTH_VALUE] = addr >> 16;
 	coplist[COPLIST_IDX_BPL1PTL_VALUE] = addr;
 
 	I_UploadNewPalette(0);
 
-	videomemory +=  + ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
-
 	custom.dmacon = 0x0020;
 	custom.cop1lc = (uint32_t) coplist;
 
-	_s_viewwindow = Z_MallocStatic(VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT);
+	viewwindowtop = ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
+	_s_viewwindow = screenpage + viewwindowtop;
+
 	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
 
 	isGraphicsModeSet = true;
@@ -419,22 +426,13 @@ void I_FinishUpdate(void)
 		newpal = NO_PALETTE_CHANGE;
 	}
 
-	// view window
-	uint8_t *src = _s_viewwindow;
-	uint8_t *dst = videomemory;
-
-	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT; y++) {
-		memcpy(dst, src, VIEWWINDOWWIDTH);
-		dst += PLANEWIDTH;
-		src += VIEWWINDOWWIDTH;
-	}
-
 	// status bar
 	if (refreshStatusBar)
 	{
 		refreshStatusBar = false;
 
-		src = _s_statusbar;
+		uint8_t *src = _s_statusbar;
+		uint8_t *dst = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
 		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
 				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
@@ -449,6 +447,13 @@ void I_FinishUpdate(void)
 			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
 		}
 	}
+
+	// page flip
+	uint32_t addr = (uint32_t) screenpage;
+	coplist[COPLIST_IDX_BPL1PTH_VALUE] = addr >> 16;
+	coplist[COPLIST_IDX_BPL1PTL_VALUE] = addr;
+	screenpage = (uint8_t*)(screenpaget - (uint32_t)screenpage);
+	_s_viewwindow = screenpage + viewwindowtop;
 }
 
 
@@ -473,7 +478,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 
 	const uint8_t *nearcolormap = dcvars->colormap;
 
-	uint8_t *dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH) + dcvars->x;
 
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
@@ -482,43 +487,43 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 
 	while (l--)
 	{
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
 
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
 
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
 
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		*dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
 	}
 
 	switch (count & 15)
 	{
-		case 15: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case 14: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case 13: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case 12: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case 11: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case 10: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case  9: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case  8: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case  7: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case  6: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case  5: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case  4: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case  3: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
-		case  2: *dest = nearcolormap[source[frac>>COLBITS]]; dest += VIEWWINDOWWIDTH; frac += fracstep;
+		case 15: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case 14: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case 13: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case 12: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case 11: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case 10: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case  9: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case  8: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case  7: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case  6: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case  5: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case  4: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case  3: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
+		case  2: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
 		case  1: *dest = nearcolormap[source[frac>>COLBITS]];
 	}
 }
@@ -537,18 +542,18 @@ void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
 
-	uint8_t *dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH) + dcvars->x;
 
 	while (count--)
 	{
 		*dest = color;
-		dest += VIEWWINDOWWIDTH;
+		dest += PLANEWIDTH;
 		color = colort - color;
 	}
 }
 
 
-#define FUZZOFF (VIEWWINDOWWIDTH)
+#define FUZZOFF (PLANEWIDTH)
 #define FUZZTABLE 50
 
 static const int8_t fuzzoffset[FUZZTABLE] =
@@ -584,14 +589,14 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 
 	const uint8_t *nearcolormap = &fullcolormap[6 * 256];
 
-	uint8_t *dest = _s_viewwindow + (dc_yl * VIEWWINDOWWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dc_yl * PLANEWIDTH) + dcvars->x;
 
 	static int16_t fuzzpos = 0;
 
 	do
 	{
 		*dest = nearcolormap[dest[fuzzoffset[fuzzpos]]];
-		dest += VIEWWINDOWWIDTH;
+		dest += PLANEWIDTH;
 
 		fuzzpos++;
 		if (fuzzpos >= FUZZTABLE)
@@ -620,8 +625,26 @@ void V_DrawRaw(int16_t num, uint16_t offset)
 
 void ST_Drawer(void)
 {
+	static uint16_t st_needrefresh = 0;
+
+	boolean needupdate = false;
+
 	if (ST_NeedUpdate())
+	{
+		needupdate = true;
+		st_needrefresh = 2; //2 screen pages
+	}
+	else if(st_needrefresh)
+	{
+		needupdate = true;
+	}
+
+	if(needupdate)
+	{
 		ST_doRefresh();
+
+		st_needrefresh--;
+	}
 }
 
 
