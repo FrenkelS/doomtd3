@@ -69,7 +69,11 @@ fixed_t CONSTFUNC FixedMul3216(fixed_t a, uint16_t blw);
 
 
 //Approx Reciprocal of v
+#if defined USE_ASSEMBLY
+fixed_t CONSTFUNC FixedReciprocal(fixed_t v);
+#else
 #define FixedReciprocal(v) (0xffffffffu/(v))
+#endif
 
 
 /*
