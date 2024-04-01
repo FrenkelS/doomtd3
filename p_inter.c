@@ -269,13 +269,11 @@ void P_TouchSpecialThing(mobj_t __far* special, mobj_t __far* toucher)
 {
   player_t *player;
   int16_t      i;
-  sfxenum_t      sound;
   fixed_t  delta = special->z - toucher->z;
 
   if (delta > toucher->height || delta < -8*FRACUNIT)
     return;        // out of reach
 
-  sound = sfx_itemup;
   player = P_MobjIsPlayer(toucher);
 
   // Dead thing touching.
@@ -324,7 +322,6 @@ void P_TouchSpecialThing(mobj_t __far* special, mobj_t __far* toucher)
         player->health = max_soul;
       player->mo->health = player->health;
       player->message = GOTSUPER; // Ty 03/22/98 - externalized
-      sound = sfx_getpow;
       break;
 
 
@@ -372,21 +369,18 @@ void P_TouchSpecialThing(mobj_t __far* special, mobj_t __far* toucher)
       if (!P_GivePower (player, pw_invisibility))
         return;
       player->message = GOTINVIS; // Ty 03/22/98 - externalized
-      sound = sfx_getpow;
       break;
 
     case SPR_SUIT:
       if (!P_GivePower (player, pw_ironfeet))
         return;
       player->message = GOTSUIT; // Ty 03/22/98 - externalized
-      sound = sfx_getpow;
       break;
 
     case SPR_PMAP:
       if (!P_GivePower (player, pw_allmap))
         return;
       player->message = GOTMAP; // Ty 03/22/98 - externalized
-      sound = sfx_getpow;
       break;
 
 
@@ -453,28 +447,24 @@ void P_TouchSpecialThing(mobj_t __far* special, mobj_t __far* toucher)
       if (!P_GiveWeapon (player, wp_chaingun, (special->flags&MF_DROPPED)!=0) )
         return;
       player->message = GOTCHAINGUN; // Ty 03/22/98 - externalized
-      sound = sfx_wpnup;
       break;
 
     case SPR_CSAW:
       if (!P_GiveWeapon (player, wp_chainsaw, false) )
         return;
       player->message = GOTCHAINSAW; // Ty 03/22/98 - externalized
-      sound = sfx_wpnup;
       break;
 
     case SPR_LAUN:
       if (!P_GiveWeapon (player, wp_missile, false) )
         return;
       player->message = GOTLAUNCHER; // Ty 03/22/98 - externalized
-      sound = sfx_wpnup;
       break;
 
     case SPR_SHOT:
       if (!P_GiveWeapon (player, wp_shotgun, (special->flags&MF_DROPPED)!=0 ) )
         return;
       player->message = GOTSHOTGUN; // Ty 03/22/98 - externalized
-      sound = sfx_wpnup;
       break;
 
 
@@ -489,7 +479,7 @@ void P_TouchSpecialThing(mobj_t __far* special, mobj_t __far* toucher)
 //
 // KillMobj
 //
-static void P_KillMobj(mobj_t __far* source, mobj_t __far* target)
+static void P_KillMobj(mobj_t __far* target)
 {
   mobjtype_t item;
   mobj_t     __far* mo;
@@ -636,7 +626,7 @@ void P_DamageMobj(mobj_t __far* target, mobj_t __far* inflictor, mobj_t __far* s
   target->health -= damage;
   if (target->health <= 0)
     {
-      P_KillMobj (source, target);
+      P_KillMobj(target);
       return;
     }
 
