@@ -57,9 +57,9 @@ static boolean isGraphicsModeSet = false;
 static const int8_t colors[14] =
 {
 	15,							// normal
-	4, 4, 4, 4, 12, 12, 12, 12,	// red
-	6, 6, 14, 14,				// yellow
-	2							// green
+	12, 12, 12, 12, 4, 4, 4, 4,	// red
+	14, 14, 6, 6,				// yellow
+	10							// green
 };
 
 
