@@ -162,6 +162,20 @@ void I_InitGraphics(void)
 
 	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
 
+	OwnBlitter();
+	WaitBlit();
+	custom.bltcon0 = 0b0000100111110000;
+	custom.bltcon1 = 0;
+
+	custom.bltamod = PLANEWIDTH - VIEWWINDOWWIDTH;
+	custom.bltdmod = PLANEWIDTH - VIEWWINDOWWIDTH;
+
+	custom.bltafwm = 0xffff;
+	custom.bltalwm = 0xffff;
+
+	custom.bltbdat = 0xffff;
+	custom.bltcdat = 0xffff;
+
 	isGraphicsModeSet = true;
 }
 
@@ -170,6 +184,7 @@ static void I_ShutdownGraphics(void)
 {
 	if (isGraphicsModeSet)
 	{
+		DisownBlitter();
 		LoadView(((struct GfxBase *) GfxBase)->ActiView);
 		WaitTOF();
 		WaitTOF();
@@ -429,30 +444,34 @@ void I_FinishUpdate(void)
 	// status bar
 	if (st_needrefresh == 2)
 	{
+		st_needrefresh--;
+
 		uint8_t *src = _s_statusbar;
-		uint8_t *dst = _s_statusbar;
+		uint8_t *dst = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
 		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
 				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
 			}
 
+			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
+
 			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
 				*dst++ = VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++];
 			}
+
+			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
 		}
 	}
-
-	if (st_needrefresh)
+	else if (st_needrefresh) // st_needrefresh == 1
 	{
-		st_needrefresh--;
+		st_needrefresh = 0;
 
-		uint8_t *src = _s_statusbar;
-		uint8_t *dst = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
-		for (uint_fast8_t y = 0; y < ST_HEIGHT; y++) {
-			memcpy(dst, src, VIEWWINDOWWIDTH);
-			dst += PLANEWIDTH;
-			src += VIEWWINDOWWIDTH;
-		}
+		WaitBlit();
+
+		custom.bltapt = (uint8_t*)(screenpaget - (uint32_t)screenpage) + viewwindowtop + PLANEWIDTH * VIEWWINDOWHEIGHT;
+		custom.bltdpt = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
+
+		custom.bltsize = (ST_HEIGHT << 6) | (VIEWWINDOWWIDTH / 2);
 	}
 
 	// page flip
