@@ -504,7 +504,7 @@ void V_DrawRaw(int16_t num, uint16_t offset)
 	if (lump != NULL)
 	{
 		uint16_t lumpLength = W_LumpLength(num);
-		_fmemcpy(&_s_statusbar[offset - (SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH], lump, lumpLength);
+		memcpy(&_s_statusbar[offset - (SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH], lump, lumpLength);
 		Z_ChangeTagToCache(lump);
 	}
 	else

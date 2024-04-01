@@ -1153,6 +1153,9 @@ static void R_DrawPlayerSprites(void)
 //
 // R_SortVisSprites
 //
+#if defined amiga
+__stdargs
+#endif
 static int compare (const void* l, const void* r)
 {
 	const vissprite_t* vl = *(const vissprite_t**)l;
