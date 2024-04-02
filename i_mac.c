@@ -306,8 +306,8 @@ void I_FinishUpdate(void)
 	uint8_t *dst = videomemory;
 
 	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT; y++) {
-		memcpy(dst,              src, VIEWWINDOWWIDTH);
-		memcpy(dst + PLANEWIDTH, src, VIEWWINDOWWIDTH);
+		BlockMoveData(src, dst,              VIEWWINDOWWIDTH);
+		BlockMoveData(src, dst + PLANEWIDTH, VIEWWINDOWWIDTH);
 
 		dst += PLANEWIDTH * 2;
 		src += VIEWWINDOWWIDTH;
@@ -504,7 +504,7 @@ void V_DrawRaw(int16_t num, uint16_t offset)
 	if (lump != NULL)
 	{
 		uint16_t lumpLength = W_LumpLength(num);
-		memcpy(&_s_statusbar[offset - (SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH], lump, lumpLength);
+		BlockMoveData(lump, &_s_statusbar[offset - (SCREENHEIGHT - ST_HEIGHT) * SCREENWIDTH], lumpLength);
 		Z_ChangeTagToCache(lump);
 	}
 	else
