@@ -42,4 +42,4 @@ add_application(DOOMTD3
 target_link_libraries(DOOMTD3 "-lm")
 
 # save 200KB of code by removing unused stuff
-set_target_properties(DOOMTD3 PROPERTIES COMPILE_OPTIONS "-march=68000;-Ofast;-funroll-loops" LINK_FLAGS "-Wl,-gc-sections")
+set_target_properties(DOOMTD3 PROPERTIES COMPILE_OPTIONS "-mcpu=68000;-Ofast;-funroll-loops" LINK_FLAGS "-Wl,-gc-sections")
