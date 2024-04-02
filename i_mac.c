@@ -33,7 +33,6 @@
 
 #include <stdarg.h>
 #include <stdint.h>
-#include <time.h>
 
 #include "compiler.h"
 
@@ -595,7 +594,7 @@ void I_StartClock(void)
 
 uint32_t I_EndClock(void)
 {
-	time_t endtime = TickCount();
+	uint32_t endtime = TickCount();
 	return (endtime - starttime) * TICRATE / 60;
 }
 
