@@ -24,6 +24,7 @@
  *-----------------------------------------------------------------------------*/
 
 #include <Quickdraw.h>
+#include <OSUtils.h>
 #include <MacMemory.h>
 #include <Sound.h>
 #include <Events.h>
@@ -583,19 +584,19 @@ segment_t I_ZoneAdditional(uint32_t *size)
 }
 
 
-static time_t starttime;
+static uint32_t starttime;
 
 
 void I_StartClock(void)
 {
-	starttime = time(NULL);
+	starttime = TickCount();
 }
 
 
 uint32_t I_EndClock(void)
 {
-	time_t endtime = time(NULL);
-	return (endtime - starttime) * TICRATE;
+	time_t endtime = TickCount();
+	return (endtime - starttime) * TICRATE / 60;
 }
 
 
