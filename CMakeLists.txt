@@ -22,6 +22,7 @@ add_application(DOOMTD3
     p_mobj.c
     p_plats.c
     p_pspr.c
+    p_scroll.c
     p_setup.c
     p_sight.c
     p_spec.c

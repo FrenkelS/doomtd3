@@ -326,8 +326,7 @@ void P_UpdateSpecials (void)
 //
 //////////////////////////////////////////////////////////////////////
 
-// killough 3/7/98: Initialize generalized scrolling
-static void P_SpawnScrollers(void);
+void P_SpawnScrollers(void);
 
 //
 // P_SpawnSpecials
@@ -385,72 +384,5 @@ void P_SpawnSpecials (void)
   for (i = 0;i < MAXBUTTONS;i++)
     memset(&_g_buttonlist[i],0,sizeof(button_t));
 
-  P_SpawnScrollers(); // killough 3/7/98: Add generalized scrollers
+  P_SpawnScrollers();
 }
-
-
-//
-// This function, with the help of r_bsp.c, supports generalized
-// scrolling floors and walls, with optional mobj-carrying properties, e.g.
-// conveyor belts, rivers, etc. A linedef with a special type affects all
-// tagged sectors the same way, by creating scrolling and/or object-carrying
-// properties. Multiple linedefs may be used on the same sector and are
-// cumulative, although the special case of scrolling a floor and carrying
-// things on it, requires only one linedef. The linedef's direction determines
-// the scrolling direction, and the linedef's length determines the scrolling
-// speed. This was designed so that an edge around the sector could be used to
-// control the direction of the sector's scrolling, which is usually what is
-// desired.
-//
-// Process the active scrollers.
-//
-// This is the main scrolling code
-
-typedef struct {
-  thinker_t thinker;   // Thinker structure for scrolling
-  int16_t affectee;        // Number of affected sidedef, sector, tag, or whatever
-} scroll_t;
-
-static void T_Scroll(scroll_t __far* s)
-{
-    side_t __far* side  =_g_sides + s->affectee;
-    side->textureoffset++;
-}
-
-//
-// Add_Scroller()
-//
-// Add a generalized scroller to the thinker list.
-//
-// type: the enumerated type of scrolling: floor, ceiling, floor carrier,
-//   wall, floor carrier & scroller
-//
-// (dx,dy): the direction and speed of the scrolling or its acceleration
-//
-// control: the sector whose heights control this scroller's effect
-//   remotely, or -1 if no control sector
-//
-// affectee: the index of the affected object (sector or sidedef)
-//
-// accel: non-zero if this is an accelerative effect
-//
-
-static void Add_Scroller(int16_t affectee)
-{
-  scroll_t __far* s = Z_CallocLevSpec(sizeof *s);
-  s->thinker.function = T_Scroll;
-  s->affectee = affectee;
-  P_AddThinker(&s->thinker);
-}
-
-// Initialize the scrollers
-static void P_SpawnScrollers(void)
-{
-    int16_t i;
-    const line_t __far* l = _g_lines;
-
-    for (i=0;i<_g_numlines;i++,l++)
-        if (LN_SPECIAL(l) == 48)
-            Add_Scroller(_g_lines[i].sidenum[0]);
-}
-

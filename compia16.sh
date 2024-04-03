@@ -10,14 +10,13 @@ nasm i_ibma.asm -f elf
 ia16-elf-gcc -c i_ibm.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_map.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_maputl.c $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
+ia16-elf-gcc -c p_scroll.c $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_sight.c  $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c r_draw.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c r_plane.c  $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c tables.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c w_wad.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c z_zone.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
-
-ia16-elf-gcc -c p_spec.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Os    -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall                       -funroll-loops -freorder-blocks-algorithm=stc
 
 export CFLAGS="-march=i8088 -mcmodel=medium -li86 -mnewlib-nano-stdio -Os -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=stc"
 #export CFLAGS="$CFLAGS -Ofast -flto -fwhole-program -fomit-frame-pointer -funroll-loops -fgcse-sm -fgcse-las -fipa-pta -Wno-attributes -Wpedantic"
@@ -44,11 +43,12 @@ export GLOBOBJS+=" p_maputl.o"
 export GLOBOBJS+=" p_mobj.c"
 export GLOBOBJS+=" p_plats.c"
 export GLOBOBJS+=" p_pspr.c"
+#export GLOBOBJS+=" p_scroll.c"
+export GLOBOBJS+=" p_scroll.o"
 export GLOBOBJS+=" p_setup.c"
 #export GLOBOBJS+=" p_sight.c"
 export GLOBOBJS+=" p_sight.o"
-#export GLOBOBJS+=" p_spec.c"
-export GLOBOBJS+=" p_spec.o"
+export GLOBOBJS+=" p_spec.c"
 export GLOBOBJS+=" p_switch.c"
 export GLOBOBJS+=" p_tick.c"
 export GLOBOBJS+=" p_user.c"
@@ -74,11 +74,10 @@ rm i_ibma.o
 rm i_ibm.o
 rm p_map.o
 rm p_maputl.o
+rm p_scroll.o
 rm p_sight.o
 rm r_draw.o
 rm r_plane.o
 rm tables.o
 rm w_wad.o
 rm z_zone.o
-
-rm p_spec.o

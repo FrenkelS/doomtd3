@@ -26,6 +26,7 @@ set CFLAGS=%CFLAGS% -Ofast -flto -fwhole-program -fomit-frame-pointer -funroll-l
 @set GLOBOBJS=%GLOBOBJS% p_mobj.c
 @set GLOBOBJS=%GLOBOBJS% p_plats.c
 @set GLOBOBJS=%GLOBOBJS% p_pspr.c
+@set GLOBOBJS=%GLOBOBJS% p_scroll.c
 @set GLOBOBJS=%GLOBOBJS% p_setup.c
 @set GLOBOBJS=%GLOBOBJS% p_sight.c
 @set GLOBOBJS=%GLOBOBJS% p_spec.c
