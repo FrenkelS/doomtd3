@@ -16,7 +16,6 @@ name DOOMTDWC
 file d_items.obj
 file d_main.obj
 file g_game.obj
-file i_timer.obj
 file i_ibm.obj
 file info.obj
 file m_random.obj
@@ -30,6 +29,7 @@ file p_maputl.obj
 file p_mobj.obj
 file p_plats.obj
 file p_pspr.obj
+file p_scroll.obj
 file p_setup.obj
 file p_sight.obj
 file p_spec.obj

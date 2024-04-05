@@ -12,7 +12,6 @@ set CFLAGS=%CFLAGS% -Ofast -flto -fwhole-program -fomit-frame-pointer -funroll-l
 @set GLOBOBJS=%GLOBOBJS% d_items.c
 @set GLOBOBJS=%GLOBOBJS% d_main.c
 @set GLOBOBJS=%GLOBOBJS% g_game.c
-@set GLOBOBJS=%GLOBOBJS% i_timer.c
 @set GLOBOBJS=%GLOBOBJS% i_ibm.c
 @set GLOBOBJS=%GLOBOBJS% info.c
 @set GLOBOBJS=%GLOBOBJS% m_random.c

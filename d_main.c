@@ -48,7 +48,6 @@
 #include "w_wad.h"
 #include "v_video.h"
 #include "i_system.h"
-#include "i_timer.h"
 #include "g_game.h"
 #include "st_stuff.h"
 #include "p_setup.h"
@@ -62,18 +61,20 @@ static int32_t maketic;
 
 static void D_BuildNewTiccmds(void)
 {
-    static int32_t lastmadetic = 0;
-    int32_t newtics = I_GetTime() - lastmadetic;
-    lastmadetic += newtics;
+	static int16_t lastmadetic = 0;
+	static int16_t ticcount    = 0;
 
-    while (newtics--)
-    {
-        if (maketic - _g_gametic > 3)
-            break;
+	int16_t newtics = ++ticcount - lastmadetic; // newtics == 1
+	lastmadetic += newtics;
 
-        G_BuildTiccmd();
-        maketic++;
-    }
+	while (newtics--)
+	{
+		if (maketic - _g_gametic > 3)
+			break;
+
+		G_BuildTiccmd();
+		maketic++;
+	}
 }
 
 
@@ -104,13 +105,7 @@ static void D_Display (void)
 //
 //  D_DoomLoop()
 //
-// Not a globally visible function,
-//  just included for source reference,
-//  called by D_DoomMain, never exits.
-// Manages timing and IO,
-//  calls all ?_Responder, ?_Ticker, and ?_Drawer,
-//  calls I_GetTime
-//
+
 static void NORETURN_PRE D_DoomLoop(void) NORETURN_POST;
 static void D_DoomLoop(void)
 {

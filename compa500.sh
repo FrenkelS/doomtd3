@@ -12,7 +12,6 @@ export CFLAGS="-mcpu=68000 -msmall-code -mcrt=nix13 -Ofast -fomit-frame-pointer 
 export GLOBOBJS="  d_items.c"
 export GLOBOBJS+=" d_main.c"
 export GLOBOBJS+=" g_game.c"
-export GLOBOBJS+=" i_timer.c"
 export GLOBOBJS+=" i_amiga.c"
 export GLOBOBJS+=" info.c"
 export GLOBOBJS+=" m_random.c"

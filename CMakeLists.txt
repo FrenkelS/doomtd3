@@ -8,7 +8,6 @@ add_application(DOOMTD3
     d_items.c
     d_main.c
     g_game.c
-    i_timer.c
     i_mac.c
     info.c
     m_random.c

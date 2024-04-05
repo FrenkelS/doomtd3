@@ -41,7 +41,6 @@ GLOBOBJS = &
  d_items.obj &
  d_main.obj &
  g_game.obj &
- i_timer.obj &
  i_ibm.obj &
  info.obj &
  m_random.obj &
@@ -55,6 +54,7 @@ GLOBOBJS = &
  p_mobj.obj &
  p_plats.obj &
  p_pspr.obj &
+ p_scroll.obj &
  p_setup.obj &
  p_sight.obj &
  p_spec.obj &
