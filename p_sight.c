@@ -154,18 +154,18 @@ static boolean P_CrossSubsector(int16_t num)
         // crosses a two sided line
         /* cph 2006/07/15 - oops, we missed this in 2.4.0 & .1;
        *  use P_InterceptVector2 for those compat levels only. */
-        fixed_t frac = P_InterceptVector2(&los.strace, &divl);
+        uint16_t frac = P_InterceptVector2(&los.strace, &divl);
 
         if (front->floorheight != back->floorheight)
         {
-            fixed_t slope = frac != 0 ? FixedApproxDiv(openbottom - los.sightzstart, frac) : INT32_MAX;
+            fixed_t slope = frac != 0 ? FixedApproxDiv3216(openbottom - los.sightzstart, frac) : INT32_MAX;
             if (slope > los.bottomslope)
                 los.bottomslope = slope;
         }
 
         if (front->ceilingheight != back->ceilingheight)
         {
-            fixed_t slope = frac != 0 ? FixedApproxDiv(opentop - los.sightzstart, frac) : INT32_MAX;
+            fixed_t slope = frac != 0 ? FixedApproxDiv3216(opentop - los.sightzstart, frac) : INT32_MAX;
             if (slope < los.topslope)
                 los.topslope = slope;
         }

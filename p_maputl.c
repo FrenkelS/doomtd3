@@ -173,6 +173,17 @@ union int64_u {
 typedef char assertInt64_uSize[sizeof(union int64_u) == 8 ? 1 : -1];
 
 
+static inline uint16_t CONSTFUNC FixedDiv323216(fixed_t a, fixed_t b)
+{
+	union int64_u r;
+	// r.ll = (int64_t)a << FRACBITS;
+	r.s.wl = 0;
+	r.s.dw = a;
+	r.s.wh = (a < 0) ? 0xffff : 0x0000;
+	return r.ll / b;
+}
+
+
 static inline fixed_t CONSTFUNC FixedDiv(fixed_t a, fixed_t b)
 {
 	union int64_u r;
@@ -195,7 +206,7 @@ static inline fixed_t CONSTFUNC FixedDiv(fixed_t a, fixed_t b)
 /* cph - this is killough's 4/19/98 version of P_InterceptVector and
  *  P_InterceptVector2 (which were interchangeable). We still use this
  *  in compatibility mode. */
-fixed_t PUREFUNC P_InterceptVector2(const divline_t *v2, const divline_t *v1)
+uint16_t PUREFUNC P_InterceptVector2(const divline_t *v2, const divline_t *v1)
 {
 	fixed_t a = (v1->dy >> FRACBITS) * ((v1->x - v2->x) >> 8);
 	fixed_t b = (v1->dx >> FRACBITS) * ((v2->y - v1->y) >> 8);
@@ -208,7 +219,7 @@ fixed_t PUREFUNC P_InterceptVector2(const divline_t *v2, const divline_t *v1)
 	if (num == 0 || den == 0)
 		return 0;
 	else
-		return FixedDiv(num, den);
+		return FixedDiv323216(num, den);
 }
 
 static fixed_t PUREFUNC P_InterceptVector3(const divline_t *v2, const divline_t *v1)

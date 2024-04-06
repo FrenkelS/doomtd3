@@ -81,5 +81,6 @@ fixed_t CONSTFUNC FixedReciprocal(fixed_t v);
  */
 
 fixed_t CONSTFUNC FixedApproxDiv(fixed_t a, fixed_t b);
+fixed_t CONSTFUNC FixedApproxDiv3216(fixed_t a, uint16_t b);
 
 #endif
