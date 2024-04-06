@@ -56,7 +56,7 @@
 #include "globdata.h"
 
 
-static int32_t maketic;
+static int16_t maketic;
 
 
 static void D_BuildNewTiccmds(void)

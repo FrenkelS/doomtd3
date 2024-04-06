@@ -32,7 +32,7 @@ extern skill_t         _g_gameskill;
 
 extern player_t        _g_player;
 
-extern int32_t             _g_gametic;
+extern int16_t             _g_gametic;
 
 
 extern boolean         _g_playeringame;

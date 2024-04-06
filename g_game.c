@@ -81,8 +81,8 @@ static int16_t             _s_gamemap;
 
 player_t        _g_player;
 
-int32_t             _g_gametic;
-static int32_t      _s_basetic;
+int16_t             _g_gametic;
+static int16_t      _s_basetic;
 
 
 static boolean gamekeydown[NUMKEYS];
@@ -494,8 +494,8 @@ static void G_CheckDemoStatus (void)
 {
     uint32_t realtics = I_EndClock();
     uint32_t resultfps = TICRATE * 1000L * _g_gametic / realtics;
-    I_Error ("Timed %lu gametics in %lu realtics = %lu.%.3lu frames per second",
-             (uint32_t) _g_gametic, realtics,
+    I_Error ("Timed %u gametics in %lu realtics = %lu.%.3lu frames per second",
+             (uint16_t) _g_gametic, realtics,
              resultfps / 1000, resultfps % 1000);
 }
 
