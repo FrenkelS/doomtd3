@@ -206,8 +206,23 @@ static fixed_t PUREFUNC P_InterceptVector3(const divline_t *v2, const divline_t 
 		return 0;
 	else if ((num ^ den) < 0)
 		return -1;
-	else
-		return FixedDiv(num, den);
+	else {
+		uint32_t n = D_abs(num);
+		uint32_t d = D_abs(den);
+		if      (n < 0x00010000)
+			return (n << 16) / d;
+		else if (n < 0x00100000)
+			if ((d & 0xf) == 0)
+				return (n << 12) / (d >> 4);
+			else
+				return FixedDiv(n, d);
+		else if (n < 0x01000000)
+			return (n << 8) / (d >> 8);
+		else if (n < 0x10000000)
+			return (n << 4) / (d >> 12);
+		else
+			return  n       / (d >> 16);
+	}
 }
 
 
