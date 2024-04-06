@@ -72,7 +72,6 @@ typedef boolean (*traverser_t)(intercept_t *in);
 fixed_t CONSTFUNC P_AproxDistance (fixed_t dx, fixed_t dy);
 int16_t     P_PointOnLineSide (fixed_t x, fixed_t y, const line_t __far* line);
 int16_t     P_BoxOnLineSide (const fixed_t *tmbox, const line_t __far* ld);
-uint16_t P_InterceptVector2(const divline_t *v2, const divline_t *v1);
 
 void    P_LineOpening(const line_t __far* linedef);
 void    P_UnsetThingPosition(mobj_t __far* thing);

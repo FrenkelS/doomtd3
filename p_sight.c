@@ -70,6 +70,21 @@ static int16_t P_DivlineSide(fixed_t x, fixed_t y, const divline_t *node)
     right == left ? 2 : 1;
 }
 
+
+static uint16_t PUREFUNC P_InterceptVector2(const divline_t *v2, const divline_t *v1)
+{
+	fixed_t a = (v1->dy >> FRACBITS) * ((v1->x - v2->x) >> 8);
+	fixed_t b = (v1->dx >> FRACBITS) * ((v2->y - v1->y) >> 8);
+	fixed_t c = FixedMul(v2->dx, v1->dy >> 8);
+	fixed_t d = FixedMul(v2->dy, v1->dx >> 8);
+
+	fixed_t num = a + b;
+	fixed_t den = c - d;
+
+	return (num << 4) / (den >> 12);
+}
+
+
 //
 // P_CrossSubsector
 // Returns true
@@ -152,20 +167,18 @@ static boolean P_CrossSubsector(int16_t num)
             return false;
 
         // crosses a two sided line
-        /* cph 2006/07/15 - oops, we missed this in 2.4.0 & .1;
-       *  use P_InterceptVector2 for those compat levels only. */
         uint16_t frac = P_InterceptVector2(&los.strace, &divl);
 
         if (front->floorheight != back->floorheight)
         {
-            fixed_t slope = frac != 0 ? FixedApproxDiv3216(openbottom - los.sightzstart, frac) : INT32_MAX;
+            fixed_t slope = FixedApproxDiv3216(openbottom - los.sightzstart, frac);
             if (slope > los.bottomslope)
                 los.bottomslope = slope;
         }
 
         if (front->ceilingheight != back->ceilingheight)
         {
-            fixed_t slope = frac != 0 ? FixedApproxDiv3216(opentop - los.sightzstart, frac) : INT32_MAX;
+            fixed_t slope = FixedApproxDiv3216(opentop - los.sightzstart, frac);
             if (slope < los.topslope)
                 los.topslope = slope;
         }
