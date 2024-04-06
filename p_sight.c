@@ -253,11 +253,15 @@ boolean P_CheckSight(mobj_t __far* t1, mobj_t __far* t2)
 
   validcount++;
 
-  los.topslope = (los.bottomslope = t2->z - (los.sightzstart =
-                                             t1->z + t1->height -
-                                             (t1->height>>2))) + t2->height;
-  los.strace.dx = (los.t2x = t2->x) - (los.strace.x = t1->x);
-  los.strace.dy = (los.t2y = t2->y) - (los.strace.y = t1->y);
+  los.sightzstart = t1->z + t1->height - (t1->height >> 2);
+  los.bottomslope = t2->z - los.sightzstart;
+  los.topslope = los.bottomslope + t2->height;
+  los.t2x = t2->x;
+  los.t2y = t2->y;
+  los.strace.x = t1->x;
+  los.strace.y = t1->y;
+  los.strace.dx = los.t2x - los.strace.x;
+  los.strace.dy = los.t2y - los.strace.y;
 
   if (t1->x > t2->x)
     los.bbox[BOXRIGHT] = t1->x, los.bbox[BOXLEFT] = t2->x;
@@ -270,7 +274,8 @@ boolean P_CheckSight(mobj_t __far* t1, mobj_t __far* t2)
     los.bbox[BOXTOP] = t2->y, los.bbox[BOXBOTTOM] = t1->y;
 
 
-    los.maxz = INT32_MAX; los.minz = INT32_MIN;
+  los.maxz = INT32_MAX;
+  los.minz = INT32_MIN;
 
   // the head node is the last node output
   return P_CrossBSPNode(numnodes-1);
