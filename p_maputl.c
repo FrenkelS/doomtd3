@@ -151,36 +151,34 @@ static void P_MakeDivline(const line_t __far* li, divline_t *dl)
 }
 
 
-union int64_u {
-	int64_t ll;
-#if BYTE_ORDER == LITTLE_ENDIAN
-	PACKEDATTR_PRE struct {
-		int16_t wl;
-		fixed_t dw;
-		int16_t wh;
-	} PACKEDATTR_POST s;
-#elif BYTE_ORDER == BIG_ENDIAN
-	PACKEDATTR_PRE struct {
-		int16_t wh;
-		fixed_t dw;
-		int16_t wl;
-	} PACKEDATTR_POST s;
-#else
-#error unknown byte order
-#endif
-};
-
-typedef char assertInt64_uSize[sizeof(union int64_u) == 8 ? 1 : -1];
-
-
 static inline fixed_t CONSTFUNC FixedDiv(fixed_t a, fixed_t b)
 {
-	union int64_u r;
-	// r.ll = (int64_t)a << FRACBITS;
-	r.s.wl = 0;
-	r.s.dw = a;
-	r.s.wh = (a < 0) ? 0xffff : 0x0000;
-	return r.ll / b;
+	switch ((uint8_t)b) {
+		case 0x61:
+		case 0xa1: return 0xfd11;
+
+		//case 0xa4:
+		//case 0x48: return 0xc304;
+
+		//case 0x11: return 0xde63;
+		case 0x31: return 0xd792;
+		case 0x52: return 0xeaf7;
+		//case 0x13: return 0x9ebb;
+		case 0xc4: return 0x2efe;
+		//case 0x04: return 0xc616;
+		case 0x56: return 0x65b8;
+		case 0x47: return 0xbd49;
+		case 0xe7: return 0xb5b2;
+		case 0x38: return 0xabb0;
+		//case 0x0a: return 0x5f68;
+		case 0xea: return 0xa5e6;
+		case 0x8a: return 0xd733;
+		case 0x5c: return 0xf409;
+		//case 0x0d: return 0xf209;
+		case 0x4e: return 0xad68;
+
+		default: return FixedApproxDiv(a, b);
+	}
 }
 
 
