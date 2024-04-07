@@ -79,7 +79,7 @@ typedef char assertMappatchSize[sizeof(mappatch_t) == 10 ? 1 : -1];
 
 typedef PACKEDATTR_PRE struct
 {
-  char       name[8];      // unused
+  char       name[8];
   char       pad2[4];      // unused
   int16_t      width;
   int16_t      height;
@@ -139,8 +139,8 @@ static void R_LoadTexture(int16_t texture_num)
         patch->originx = mpatch->originx;
         patch->originy = mpatch->originy;
 
-        uint64_t pnameint = *(uint64_t __far*)&pnames[mpatch->patch * 8];
-        char* pname = (char*)&pnameint;
+        char pname[8];
+        _fmemcpy(pname, &pnames[mpatch->patch * 8], 8);
 
         patch->patch_num   = W_GetNumForName(pname);
         patch->patch_width = V_NumPatchWidthDontCache(patch->patch_num);
@@ -210,7 +210,8 @@ static int16_t R_GetTextureNumForName(const char* tex_name)
 {
     char tex_name_temp[8];
     strncpy(tex_name_temp, tex_name, 8);
-    int64_t tex_name_int = *(int64_t*)tex_name_temp;
+    uint32_t tex_name_int1 = *(uint32_t*)&tex_name_temp[0];
+    uint32_t tex_name_int2 = *(uint32_t*)&tex_name_temp[4];
 
     const int32_t __far* maptex = W_GetLumpByName("TEXTURE1");
     const int32_t __far* directory = maptex+1;
@@ -221,7 +222,8 @@ static int16_t R_GetTextureNumForName(const char* tex_name)
 
         const maptexture_t __far* mtexture = (const maptexture_t __far*) ( (const byte __far*)maptex + offset);
 
-        if (tex_name_int == *(int64_t __far*)mtexture->name)
+        if (tex_name_int1 == *(int32_t __far*)&mtexture->name[0]
+         && tex_name_int2 == *(int32_t __far*)&mtexture->name[4])
         {
             Z_ChangeTagToCache(maptex);
             return i;
