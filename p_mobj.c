@@ -53,10 +53,6 @@
 #include "globdata.h"
 
 
-// Maintain player starting spot.
-static mapthing_t playerstart;
-
-
 //
 // P_SetMobjState
 // Returns true if the mobj is still present.
@@ -885,12 +881,9 @@ static PUREFUNC int16_t P_FindDoomedNum(int16_t type)
 //  between levels.
 //
 
-static void P_SpawnPlayer (const mapthing_t* mthing)
+static void P_SpawnPlayer(int16_t playerx, int16_t playery, int16_t playerangle)
 {
   player_t* p;
-  fixed_t   x;
-  fixed_t   y;
-  fixed_t   z;
   mobj_t __far*   mobj;
 
   // not playing?
@@ -902,21 +895,15 @@ static void P_SpawnPlayer (const mapthing_t* mthing)
 
   if (p->playerstate == PST_REBORN)
     G_PlayerReborn ();
-
-  /* cph 2001/08/14 - use the options field of memorised player starts to
-   * indicate whether the start really exists in the level.
-   */
-  if (!mthing->options)
-    I_Error("P_SpawnPlayer: attempt to spawn player at unavailable start point");
   
-  x    = ((int32_t)mthing->x) << FRACBITS;
-  y    = ((int32_t)mthing->y) << FRACBITS;
-  z    = ONFLOORZ;
+  fixed_t x = ((int32_t)playerx) << FRACBITS;
+  fixed_t y = ((int32_t)playery) << FRACBITS;
+  fixed_t z = ONFLOORZ;
   mobj = P_SpawnMobj (x,y,z, MT_PLAYER);
 
   // set color translations for player sprites
 
-  mobj->angle      = ANG45 * (mthing->angle/45);
+  mobj->angle      = ANG45 * (playerangle/45);
   mobj->health     = p->health;
 
   p->mo            = mobj;
@@ -961,16 +948,13 @@ void P_SpawnMapThing(const mapthing_t __far* mthing)
     mobj_t __far* mobj;
     fixed_t x;
     fixed_t y;
-    const int16_t options = mthing->options;
 
     // check for players specially
 
     //Only care about start spot for player 1.
     if (mthing->type == 1)
     {
-        playerstart = *mthing;
-        playerstart.options = MTF_EASY;
-        P_SpawnPlayer (&playerstart);
+        P_SpawnPlayer(mthing->x, mthing->y, mthing->angle);
         return;
     }
     else if (mthing->type == 2 || mthing->type == 3 || mthing->type == 4 || mthing->type == 11)
@@ -982,14 +966,14 @@ void P_SpawnMapThing(const mapthing_t __far* mthing)
     // check for apropriate skill level
 
     /* jff "not single" thing flag */
-    if (options & MTF_NOTSINGLE)
+    if (mthing->options & MTF_NOTSINGLE)
         return;
 
     // killough 11/98: simplify
     if (_g_gameskill == sk_baby || _g_gameskill == sk_easy ?
-            !(options & MTF_EASY) :
+            !(mthing->options & MTF_EASY) :
             _g_gameskill == sk_hard ?
-            !(options & MTF_HARD) : !(options & MTF_NORMAL))
+            !(mthing->options & MTF_HARD) : !(mthing->options & MTF_NORMAL))
         return;
 
     // find which type to spawn
@@ -1005,7 +989,7 @@ void P_SpawnMapThing(const mapthing_t __far* mthing)
         mobj->tics = 1 + (P_Random () % mobj->tics);
 
     mobj->angle = ANG45 * (mthing->angle/45);
-    if (options & MTF_AMBUSH)
+    if (mthing->options & MTF_AMBUSH)
         mobj->flags |= MF_AMBUSH;
 }
 
