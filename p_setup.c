@@ -196,8 +196,8 @@ typedef char assertMapsectorSize[sizeof(mapsector_t) == 26 ? 1 : -1];
 
 static int16_t R_FlatNumForFarName(const char __far* far_name)
 {
-	uint64_t nameint = *(uint64_t __far*)far_name;
-	char* near_name = (char*)&nameint;
+	char near_name[8];
+	_fmemcpy(near_name, far_name, 8);
 	return R_FlatNumForName(near_name);
 }
 
