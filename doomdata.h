@@ -107,6 +107,8 @@ typedef PACKEDATTR_PRE struct {
   int16_t options;
 } PACKEDATTR_POST mapthing_t;
 
+typedef char assertMapthingSize[sizeof(mapthing_t) == 10 ? 1 : -1];
+
 
 /* Bounding box coordinate storage. */
 enum
