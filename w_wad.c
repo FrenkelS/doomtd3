@@ -164,12 +164,15 @@ uint16_t PUREFUNC W_LumpLength(int16_t num)
 //
 int16_t PUREFUNC W_GetNumForName(const char *name)
 {
-	int64_t nameint;
-	strncpy((char*)&nameint, name, 8);
+	char name8[8];
+	strncpy(name8, name, 8);
+	uint32_t name_int1 = *(uint32_t*)&name8[0];
+	uint32_t name_int2 = *(uint32_t*)&name8[4];
 
 	for (int16_t i = 0; i < numlumps; i++)
 	{
-		if (nameint == *(int64_t __far*)(fileinfo[i].name))
+		if (name_int1 == *(uint32_t __far*)&fileinfo[i].name[0]
+		 && name_int2 == *(uint32_t __far*)&fileinfo[i].name[4])
 		{
 			return i;
 		}
@@ -254,11 +257,11 @@ void W_CacheLumps(void)
 {
 	int16_t cachelumpnum = W_GetNumForName("CACHE");
 	uint16_t cachelumplength = W_LumpLength(cachelumpnum);
-	const uint64_t __far* lumpsToCache = W_GetLumpByNum(cachelumpnum);
+	const char __far* lumpsToCache = W_GetLumpByNum(cachelumpnum);
 	for (int16_t i = 0; i < cachelumplength / sizeof(uint64_t); i++)
 	{
-		uint64_t nameint = *(uint64_t __far*)&lumpsToCache[i];
-		char* name = (char*)&nameint;
+		char name[8];
+		_fmemcpy(name, &lumpsToCache[i * 8], 8);
 		int16_t num = W_GetNumForName(name);
 		uint16_t length = W_LumpLength(num);
 
