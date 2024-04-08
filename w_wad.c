@@ -256,20 +256,35 @@ const void __far* PUREFUNC W_TryGetLumpByNum(int16_t num)
 void W_CacheLumps(void)
 {
 	int16_t cachelumpnum = W_GetNumForName("CACHE");
-	uint16_t cachelumplength = W_LumpLength(cachelumpnum);
+	int16_t numlumps = W_LumpLength(cachelumpnum) / 8;
 	const char __far* lumpsToCache = W_GetLumpByNum(cachelumpnum);
-	for (int16_t i = 0; i < cachelumplength / sizeof(uint64_t); i++)
+	const void __far* __far* lumps = (const void __far* __far*)lumpsToCache;
+	uint32_t freeBlockSize = Z_GetLargestFreeBlockSize();
+	int16_t i;
+	for (i = 0; i < numlumps; i++)
 	{
 		char name[8];
 		_fmemcpy(name, &lumpsToCache[i * 8], 8);
 		int16_t num = W_GetNumForName(name);
 		uint16_t length = W_LumpLength(num);
 
-		if (length > Z_GetLargestFreeBlockSize())
-			break;
+		if (length > freeBlockSize)
+		{
+			freeBlockSize = Z_GetLargestFreeBlockSize();
+			if (length > freeBlockSize)
+			{
+				i++;
+				break;
+			}
+		}
 
-		const void __far* lump = W_GetLumpByNum(num);
-		Z_ChangeTagToCache(lump);
+		freeBlockSize -= length;
+		*lumps++ = W_GetLumpByNum(num);
 	}
-	Z_ChangeTagToCache(lumpsToCache);
+
+	lumps = (const void __far* __far*)lumpsToCache;
+	for (int16_t j = 0; j < i; j++)
+		Z_ChangeTagToCache(*lumps++);
+
+	Z_Free(lumpsToCache);
 }
