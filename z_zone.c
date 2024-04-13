@@ -178,7 +178,7 @@ static void Z_ChangeTag(const void __far* ptr, uint_fast8_t tag)
 
 #if defined ZONEIDCHECK
 	if (block->id != ZONEID)
-		I_Error("Z_ChangeTagToStatic: block has id %x instead of ZONEID", block->id);
+		I_Error("Z_ChangeTag: block has id %x instead of ZONEID", block->id);
 #endif
 	block->tag = tag;
 }
