@@ -273,7 +273,6 @@ void W_CacheLumps(void)
 			freeBlockSize = Z_GetLargestFreeBlockSize();
 			if (length > freeBlockSize)
 			{
-				i++;
 				break;
 			}
 		}
