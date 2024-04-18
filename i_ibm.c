@@ -47,7 +47,7 @@
 
 extern const int16_t CENTERY;
 
-static uint8_t __far* _s_viewwindow;
+static uint8_t _s_viewwindow[VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT];
 static uint8_t __far* _s_statusbar;
 static uint8_t __far* videomemory;
 
@@ -85,7 +85,6 @@ void I_InitGraphics(void)
 	__djgpp_nearptr_enable();
 	videomemory = D_MK_FP(0xb800, ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + (((SCREENHEIGHT_CGA - SCREENHEIGHT) / 2) * PLANEWIDTH) / 2 + __djgpp_conventional_base);
 
-	_s_viewwindow = Z_MallocStatic(VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT);
 	_s_statusbar = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
 
 	isGraphicsModeSet = true;
@@ -348,7 +347,7 @@ void I_FinishUpdate(void)
 	}
 
 	// view window
-	uint8_t __far* src = _s_viewwindow;
+	uint8_t *src = &_s_viewwindow[0];
 	uint8_t __far* dst = videomemory;
 
 	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT / 2; y++) {
@@ -368,7 +367,7 @@ void I_FinishUpdate(void)
 	{
 		refreshStatusBar = false;
 
-		src = _s_statusbar;
+		uint8_t __far* src = _s_statusbar;
 		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
 				*dst++ = (VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++]) ^ lcd;
@@ -490,7 +489,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 		nearcolormapoffset = L_FP_OFF(dcvars->colormap);
 	}
 
-	dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
+	dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
@@ -512,7 +511,7 @@ void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
 
-	uint8_t __far* dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
+	uint8_t *dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	while (count--)
 	{
@@ -563,7 +562,7 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 		nearcolormapoffset = L_FP_OFF(&fullcolormap[6 * 256]);
 	}
 
-	uint8_t __far* dest = _s_viewwindow + (dc_yl * VIEWWINDOWWIDTH) + dcvars->x;
+	uint8_t *dest = &_s_viewwindow[(dc_yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	static int16_t fuzzpos = 0;
 
