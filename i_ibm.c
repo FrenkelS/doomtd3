@@ -417,7 +417,7 @@ static uint32_t nearcolormapoffset = 0xffffffff;
 #endif
 
 const uint8_t __far* source;
-const uint8_t __far* dest;
+const uint8_t *dest;
 
 
 #if defined USE_ASSEMBLY
