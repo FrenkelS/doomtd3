@@ -52,7 +52,7 @@
 
 extern const int16_t CENTERY;
 
-static uint8_t *_s_viewwindow;
+static uint8_t _s_viewwindow[VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT];
 static uint8_t *_s_statusbar;
 static uint8_t *videomemory;
 
@@ -61,7 +61,6 @@ void I_InitGraphics(void)
 {
 	videomemory = qd.screenBits.baseAddr + ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + (((SCREENHEIGHT_MAC - SCREENHEIGHT * 2) / 2) * PLANEWIDTH);
 
-	_s_viewwindow = Z_MallocStatic(VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT);
 	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
 }
 
@@ -302,7 +301,7 @@ static boolean refreshStatusBar;
 void I_FinishUpdate(void)
 {
 	// view window
-	uint8_t *src = _s_viewwindow;
+	uint8_t *src = &_s_viewwindow[0];
 	uint8_t *dst = videomemory;
 
 	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT; y++) {
@@ -367,7 +366,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 
 	const uint8_t *nearcolormap = dcvars->colormap;
 
-	uint8_t *dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
+	uint8_t *dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
@@ -427,7 +426,7 @@ void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
 
-	uint8_t *dest = _s_viewwindow + (dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x;
+	uint8_t *dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	while (count--)
 	{
@@ -474,7 +473,7 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 
 	const uint8_t *nearcolormap = &fullcolormap[6 * 256];
 
-	uint8_t *dest = _s_viewwindow + (dc_yl * VIEWWINDOWWIDTH) + dcvars->x;
+	uint8_t *dest = &_s_viewwindow[(dc_yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	static int16_t fuzzpos = 0;
 
