@@ -459,12 +459,7 @@ static CONSTFUNC int16_t SlopeDiv(uint32_t num, uint32_t den)
 
 static CONSTFUNC int16_t SlopeDiv16(uint16_t n, uint16_t d)
 {
-	if (d == 0)
-		return SLOPERANGE;
-
-	const uint16_t ans = ((uint32_t)n << (8 + 3)) / d;
-
-	return (ans <= SLOPERANGE) ? ans : SLOPERANGE;
+	return ((uint32_t)n << (8 + 3)) / d;
 }
 
 
@@ -565,9 +560,6 @@ static angle16_t R_PointToAngle16(int16_t x, int16_t y)
 {
     x = x - (viewx >> FRACBITS);
     y = y - (viewy >> FRACBITS);
-
-    if (!x && !y)
-        return 0;
 
     if (x >= 0)
     {
