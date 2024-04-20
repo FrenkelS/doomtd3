@@ -10,6 +10,7 @@ nasm i_ibma.asm -f elf
 ia16-elf-gcc -c i_ibm.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_map.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_maputl.c $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
+ia16-elf-gcc -c p_mobj.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_scroll.c $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_sight.c  $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c r_draw.c   $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
@@ -39,7 +40,8 @@ export GLOBOBJS+=" p_lights.c"
 export GLOBOBJS+=" p_map.o"
 #export GLOBOBJS+=" p_maputl.c"
 export GLOBOBJS+=" p_maputl.o"
-export GLOBOBJS+=" p_mobj.c"
+#export GLOBOBJS+=" p_mobj.c"
+export GLOBOBJS+=" p_mobj.o"
 export GLOBOBJS+=" p_plats.c"
 export GLOBOBJS+=" p_pspr.c"
 #export GLOBOBJS+=" p_scroll.c"
@@ -73,6 +75,7 @@ rm i_ibma.o
 rm i_ibm.o
 rm p_map.o
 rm p_maputl.o
+rm p_mobj.o
 rm p_scroll.o
 rm p_sight.o
 rm r_draw.o
