@@ -102,10 +102,6 @@ static int16_t bombdamage;
 
 static mobj_t __far*   usething;
 
-// If "floatok" true, move would be ok
-// if within "tmfloorz - tmceilingz".
-static boolean   floatok;
-
 
 // MAXRADIUS is for precalculated sector block boxes
 #define MAXRADIUS       (32*FRACUNIT)
@@ -114,12 +110,6 @@ static boolean   floatok;
 boolean P_IsAttackRangeMeleeRange(void)
 {
 	return attackrange == MELEERANGE;
-}
-
-
-boolean P_IsFloatOk(void)
-{
-	return floatok;
 }
 
 
@@ -522,8 +512,6 @@ boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
     fixed_t oldx;
     fixed_t oldy;
 
-    floatok = false;
-
     if (!P_CheckPosition (thing, x, y))
         return false;   // solid wall or thing
 
@@ -531,8 +519,6 @@ boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
     {
         if (_g_tmceilingz - _g_tmfloorz < thing->height)
             return false;	// doesn't fit
-
-        floatok = true;
 
         if ( !(thing->flags & MF_TELEPORT)
              && _g_tmceilingz - thing->z < thing->height)
@@ -542,7 +528,7 @@ boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
              && _g_tmfloorz - thing->z > 24*FRACUNIT )
             return false;	// too big a step up
 
-        if ( !(thing->flags & (MF_DROPOFF|MF_FLOAT))
+        if ( !(thing->flags & MF_DROPOFF)
              && _g_tmfloorz - _g_tmdropoffz > 24*FRACUNIT )
             return false;	// don't stand over a dropoff
     }

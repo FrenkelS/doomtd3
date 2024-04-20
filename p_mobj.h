@@ -151,9 +151,6 @@
 // Player cheat. ???
 #define MF_NOCLIP       0x00001000UL
 
-// Allow moves to any height, no gravity.
-// For active floaters, e.g. cacodemons, pain elementals.
-#define MF_FLOAT        0x00004000UL
 // Don't cross lines
 //   ??? or look at heights on teleport.
 #define MF_TELEPORT     0x00008000UL
