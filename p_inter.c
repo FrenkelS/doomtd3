@@ -561,9 +561,7 @@ void P_DamageMobj(mobj_t __far* target, mobj_t __far* inflictor, mobj_t __far* s
   // inflict thrust and push the victim out of reach,
   // thus kick away unless using the chainsaw.
 
-  if (inflictor && !(target->flags & MF_NOCLIP) &&
-      (!source || !P_MobjIsPlayer(source) ||
-       P_MobjIsPlayer(source)->readyweapon != wp_chainsaw))
+  if (inflictor && (!source || !P_MobjIsPlayer(source) || P_MobjIsPlayer(source)->readyweapon != wp_chainsaw))
     {
       angle_t ang = R_PointToAngle2 (inflictor->x, inflictor->y,
                                       target->x,    target->y);

@@ -148,8 +148,6 @@
 #define MF_DROPOFF      0x00000400UL
 // For players, will pick up items.
 #define MF_PICKUP       0x00000800UL
-// Player cheat. ???
-#define MF_NOCLIP       0x00001000UL
 
 // Don't cross lines
 //   ??? or look at heights on teleport.

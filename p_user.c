@@ -331,8 +331,6 @@ void P_PlayerThink (player_t* player)
   ticcmd_t*    cmd;
   weapontype_t newweapon;
 
-  player->mo->flags &= ~MF_NOCLIP;
-
   // chain saw run forward
 
   cmd = &player->cmd;

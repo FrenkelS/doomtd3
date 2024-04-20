@@ -376,9 +376,6 @@ boolean P_CheckPosition(mobj_t __far* thing, fixed_t x, fixed_t y)
   validcount++;
   _g_numspechit = 0;
 
-  if ( tmthing->flags & MF_NOCLIP )
-    return true;
-
   // Check things first, possibly picking things up.
   // The bounding box is extended by MAXRADIUS
   // because mobj_ts are grouped into mapblocks
@@ -515,23 +512,17 @@ boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
     if (!P_CheckPosition (thing, x, y))
         return false;   // solid wall or thing
 
-    if ( !(thing->flags & MF_NOCLIP) )
-    {
-        if (_g_tmceilingz - _g_tmfloorz < thing->height)
-            return false;	// doesn't fit
+    if (_g_tmceilingz - _g_tmfloorz < thing->height)
+        return false;	// doesn't fit
 
-        if ( !(thing->flags & MF_TELEPORT)
-             && _g_tmceilingz - thing->z < thing->height)
-            return false;	// mobj must lower itself to fit
+    if ( !(thing->flags & MF_TELEPORT) && _g_tmceilingz - thing->z < thing->height)
+        return false;	// mobj must lower itself to fit
 
-        if ( !(thing->flags & MF_TELEPORT)
-             && _g_tmfloorz - thing->z > 24*FRACUNIT )
-            return false;	// too big a step up
+    if ( !(thing->flags & MF_TELEPORT) && _g_tmfloorz - thing->z > 24*FRACUNIT )
+        return false;	// too big a step up
 
-        if ( !(thing->flags & MF_DROPOFF)
-             && _g_tmfloorz - _g_tmdropoffz > 24*FRACUNIT )
-            return false;	// don't stand over a dropoff
-    }
+    if ( !(thing->flags & MF_DROPOFF) && _g_tmfloorz - _g_tmdropoffz > 24*FRACUNIT )
+        return false;	// don't stand over a dropoff
 
     // the move is ok,
     // so unlink from the old position and link into the new position
@@ -550,7 +541,7 @@ boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
 
     // if any special lines were hit, do the effect
 
-    if (! (thing->flags&(MF_TELEPORT|MF_NOCLIP)) )
+    if (!(thing->flags & MF_TELEPORT))
         while (_g_numspechit--)
             if (LN_SPECIAL(_g_spechit[_g_numspechit]))  // see if the line was crossed
             {

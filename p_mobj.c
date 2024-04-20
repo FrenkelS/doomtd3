@@ -582,7 +582,7 @@ static void P_ZMovement(mobj_t __far* mo)
       }
     mo->z = mo->floorz;
 
-    if ( (mo->flags & MF_MISSILE) && !(mo->flags & MF_NOCLIP) )
+    if (mo->flags & MF_MISSILE)
       {
       P_ExplodeMissile (mo);
       return;
@@ -605,7 +605,7 @@ static void P_ZMovement(mobj_t __far* mo)
 
     mo->z = mo->ceilingz - mo->height;
 
-    if ( (mo->flags & MF_MISSILE) && !(mo->flags & MF_NOCLIP) )
+    if (mo->flags & MF_MISSILE)
       {
       P_ExplodeMissile (mo);
       return;
