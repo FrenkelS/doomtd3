@@ -124,7 +124,7 @@ static void P_RemoveThingDelayed(thinker_t __far* thinker)
 
     mobj_t __far* thing = (mobj_t __far*)thinker;
 
-    if(thing->flags & MF_POOLED)
+    if (thing->pooled)
         thing->type = MT_NOTHING;
     else
         Z_Free(thinker);

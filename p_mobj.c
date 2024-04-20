@@ -693,7 +693,7 @@ static mobj_t __far* P_NewMobj()
             mobj = &_g_thingPool[i];
             _fmemset (mobj, 0, sizeof (*mobj));
 
-            mobj->flags = MF_POOLED;
+            mobj->pooled = true;
             return mobj;
         }
     }

@@ -121,52 +121,50 @@
 //
 
 // Call P_SpecialThing when touched.
-#define MF_SPECIAL      0x00000001UL
+#define MF_SPECIAL      0x0001U
 // Blocks.
-#define MF_SOLID        0x00000002UL
+#define MF_SOLID        0x0002U
 // Can be hit.
-#define MF_SHOOTABLE    0x00000004UL
+#define MF_SHOOTABLE    0x0004U
 
 // Don't use the blocklinks (inert but displayable)
-#define MF_NOBLOCKMAP   0x00000010UL
+#define MF_NOBLOCKMAP   0x0008U
 
 // Not to be activated by sound, deaf monster.
-#define MF_AMBUSH       0x00000020UL
+#define MF_AMBUSH       0x0010U
 // Will try to attack right back.
-#define MF_JUSTHIT      0x00000040UL
+#define MF_JUSTHIT      0x0020U
 // Will take at least one step before attacking.
-#define MF_JUSTATTACKED 0x00000080UL
+#define MF_JUSTATTACKED 0x0040U
 
 // Don't apply gravity (every tic),
 //  that is, object will float, keeping current height
 //  or changing it actively.
-#define MF_NOGRAVITY    0x00000200UL
+#define MF_NOGRAVITY    0x0080U
 
 // Movement flags.
 // This allows jumps from high places.
-#define MF_DROPOFF      0x00000400UL
+#define MF_DROPOFF      0x0100U
 // For players, will pick up items.
-#define MF_PICKUP       0x00000800UL
+#define MF_PICKUP       0x0200U
 
 // Don't hit same species, explode on block.
 // Player missiles as well as fireballs of various kinds.
-#define MF_MISSILE      0x00010000UL
+#define MF_MISSILE      0x0400U
 // Dropped by a demon, not level spawned.
 // E.g. ammo clips dropped by dying former humans.
-#define MF_DROPPED      0x00020000UL
+#define MF_DROPPED      0x0800U
 // Use fuzzy draw (shadow demons or spectres),
 //  temporary player invisibility powerup.
-#define MF_SHADOW       0x00040000UL
+#define MF_SHADOW       0x1000U
 // Flag: don't bleed when shot (use puff),
 //  barrels and shootable furniture shall not bleed.
-#define MF_NOBLOOD      0x00080000UL
+#define MF_NOBLOOD      0x2000U
 // Don't stop moving halfway off a step,
 //  that is, have dead bodies slide down all the way.
-#define MF_CORPSE       0x00100000UL
+#define MF_CORPSE       0x4000U
 
-#define MF_POOLED       0x10000000UL
-
-#define MF_FRIEND       0x80000000UL
+#define MF_FRIEND       0x8000U
 
 
 // Map Object definition.
@@ -236,7 +234,8 @@ typedef struct mobj_s
 
     int16_t             tics;   // state tic counter
     const state_t*      state;
-    uint32_t            flags;
+    uint16_t            flags;
+    uint16_t            pooled;
 
     // Thing being chased/attacked (or NULL),
     // also the originator for missiles.
