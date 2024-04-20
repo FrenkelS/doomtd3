@@ -256,8 +256,6 @@ static boolean P_Move(mobj_t __far* actor)
        */
       return good;
     }
-  else
-    actor->flags &= ~MF_INFLOAT;
 
   actor->z = actor->floorz;
 

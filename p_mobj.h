@@ -169,9 +169,6 @@
 // Don't stop moving halfway off a step,
 //  that is, have dead bodies slide down all the way.
 #define MF_CORPSE       0x00100000UL
-// Floating to a height for a move, ???
-//  don't auto float to target's height.
-#define MF_INFLOAT      0x00200000UL
 
 #define MF_POOLED       0x10000000UL
 
@@ -289,9 +286,6 @@ typedef struct mobj_s
 
 #define ONFLOORZ        INT32_MIN
 #define ONCEILINGZ      INT32_MAX
-
-
-#define FLOATSPEED      (FRACUNIT*4)
 
 
 mobj_t __far* P_SpawnMobj(fixed_t x, fixed_t y, fixed_t z, mobjtype_t type);
