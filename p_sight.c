@@ -61,13 +61,44 @@ static los_t los;
 
 static int16_t P_DivlineSide(fixed_t x, fixed_t y, const divline_t *node)
 {
-  fixed_t left, right;
-  return
-    !node->dx ? x == node->x ? 2 : x <= node->x ? node->dy > 0 : node->dy < 0 :
-    !node->dy ? (y) == node->y ? 2 : y <= node->y ? node->dx < 0 : node->dx > 0 :
-    (right = ((y - node->y) >> FRACBITS) * (node->dx >> FRACBITS)) <
-    (left  = ((x - node->x) >> FRACBITS) * (node->dy >> FRACBITS)) ? 0 :
-    right == left ? 2 : 1;
+	if (!node->dx)
+	{
+		if (x == node->x) {
+			return 2;
+		}
+
+		if (x <= node->x) {
+			return node->dy > 0;
+		} else {
+			return node->dy < 0;
+		}
+	}
+
+	if (!node->dy)
+	{
+		if (y == node->y) {
+			return 2;
+		}
+
+		if (y <= node->y) {
+			return node->dx < 0;
+		} else {
+			return node->dx > 0;
+		}
+	}
+
+	fixed_t right = ((y - node->y) >> FRACBITS) * (node->dx >> FRACBITS);
+	fixed_t left  = ((x - node->x) >> FRACBITS) * (node->dy >> FRACBITS);
+
+	if (right < left) {
+		return 0;	// front side
+	}
+
+	if (left == right) {
+		return 2;
+	} else {
+		return 1;	// back side
+	}
 }
 
 
