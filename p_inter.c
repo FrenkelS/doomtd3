@@ -484,7 +484,7 @@ static void P_KillMobj(mobj_t __far* target)
   mobjtype_t item;
   mobj_t     __far* mo;
 
-  target->flags &= ~(MF_SHOOTABLE|MF_FLOAT|MF_SKULLFLY);
+  target->flags &= ~(MF_SHOOTABLE|MF_FLOAT);
   target->flags &= ~MF_NOGRAVITY;
   target->flags |= MF_CORPSE|MF_DROPOFF;
   target->height >>= 2;
@@ -552,9 +552,6 @@ void P_DamageMobj(mobj_t __far* target, mobj_t __far* inflictor, mobj_t __far* s
 
   if (target->health <= 0)
     return;
-
-  if (target->flags & MF_SKULLFLY)
-    target->momx = target->momy = target->momz = 0;
 
   player = P_MobjIsPlayer(target);
   if (player && _g_gameskill == sk_baby)
@@ -636,17 +633,14 @@ void P_DamageMobj(mobj_t __far* target, mobj_t __far* inflictor, mobj_t __far* s
       if (player)
         target->target = source;
 
-  if (P_Random () < mobjinfo[target->type].painchance &&
-      !(target->flags & MF_SKULLFLY))
-  { //killough 11/98: see below
+  if (P_Random () < mobjinfo[target->type].painchance)
+  {
       justhit = true;
 
     P_SetMobjState(target, mobjinfo[target->type].painstate);
   }
 
   target->reactiontime = 0;           // we're awake now...
-
-  /* killough 9/9/98: cleaned up, made more consistent: */
 
   if (source && source != target && !target->threshold)
     {
