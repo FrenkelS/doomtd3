@@ -126,8 +126,7 @@
 #define MF_SOLID        0x00000002UL
 // Can be hit.
 #define MF_SHOOTABLE    0x00000004UL
-// Don't use the sector links (invisible but touchable).
-#define MF_NOSECTOR     0x00000008UL
+
 // Don't use the blocklinks (inert but displayable)
 #define MF_NOBLOCKMAP   0x00000010UL
 

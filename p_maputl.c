@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -299,8 +299,6 @@ void P_LineOpening(const line_t __far* linedef)
 
 void P_UnsetThingPosition(mobj_t __far* thing)
 {
-  if (!(thing->flags & MF_NOSECTOR))
-    {
       /* invisible things don't need to be in sector list
        * unlink from subsector
        *
@@ -328,7 +326,6 @@ void P_UnsetThingPosition(mobj_t __far* thing)
 
       _g_sector_list = thing->touching_sectorlist;
       thing->touching_sectorlist = NULL; //to be restored by P_SetThingPosition
-    }
 
   if (!(thing->flags & MF_NOBLOCKMAP))
     {
@@ -360,8 +357,7 @@ void P_UnsetThingPosition(mobj_t __far* thing)
 void P_SetThingPosition(mobj_t __far* thing)
 {                                                      // link into subsector
   subsector_t __far* ss = thing->subsector = R_PointInSubsector(thing->x, thing->y);
-  if (!(thing->flags & MF_NOSECTOR))
-    {
+
       // invisible things don't go into the sector links
 
       // killough 8/11/98: simpler scheme using pointer-to-pointer prev
@@ -390,7 +386,6 @@ void P_SetThingPosition(mobj_t __far* thing)
       P_CreateSecNodeList(thing);
       thing->touching_sectorlist = _g_sector_list; // Attach to Thing's mobj_t
       _g_sector_list = NULL; // clear for next time
-    }
 
   // link into blockmap
   if (!(thing->flags & MF_NOBLOCKMAP))
