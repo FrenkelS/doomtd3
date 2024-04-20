@@ -502,7 +502,7 @@ static void P_CrossSpecialLine(const line_t __far* line, mobj_t __far* thing)
 //
 // P_TryMove
 // Attempt to move to a new position,
-// crossing special lines unless MF_TELEPORT is set.
+// crossing special lines.
 //
 boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
 {
@@ -515,10 +515,10 @@ boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
     if (_g_tmceilingz - _g_tmfloorz < thing->height)
         return false;	// doesn't fit
 
-    if ( !(thing->flags & MF_TELEPORT) && _g_tmceilingz - thing->z < thing->height)
+    if (_g_tmceilingz - thing->z < thing->height)
         return false;	// mobj must lower itself to fit
 
-    if ( !(thing->flags & MF_TELEPORT) && _g_tmfloorz - thing->z > 24*FRACUNIT )
+    if (_g_tmfloorz - thing->z > 24*FRACUNIT )
         return false;	// too big a step up
 
     if ( !(thing->flags & MF_DROPOFF) && _g_tmfloorz - _g_tmdropoffz > 24*FRACUNIT )
@@ -541,14 +541,12 @@ boolean P_TryMove(mobj_t __far* thing, fixed_t x, fixed_t y)
 
     // if any special lines were hit, do the effect
 
-    if (!(thing->flags & MF_TELEPORT))
-        while (_g_numspechit--)
-            if (LN_SPECIAL(_g_spechit[_g_numspechit]))  // see if the line was crossed
-            {
-                if ((P_PointOnLineSide(oldx, oldy, _g_spechit[_g_numspechit])) !=
-                        P_PointOnLineSide(thing->x, thing->y, _g_spechit[_g_numspechit]))
-                    P_CrossSpecialLine(_g_spechit[_g_numspechit], thing);
-            }
+    while (_g_numspechit--)
+        if (LN_SPECIAL(_g_spechit[_g_numspechit]))  // see if the line was crossed
+        {
+            if ((P_PointOnLineSide(oldx, oldy, _g_spechit[_g_numspechit])) != P_PointOnLineSide(thing->x, thing->y, _g_spechit[_g_numspechit]))
+                P_CrossSpecialLine(_g_spechit[_g_numspechit], thing);
+        }
 
     return true;
 }

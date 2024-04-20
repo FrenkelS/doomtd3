@@ -149,9 +149,6 @@
 // For players, will pick up items.
 #define MF_PICKUP       0x00000800UL
 
-// Don't cross lines
-//   ??? or look at heights on teleport.
-#define MF_TELEPORT     0x00008000UL
 // Don't hit same species, explode on block.
 // Player missiles as well as fireballs of various kinds.
 #define MF_MISSILE      0x00010000UL
