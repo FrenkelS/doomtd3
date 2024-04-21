@@ -61,6 +61,8 @@ static int16_t maketic;
 
 static void D_BuildNewTiccmds(void)
 {
+// Somehow the Macintosh build doesn't work when this code is removed
+#if defined macintosh
 	static int16_t lastmadetic = 0;
 	static int16_t ticcount    = 0;
 
@@ -75,6 +77,7 @@ static void D_BuildNewTiccmds(void)
 		G_BuildTiccmd();
 		maketic++;
 	}
+#endif
 }
 
 
