@@ -507,6 +507,12 @@ void V_DrawRaw(int16_t num, uint16_t offset)
 }
 
 
+boolean ST_IsDrawStatusBar(void)
+{
+	return true;
+}
+
+
 void ST_Drawer(void)
 {
 	if (ST_NeedUpdate())
