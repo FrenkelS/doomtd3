@@ -34,8 +34,6 @@
 #include "i_system.h"
 #include "w_wad.h"
 
-#undef VIEWWINDOWWIDTH
-#define VIEWWINDOWWIDTH 30
 
 extern const int16_t CENTERY;
 
@@ -141,9 +139,6 @@ void R_DrawColumn2(uint16_t fracstep, uint16_t frac, int16_t count);
 
 void R_DrawColumn(const draw_column_vars_t *dcvars)
 {
-	if (dcvars->x & 1)
-		return;
-
 	const int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	// Zero length, column does not exceed a pixel.
@@ -158,7 +153,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 		nearcolormapoffset = D_FP_OFF(dcvars->colormap);
 	}
 
-	dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + (dcvars->x / 2)];
+	dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
@@ -169,9 +164,6 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 
 void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 {
-	if (dcvars->x & 1)
-		return;
-
 	int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	const uint8_t color1 = texture;
@@ -179,7 +171,7 @@ void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
 
-	uint8_t *dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + (dcvars->x / 2)];
+	uint8_t *dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	while (count--)
 	{
@@ -207,9 +199,6 @@ static const int8_t fuzzoffset[FUZZTABLE] =
 
 void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 {
-	if (dcvars->x & 1)
-		return;
-
 	int16_t dc_yl = dcvars->yl;
 	int16_t dc_yh = dcvars->yh;
 
@@ -233,7 +222,7 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 		nearcolormapoffset = D_FP_OFF(&fullcolormap[6 * 256]);
 	}
 
-	uint8_t *dest = &_s_viewwindow[(dc_yl * VIEWWINDOWWIDTH) + (dcvars->x / 2)];
+	uint8_t *dest = &_s_viewwindow[(dc_yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	static int16_t fuzzpos = 0;
 
