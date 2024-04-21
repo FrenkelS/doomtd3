@@ -19,8 +19,6 @@ cpu 8086
 
 bits 16
 
-VIEWWINDOWWIDTH equ 60
-
 extern source
 extern nearcolormap
 extern dest
