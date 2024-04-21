@@ -19,6 +19,10 @@ cpu 8086
 
 bits 16
 
+%ifndef VIEWWINDOWWIDTH
+VIEWWINDOWWIDTH equ 60
+%endif
+
 extern source
 extern nearcolormap
 extern dest

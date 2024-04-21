@@ -5,7 +5,7 @@ unset CFLAGS
 #export RENDER_OPTIONS="-DONE_WALL_TEXTURE -DFLAT_WALL"
 export RENDER_OPTIONS="-DUSE_ASSEMBLY"
 
-nasm i_ibma.asm -f elf -DVIEWWINDOWWIDTH=60
+nasm i_ibma.asm -f elf
 
 ia16-elf-gcc -c i_ibm.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
 ia16-elf-gcc -c p_map.c    $RENDER_OPTIONS -march=i8088 -mcmodel=medium -mnewlib-nano-stdio -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparmcall -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=simple
