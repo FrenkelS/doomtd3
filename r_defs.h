@@ -341,32 +341,4 @@ typedef struct
   spriteframe_t __far* spriteframes;
 } spritedef_t;
 
-//
-// Now what is a visplane, anyway?
-//
-// Go to http://classicgaming.com/doom/editing/ to find out -- killough
-//
-
-typedef struct visplane
-{
-  struct visplane __far* next;        // Next visplane in hash chain -- killough
-  int16_t picnum, lightlevel;
-  int16_t minx, maxx;
-  fixed_t height;
-  boolean modified;
-
-  byte		pad1;
-  byte		pad2;
-  byte		pad3;
-  // Here lies the rub for all
-  //  dynamic resize/change of resolution.
-  byte		top[VIEWWINDOWWIDTH];
-  byte		pad4;
-  byte		pad5;
-  // See above.
-  byte		bottom[VIEWWINDOWWIDTH];
-  byte		pad6;
-
-} visplane_t;
-
 #endif
