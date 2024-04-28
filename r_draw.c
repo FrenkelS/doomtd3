@@ -329,11 +329,11 @@ static const int16_t CENTERX = VIEWWINDOWWIDTH  / 2;
 
 static const fixed_t PROJECTION = (VIEWWINDOWWIDTH / 2L) << FRACBITS;
 
-static const int16_t  PSPRITESCALE  = FRACUNIT * VIEWWINDOWWIDTH / SCREENWIDTH_VGA;
-static const fixed_t IPSPRITESCALE  = FRACUNIT * SCREENWIDTH_VGA / VIEWWINDOWWIDTH; // = FixedReciprocal(PSPRITESCALE)
+static const int16_t PSPRITESCALE  = FRACUNIT * VIEWWINDOWWIDTH / SCREENWIDTH_VGA;
+static const fixed_t PSPRITEISCALE = FRACUNIT * SCREENWIDTH_VGA / VIEWWINDOWWIDTH; // = FixedReciprocal(PSPRITESCALE)
 
-static const uint16_t PSPRITEYSCALE = FRACUNIT * SCREENHEIGHT     / SCREENHEIGHT_VGA;
-static const fixed_t IPSPRITEYSCALE = FRACUNIT * SCREENHEIGHT_VGA / SCREENHEIGHT; // = FixedReciprocal(PSPRITEYSCALE)
+static const uint16_t PSPRITEYSCALE = FRACUNIT * (VIEWWINDOWHEIGHT * 5 / 4) / SCREENHEIGHT_VGA;
+static const fixed_t PSPRITEYISCALE = FRACUNIT * SCREENHEIGHT_VGA / (VIEWWINDOWHEIGHT * 5 / 4); // = FixedReciprocal(PSPRITEYSCALE)
 
 static const angle16_t xtoviewangleTable[VIEWWINDOWWIDTH + 1] =
 {
@@ -1241,9 +1241,9 @@ static void R_DrawPSprite (pspdef_t *psp, int16_t lightlevel)
     vis->x2 = x2 >= VIEWWINDOWWIDTH ? VIEWWINDOWWIDTH - 1 : x2;
     // proff 11/06/98: Added for high-res
     vis->scale = PSPRITEYSCALE;
-    vis->iscale = IPSPRITEYSCALE;
+    vis->iscale = PSPRITEYISCALE;
 
-    vis->xiscale = IPSPRITESCALE;
+    vis->xiscale = PSPRITEISCALE;
     vis->startfrac = 0;
 
     if (vis->x1 > x1)
