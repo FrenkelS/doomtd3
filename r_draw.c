@@ -479,7 +479,7 @@ static CONSTFUNC int16_t SlopeDiv(uint32_t num, uint32_t den)
 
 static CONSTFUNC int16_t SlopeDiv16(uint16_t n, uint16_t d)
 {
-	return ((uint32_t)n << (8 + 3)) / d;
+	return ((uint32_t)n * SLOPERANGE) / d;
 }
 
 
@@ -1405,7 +1405,7 @@ static void R_ProjectSprite (mobj_t __far* thing, int16_t lightlevel)
 
     //vis->scale           = FixedDiv(PROJECTIONY, tz);
     vis->scale           = (VIEWWINDOWHEIGHT * FRACUNIT) / (tz >> FRACBITS);
-    vis->iscale          = tz >> 7;
+    vis->iscale          = tz / VIEWWINDOWHEIGHT;
     vis->lump_num        = sprframe->lump[rot];
     vis->patch_topoffset = patch->topoffset;
     vis->gx              = fx;
