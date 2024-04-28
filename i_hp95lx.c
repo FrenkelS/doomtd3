@@ -55,9 +55,9 @@ static void I_SetScreenMode(uint16_t mode)
 void I_InitGraphics(void)
 {
 #if defined DEBUG
-	I_SetScreenMode(6);
+	I_SetScreenMode(0x0d);
 
-	videomemory = D_MK_FP(0xb800, 0);
+	videomemory = D_MK_FP(0xa000, 0);
 #else
 	I_SetScreenMode(0x20);
 
@@ -85,19 +85,14 @@ void I_FinishUpdate(void)
 {
 	// view window
 #if defined DEBUG
-#define PLANEWIDTH 80
+#define PLANEWIDTH 40
 	uint8_t *src = &_s_viewwindow[0];
 	uint8_t __far* dst = videomemory;
 
-	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT / 2; y++) {
+	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT; y++) {
 		_fmemcpy(dst, src, VIEWWINDOWWIDTH);
 
-		dst += 0x2000;
-		src += VIEWWINDOWWIDTH;
-
-		_fmemcpy(dst, src, VIEWWINDOWWIDTH);
-
-		dst -= 0x2000 - PLANEWIDTH;
+		dst += PLANEWIDTH;
 		src += VIEWWINDOWWIDTH;
 	}
 #else
