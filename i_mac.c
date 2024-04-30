@@ -54,14 +54,16 @@ extern const int16_t CENTERY;
 
 static uint8_t _s_viewwindow[VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT];
 static uint8_t *_s_statusbar;
-static uint8_t *videomemory;
+static uint8_t *videomemory_view;
+static uint8_t *videomemory_statusbar;
 
 
 void I_InitGraphics(void)
 {
-	videomemory = qd.screenBits.baseAddr + ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + (((SCREENHEIGHT_MAC - SCREENHEIGHT * 2) / 2) * PLANEWIDTH);
+	videomemory_view      = qd.screenBits.baseAddr + ((PLANEWIDTH - VIEWWINDOWWIDTH)     / 2) + (((SCREENHEIGHT_MAC - SCREENHEIGHT * 2) / 2) * PLANEWIDTH);
+	videomemory_statusbar = qd.screenBits.baseAddr + ((PLANEWIDTH - SCREENWIDTH * 2 / 8) / 2) + (((SCREENHEIGHT_MAC - SCREENHEIGHT * 2) / 2) * PLANEWIDTH) + VIEWWINDOWHEIGHT * 2 * PLANEWIDTH;
 
-	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
+	_s_statusbar = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
 }
 
 
@@ -302,7 +304,7 @@ void I_FinishUpdate(void)
 {
 	// view window
 	uint8_t *src = &_s_viewwindow[0];
-	uint8_t *dst = videomemory;
+	uint8_t *dst = videomemory_view;
 
 	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT; y++) {
 		BlockMoveData(src, dst,              VIEWWINDOWWIDTH);
@@ -318,8 +320,9 @@ void I_FinishUpdate(void)
 		refreshStatusBar = false;
 
 		src = _s_statusbar;
+		dst = videomemory_statusbar;
 		for (uint_fast8_t y = 0; y < ST_HEIGHT; y++) {
-			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+			for (uint_fast8_t x = 0; x < (SCREENWIDTH * 2 / 8); x++) {
 				uint8_t s1 = *src++;
 				uint8_t s2 = *src++;
 				uint8_t s3 = *src++;
@@ -331,7 +334,7 @@ void I_FinishUpdate(void)
 				dst++;
 			}
 
-			dst += PLANEWIDTH * 2 - VIEWWINDOWWIDTH;
+			dst += PLANEWIDTH * 2 - (SCREENWIDTH * 2 / 8);
 		}
 	}
 }
