@@ -49,7 +49,8 @@ extern const int16_t CENTERY;
 
 static uint8_t _s_viewwindow[VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT];
 static uint8_t __far* _s_statusbar;
-static uint8_t __far* videomemory;
+static uint8_t __far* videomemory_view;
+static uint8_t __far* videomemory_statusbar;
 
 static boolean isGraphicsModeSet = false;
 
@@ -83,7 +84,8 @@ void I_InitGraphics(void)
 	I_UploadNewPalette(0);
 
 	__djgpp_nearptr_enable();
-	videomemory = D_MK_FP(0xb800, ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + (((SCREENHEIGHT_CGA - SCREENHEIGHT) / 2) * PLANEWIDTH) / 2 + __djgpp_conventional_base);
+	videomemory_view      = D_MK_FP(0xb800, ((PLANEWIDTH - VIEWWINDOWWIDTH)     / 2) + (((SCREENHEIGHT_CGA - SCREENHEIGHT) / 2) * PLANEWIDTH) / 2                                     + __djgpp_conventional_base);
+	videomemory_statusbar = D_MK_FP(0xb800, ((PLANEWIDTH - SCREENWIDTH * 2 / 8) / 2) + (((SCREENHEIGHT_CGA - SCREENHEIGHT) / 2) * PLANEWIDTH) / 2 + VIEWWINDOWHEIGHT * PLANEWIDTH / 2 + __djgpp_conventional_base);
 
 	_s_statusbar = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
 
@@ -348,7 +350,7 @@ void I_FinishUpdate(void)
 
 	// view window
 	uint8_t *src = &_s_viewwindow[0];
-	uint8_t __far* dst = videomemory;
+	uint8_t __far* dst = videomemory_view;
 
 	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT / 2; y++) {
 		_fmemcpy(dst, src, VIEWWINDOWWIDTH);
@@ -368,18 +370,19 @@ void I_FinishUpdate(void)
 		refreshStatusBar = false;
 
 		uint8_t __far* src = _s_statusbar;
+		dst = videomemory_statusbar;
 		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
-			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+			for (uint_fast8_t x = 0; x < (SCREENWIDTH * 2 / 8); x++) {
 				*dst++ = (VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++]) ^ lcd;
 			}
 
-			dst += 0x2000 - VIEWWINDOWWIDTH;
+			dst += 0x2000 - (SCREENWIDTH * 2 / 8);
 
-			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
+			for (uint_fast8_t x = 0; x < (SCREENWIDTH * 2 / 8); x++) {
 				*dst++ = (VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++]) ^ lcd;
 			}
 
-			dst -= 0x2000 - (PLANEWIDTH - VIEWWINDOWWIDTH);
+			dst -= 0x2000 - (PLANEWIDTH - (SCREENWIDTH * 2 / 8));
 		}
 	}
 }
