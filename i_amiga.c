@@ -51,6 +51,7 @@ extern struct Custom custom;
 extern const int16_t CENTERY;
 
 static uint16_t viewwindowtop;
+static uint16_t statusbartop;
 static uint8_t *_s_viewwindow;
 static uint8_t *_s_statusbar;
 
@@ -157,7 +158,8 @@ void I_InitGraphics(void)
 	custom.dmacon = 0x0020;
 	custom.cop1lc = (uint32_t) coplist;
 
-	viewwindowtop = ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
+	viewwindowtop = ((PLANEWIDTH - VIEWWINDOWWIDTH)     / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
+	statusbartop  = ((PLANEWIDTH - SCREENWIDTH * 2 / 8) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH + VIEWWINDOWHEIGHT * PLANEWIDTH;
 	_s_viewwindow = screenpage + viewwindowtop;
 
 	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
@@ -167,8 +169,8 @@ void I_InitGraphics(void)
 	custom.bltcon0 = 0b0000100111110000;
 	custom.bltcon1 = 0;
 
-	custom.bltamod = PLANEWIDTH - VIEWWINDOWWIDTH;
-	custom.bltdmod = PLANEWIDTH - VIEWWINDOWWIDTH;
+	custom.bltamod = PLANEWIDTH - SCREENWIDTH * 2 / 8;
+	custom.bltdmod = PLANEWIDTH - SCREENWIDTH * 2 / 8;
 
 	custom.bltafwm = 0xffff;
 	custom.bltalwm = 0xffff;
@@ -449,7 +451,7 @@ void I_FinishUpdate(void)
 		if (st_needrefresh)
 		{
 			uint8_t *src = _s_statusbar;
-			uint8_t *dst = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
+			uint8_t *dst = screenpage + statusbartop;
 			for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 				for (uint_fast8_t x = 0; x < (SCREENWIDTH * 2 / 8); x++) {
 					*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
@@ -468,8 +470,8 @@ void I_FinishUpdate(void)
 		{
 			WaitBlit();
 
-			custom.bltapt = (uint8_t*)(screenpaget - (uint32_t)screenpage) + viewwindowtop + PLANEWIDTH * VIEWWINDOWHEIGHT;
-			custom.bltdpt = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
+			custom.bltapt = (uint8_t*)(screenpaget - (uint32_t)screenpage) + statusbartop;
+			custom.bltdpt = screenpage + statusbartop;
 
 			custom.bltsize = (ST_HEIGHT << 6) | ((SCREENWIDTH * 2 / 8) / 2);
 		}
