@@ -43,7 +43,24 @@
 #include "globdata.h"
 
 
-#define PLANEWIDTH			 80
+#define HORIZONTAL_RESOLUTION_LO	320
+#define HORIZONTAL_RESOLUTION_HI	640
+
+#define HORIZONTAL_RESOLUTION		HORIZONTAL_RESOLUTION_HI
+
+#define PLANEWIDTH			 		(HORIZONTAL_RESOLUTION/8)
+
+#if HORIZONTAL_RESOLUTION == HORIZONTAL_RESOLUTION_LO
+#define DDFSTRT_VALUE	0x0038
+#define DDFSTOP_VALUE	0x00d0
+#define BPLCON0_VALUE	0b0001000000000000
+#else
+#define DDFSTRT_VALUE	0x003c
+#define DDFSTOP_VALUE	0x00d4
+#define BPLCON0_VALUE	0b1001000000000000
+#endif
+
+#define D	(HORIZONTAL_RESOLUTION/HORIZONTAL_RESOLUTION_LO)
 
 extern struct GfxBase *GfxBase;
 extern struct Custom custom;
@@ -63,10 +80,8 @@ static boolean isGraphicsModeSet = false;
 
 #define FMODE	0x1fc
 
-#define DDFSTRT			0x092
-#define DDFSTOP			0x094
-#define DDFSTRT_VALUE	0x003c
-#define DDFSTOP_VALUE	0x00d4
+#define DDFSTRT	0x092
+#define DDFSTOP	0x094
 
 #define DIWSTRT				0x08e
 #define DIWSTOP				0x090
@@ -74,8 +89,7 @@ static boolean isGraphicsModeSet = false;
 #define DIWSTOP_VALUE_PAL	0x2cc1
 #define DIWSTOP_VALUE_NTSC	0xf4c1
 
-#define BPLCON0			0x100
-#define BPLCON0_VALUE	0b1001000000000000
+#define BPLCON0	0x100
 
 #define BPL1MOD	0x108
 
@@ -159,7 +173,7 @@ void I_InitGraphics(void)
 	custom.cop1lc = (uint32_t) coplist;
 
 	viewwindowtop = ((PLANEWIDTH - VIEWWINDOWWIDTH)     / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
-	statusbartop  = ((PLANEWIDTH - SCREENWIDTH * 2 / 8) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH + VIEWWINDOWHEIGHT * PLANEWIDTH;
+	statusbartop  = ((PLANEWIDTH - SCREENWIDTH * D / 8) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH + VIEWWINDOWHEIGHT * PLANEWIDTH;
 	_s_viewwindow = screenpage + viewwindowtop;
 
 	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
@@ -169,8 +183,8 @@ void I_InitGraphics(void)
 	custom.bltcon0 = 0b0000100111110000;
 	custom.bltcon1 = 0;
 
-	custom.bltamod = PLANEWIDTH - SCREENWIDTH * 2 / 8;
-	custom.bltdmod = PLANEWIDTH - SCREENWIDTH * 2 / 8;
+	custom.bltamod = PLANEWIDTH - SCREENWIDTH * D / 8;
+	custom.bltdmod = PLANEWIDTH - SCREENWIDTH * D / 8;
 
 	custom.bltafwm = 0xffff;
 	custom.bltalwm = 0xffff;
@@ -205,11 +219,43 @@ void I_SetPalette(int8_t pal)
 }
 
 
-#define B0 (0 << 0)
-#define B1 (1 << 0)
-#define B2 (3 << 0)
 
-static const uint8_t VGA_TO_BW_LUT_0[256] =
+#if HORIZONTAL_RESOLUTION == HORIZONTAL_RESOLUTION_LO
+
+#define B0 0
+#define B1 1
+
+static const uint8_t VGA_TO_BW_LUT[256] =
+{
+	B0, B0, B0, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B1, B1, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B0, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0,
+	B0, B0, B0, B0, B0, B0, B0, B0, B1, B1, B1, B1, B1, B1, B0, B1
+};
+
+#undef B0
+#undef B1
+#undef B2
+
+#else
+
+#define B0 0
+#define B1 1
+#define B2 3
+
+static const uint8_t VGA_TO_BW_LUT_e[256] =
 {
 	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
 	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
@@ -233,11 +279,11 @@ static const uint8_t VGA_TO_BW_LUT_0[256] =
 #undef B1
 #undef B2
 
-#define B0 (0 << 0)
-#define B1 (2 << 0)
-#define B2 (3 << 0)
+#define B0 0
+#define B1 2
+#define B2 3
 
-static const uint8_t VGA_TO_BW_LUT_0b[256] =
+static const uint8_t VGA_TO_BW_LUT_o[256] =
 {
 	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
 	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
@@ -261,173 +307,7 @@ static const uint8_t VGA_TO_BW_LUT_0b[256] =
 #undef B1
 #undef B2
 
-#define B0 (0 << 2)
-#define B1 (1 << 2)
-#define B2 (3 << 2)
-
-static const uint8_t VGA_TO_BW_LUT_1[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 2)
-#define B1 (2 << 2)
-#define B2 (3 << 2)
-
-static const uint8_t VGA_TO_BW_LUT_1b[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 4)
-#define B1 (1 << 4)
-#define B2 (3 << 4)
-
-static const uint8_t VGA_TO_BW_LUT_2[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 4)
-#define B1 (2 << 4)
-#define B2 (3 << 4)
-
-static const uint8_t VGA_TO_BW_LUT_2b[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 6)
-#define B1 (1 << 6)
-#define B2 (3 << 6)
-
-static const uint8_t VGA_TO_BW_LUT_3[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 6)
-#define B1 (2 << 6)
-#define B2 (3 << 6)
-
-static const uint8_t VGA_TO_BW_LUT_3b[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
+#endif
 
 
 #define NO_PALETTE_CHANGE 100
@@ -452,19 +332,29 @@ void I_FinishUpdate(void)
 		{
 			uint8_t *src = _s_statusbar;
 			uint8_t *dst = screenpage + statusbartop;
-			for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
-				for (uint_fast8_t x = 0; x < (SCREENWIDTH * 2 / 8); x++) {
-					*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
+#if HORIZONTAL_RESOLUTION == HORIZONTAL_RESOLUTION_LO
+			for (uint_fast8_t y = 0; y < ST_HEIGHT; y++) {
+				for (uint_fast8_t x = 0; x < SCREENWIDTH * D / 8; x++) {
+					*dst++ = (VGA_TO_BW_LUT[*src++] << 7) | (VGA_TO_BW_LUT[*src++] << 6) | (VGA_TO_BW_LUT[*src++] << 5) | (VGA_TO_BW_LUT[*src++] << 4) | (VGA_TO_BW_LUT[*src++] << 3) | (VGA_TO_BW_LUT[*src++] << 2) | (VGA_TO_BW_LUT[*src++] << 1) | (VGA_TO_BW_LUT[*src++] << 0);
 				}
 
-				dst += PLANEWIDTH - (SCREENWIDTH * 2 / 8);
-
-				for (uint_fast8_t x = 0; x < (SCREENWIDTH * 2 / 8); x++) {
-					*dst++ = VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++];
-				}
-
-				dst += PLANEWIDTH - (SCREENWIDTH * 2 / 8);
+				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
 			}
+#else
+			for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
+				for (uint_fast8_t x = 0; x < SCREENWIDTH * D / 8; x++) {
+					*dst++ = (VGA_TO_BW_LUT_e[*src++] << 6) | (VGA_TO_BW_LUT_e[*src++] << 4) | (VGA_TO_BW_LUT_e[*src++] << 2) | (VGA_TO_BW_LUT_e[*src++] << 0);
+				}
+
+				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
+
+				for (uint_fast8_t x = 0; x < (SCREENWIDTH * D / 8); x++) {
+					*dst++ = (VGA_TO_BW_LUT_o[*src++] << 6) | (VGA_TO_BW_LUT_o[*src++] << 4) | (VGA_TO_BW_LUT_o[*src++] << 2) | (VGA_TO_BW_LUT_o[*src++] << 0);
+				}
+
+				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
+			}
+#endif
 		}
 		else
 		{
@@ -473,7 +363,7 @@ void I_FinishUpdate(void)
 			custom.bltapt = (uint8_t*)(screenpaget - (uint32_t)screenpage) + statusbartop;
 			custom.bltdpt = screenpage + statusbartop;
 
-			custom.bltsize = (ST_HEIGHT << 6) | ((SCREENWIDTH * 2 / 8) / 2);
+			custom.bltsize = (ST_HEIGHT << 6) | ((SCREENWIDTH * D / 8) / 2);
 		}
 	}
 
