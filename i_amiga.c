@@ -227,22 +227,22 @@ void I_SetPalette(int8_t pal)
 
 static const uint8_t VGA_TO_BW_LUT[256] =
 {
-	B0, B0, B0, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B1, B1, B0,
+	B0, B0, B0, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
 	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
 	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
 	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0,
+	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
 	B1, B1, B1, B1, B1, B1, B1, B0, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
 	B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
 	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B1, B1, B1, B1, B1, B1, B0, B1
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B0, B0, B0, B0, B0, B0, B0, B0, B1, B1, B1, B1, B1, B0, B0, B1
 };
 
 #undef B0
