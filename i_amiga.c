@@ -62,7 +62,13 @@
 #define BPLCON0_VALUE	0b1001000000000000
 #endif
 
-#define D	(HORIZONTAL_RESOLUTION/HORIZONTAL_RESOLUTION_LO)
+#define DW	(HORIZONTAL_RESOLUTION/HORIZONTAL_RESOLUTION_LO)
+
+#if defined VERTICAL_RESOLUTION_DOUBLED
+#define DH	2
+#else
+#define DH	1
+#endif
 
 extern struct GfxBase *GfxBase;
 extern struct Custom custom;
@@ -174,8 +180,8 @@ void I_InitGraphics(void)
 	custom.dmacon = 0x0020;
 	custom.cop1lc = (uint32_t) coplist;
 
-	viewwindowtop = ((PLANEWIDTH - VIEWWINDOWWIDTH)     / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
-	statusbartop  = ((PLANEWIDTH - SCREENWIDTH * D / 8) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH + VIEWWINDOWHEIGHT * PLANEWIDTH;
+	viewwindowtop = ((PLANEWIDTH - VIEWWINDOWWIDTH)      / 2) + ((screenHeightAmiga - (VIEWWINDOWHEIGHT * DH + ST_HEIGHT)) / 2) * PLANEWIDTH;
+	statusbartop  = ((PLANEWIDTH - SCREENWIDTH * DW / 8) / 2) + ((screenHeightAmiga - (VIEWWINDOWHEIGHT * DH + ST_HEIGHT)) / 2) * PLANEWIDTH + VIEWWINDOWHEIGHT * DH * PLANEWIDTH;
 	_s_viewwindow = screenpage + viewwindowtop;
 
 	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
@@ -185,8 +191,8 @@ void I_InitGraphics(void)
 	custom.bltcon0 = 0b0000100111110000;
 	custom.bltcon1 = 0;
 
-	custom.bltamod = PLANEWIDTH - SCREENWIDTH * D / 8;
-	custom.bltdmod = PLANEWIDTH - SCREENWIDTH * D / 8;
+	custom.bltamod = PLANEWIDTH - SCREENWIDTH * DW / 8;
+	custom.bltdmod = PLANEWIDTH - SCREENWIDTH * DW / 8;
 
 	custom.bltafwm = 0xffff;
 	custom.bltalwm = 0xffff;
@@ -336,7 +342,7 @@ void I_FinishUpdate(void)
 			uint8_t *dst = screenpage + statusbartop;
 #if HORIZONTAL_RESOLUTION == HORIZONTAL_RESOLUTION_LO
 			for (uint_fast8_t y = 0; y < ST_HEIGHT; y++) {
-				for (uint_fast8_t x = 0; x < SCREENWIDTH * D / 8; x++) {
+				for (uint_fast8_t x = 0; x < SCREENWIDTH * DW / 8; x++) {
 					uint8_t c =    VGA_TO_BW_LUT[*src++];
 					c = (c << 1) | VGA_TO_BW_LUT[*src++];
 					c = (c << 1) | VGA_TO_BW_LUT[*src++];
@@ -348,11 +354,11 @@ void I_FinishUpdate(void)
 					*dst++ = c;
 				}
 
-				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
+				dst += PLANEWIDTH - SCREENWIDTH * DW / 8;
 			}
 #else
 			for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
-				for (uint_fast8_t x = 0; x < SCREENWIDTH * D / 8; x++) {
+				for (uint_fast8_t x = 0; x < SCREENWIDTH * DW / 8; x++) {
 					uint8_t c =    VGA_TO_BW_LUT_e[*src++];
 					c = (c << 2) | VGA_TO_BW_LUT_e[*src++];
 					c = (c << 2) | VGA_TO_BW_LUT_e[*src++];
@@ -360,9 +366,9 @@ void I_FinishUpdate(void)
 					*dst++ = c;
 				}
 
-				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
+				dst += PLANEWIDTH - SCREENWIDTH * DW / 8;
 
-				for (uint_fast8_t x = 0; x < (SCREENWIDTH * D / 8); x++) {
+				for (uint_fast8_t x = 0; x < (SCREENWIDTH * DW / 8); x++) {
 					uint8_t c =    VGA_TO_BW_LUT_o[*src++];
 					c = (c << 2) | VGA_TO_BW_LUT_o[*src++];
 					c = (c << 2) | VGA_TO_BW_LUT_o[*src++];
@@ -370,7 +376,7 @@ void I_FinishUpdate(void)
 					*dst++ = c;
 				}
 
-				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
+				dst += PLANEWIDTH - SCREENWIDTH * DW / 8;
 			}
 #endif
 		}
@@ -381,7 +387,7 @@ void I_FinishUpdate(void)
 			custom.bltapt = (uint8_t*)(screenpaget - (uint32_t)screenpage) + statusbartop;
 			custom.bltdpt = screenpage + statusbartop;
 
-			custom.bltsize = (ST_HEIGHT << 6) | ((SCREENWIDTH * D / 8) / 2);
+			custom.bltsize = (ST_HEIGHT << 6) | ((SCREENWIDTH * DW / 8) / 2);
 		}
 	}
 
@@ -415,13 +421,57 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 
 	const uint8_t *nearcolormap = dcvars->colormap;
 
-	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH * DH) + dcvars->x;
 
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
 
 	int16_t l = count >> 4;
 
+#if defined VERTICAL_RESOLUTION_DOUBLED
+	uint8_t c;
+	while (l--)
+	{
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+	}
+
+	switch (count & 15)
+	{
+		case 15: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 14: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 13: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 12: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 11: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 10: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  9: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  8: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  7: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  6: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  5: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  4: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  3: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  2: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  1: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c;
+	}
+#else
 	while (l--)
 	{
 		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
@@ -463,6 +513,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 		case  2: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
 		case  1: *dest = nearcolormap[source[frac>>COLBITS]];
 	}
+#endif
 }
 
 
@@ -475,12 +526,16 @@ void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
 
-	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH * DH) + dcvars->x;
 
 	while (count--)
 	{
+#if defined VERTICAL_RESOLUTION_DOUBLED
+		*dest = *(dest + PLANEWIDTH) = color;
+#else
 		*dest = color;
-		dest += PLANEWIDTH;
+#endif
+		dest += PLANEWIDTH * DH;
 		color = colort - color;
 	}
 }
@@ -522,14 +577,18 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 
 	const uint8_t *nearcolormap = &fullcolormap[6 * 256];
 
-	uint8_t *dest = _s_viewwindow + (dc_yl * PLANEWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dc_yl * PLANEWIDTH * DH) + dcvars->x;
 
 	static int16_t fuzzpos = 0;
 
 	do
 	{
-		*dest = nearcolormap[dest[fuzzoffset[fuzzpos]]];
-		dest += PLANEWIDTH;
+#if defined VERTICAL_RESOLUTION_DOUBLED
+		*dest = *(dest + PLANEWIDTH) = nearcolormap[dest[fuzzoffset[fuzzpos] * DH]];
+#else
+		*dest = nearcolormap[dest[fuzzoffset[fuzzpos] * DH]];
+#endif
+		dest += PLANEWIDTH * DH;
 
 		fuzzpos++;
 		if (fuzzpos >= FUZZTABLE)
