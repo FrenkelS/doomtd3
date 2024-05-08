@@ -5,7 +5,7 @@ export PATH=~/amiga-gcc-build/bin:$PATH
 unset CFLAGS
 
 #export RENDER_OPTIONS="-DONE_WALL_TEXTURE -DFLAT_WALL"
-export RENDER_OPTIONS=""
+export RENDER_OPTIONS="-DVIEWWINDOWWIDTH=60 -DVIEWWINDOWHEIGHT=128 -DHORIZONTAL_RESOLUTION=HORIZONTAL_RESOLUTION_HI"
 
 export CFLAGS="-mcpu=68000 -msmall-code -mcrt=nix13 -Ofast -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mregparm -flto -fwhole-program -funroll-loops -freorder-blocks-algorithm=stc"
 

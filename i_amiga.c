@@ -46,7 +46,9 @@
 #define HORIZONTAL_RESOLUTION_LO	320
 #define HORIZONTAL_RESOLUTION_HI	640
 
-#define HORIZONTAL_RESOLUTION		HORIZONTAL_RESOLUTION_HI
+#if !defined HORIZONTAL_RESOLUTION
+#define HORIZONTAL_RESOLUTION HORIZONTAL_RESOLUTION_HI
+#endif
 
 #define PLANEWIDTH			 		(HORIZONTAL_RESOLUTION/8)
 
@@ -335,7 +337,15 @@ void I_FinishUpdate(void)
 #if HORIZONTAL_RESOLUTION == HORIZONTAL_RESOLUTION_LO
 			for (uint_fast8_t y = 0; y < ST_HEIGHT; y++) {
 				for (uint_fast8_t x = 0; x < SCREENWIDTH * D / 8; x++) {
-					*dst++ = (VGA_TO_BW_LUT[*src++] << 7) | (VGA_TO_BW_LUT[*src++] << 6) | (VGA_TO_BW_LUT[*src++] << 5) | (VGA_TO_BW_LUT[*src++] << 4) | (VGA_TO_BW_LUT[*src++] << 3) | (VGA_TO_BW_LUT[*src++] << 2) | (VGA_TO_BW_LUT[*src++] << 1) | (VGA_TO_BW_LUT[*src++] << 0);
+					uint8_t c =    VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					*dst++ = c;
 				}
 
 				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
@@ -343,13 +353,21 @@ void I_FinishUpdate(void)
 #else
 			for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
 				for (uint_fast8_t x = 0; x < SCREENWIDTH * D / 8; x++) {
-					*dst++ = (VGA_TO_BW_LUT_e[*src++] << 6) | (VGA_TO_BW_LUT_e[*src++] << 4) | (VGA_TO_BW_LUT_e[*src++] << 2) | (VGA_TO_BW_LUT_e[*src++] << 0);
+					uint8_t c =    VGA_TO_BW_LUT_e[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_e[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_e[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_e[*src++];
+					*dst++ = c;
 				}
 
 				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
 
 				for (uint_fast8_t x = 0; x < (SCREENWIDTH * D / 8); x++) {
-					*dst++ = (VGA_TO_BW_LUT_o[*src++] << 6) | (VGA_TO_BW_LUT_o[*src++] << 4) | (VGA_TO_BW_LUT_o[*src++] << 2) | (VGA_TO_BW_LUT_o[*src++] << 0);
+					uint8_t c =    VGA_TO_BW_LUT_o[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_o[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_o[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_o[*src++];
+					*dst++ = c;
 				}
 
 				dst += PLANEWIDTH - SCREENWIDTH * D / 8;
