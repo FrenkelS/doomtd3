@@ -43,7 +43,32 @@
 #include "globdata.h"
 
 
-#define PLANEWIDTH			 80
+#define HORIZONTAL_RESOLUTION_LO	320
+#define HORIZONTAL_RESOLUTION_HI	640
+
+#if !defined HORIZONTAL_RESOLUTION
+#define HORIZONTAL_RESOLUTION HORIZONTAL_RESOLUTION_HI
+#endif
+
+#define PLANEWIDTH			 		(HORIZONTAL_RESOLUTION/8)
+
+#if HORIZONTAL_RESOLUTION == HORIZONTAL_RESOLUTION_LO
+#define DDFSTRT_VALUE	0x0038
+#define DDFSTOP_VALUE	0x00d0
+#define BPLCON0_VALUE	0b0001000000000000
+#else
+#define DDFSTRT_VALUE	0x003c
+#define DDFSTOP_VALUE	0x00d4
+#define BPLCON0_VALUE	0b1001000000000000
+#endif
+
+#define DW	(HORIZONTAL_RESOLUTION/HORIZONTAL_RESOLUTION_LO)
+
+#if defined VERTICAL_RESOLUTION_DOUBLED
+#define DH	2
+#else
+#define DH	1
+#endif
 
 extern struct GfxBase *GfxBase;
 extern struct Custom custom;
@@ -51,6 +76,7 @@ extern struct Custom custom;
 extern const int16_t CENTERY;
 
 static uint16_t viewwindowtop;
+static uint16_t statusbartop;
 static uint8_t *_s_viewwindow;
 static uint8_t *_s_statusbar;
 
@@ -62,10 +88,8 @@ static boolean isGraphicsModeSet = false;
 
 #define FMODE	0x1fc
 
-#define DDFSTRT			0x092
-#define DDFSTOP			0x094
-#define DDFSTRT_VALUE	0x003c
-#define DDFSTOP_VALUE	0x00d4
+#define DDFSTRT	0x092
+#define DDFSTOP	0x094
 
 #define DIWSTRT				0x08e
 #define DIWSTOP				0x090
@@ -73,8 +97,7 @@ static boolean isGraphicsModeSet = false;
 #define DIWSTOP_VALUE_PAL	0x2cc1
 #define DIWSTOP_VALUE_NTSC	0xf4c1
 
-#define BPLCON0			0x100
-#define BPLCON0_VALUE	0b1001000000000000
+#define BPLCON0	0x100
 
 #define BPL1MOD	0x108
 
@@ -157,7 +180,8 @@ void I_InitGraphics(void)
 	custom.dmacon = 0x0020;
 	custom.cop1lc = (uint32_t) coplist;
 
-	viewwindowtop = ((PLANEWIDTH - VIEWWINDOWWIDTH) / 2) + ((screenHeightAmiga - SCREENHEIGHT) / 2) * PLANEWIDTH;
+	viewwindowtop = ((PLANEWIDTH - VIEWWINDOWWIDTH)      / 2) + ((screenHeightAmiga - (VIEWWINDOWHEIGHT * DH + ST_HEIGHT)) / 2) * PLANEWIDTH;
+	statusbartop  = ((PLANEWIDTH - SCREENWIDTH * DW / 8) / 2) + ((screenHeightAmiga - (VIEWWINDOWHEIGHT * DH + ST_HEIGHT)) / 2) * PLANEWIDTH + VIEWWINDOWHEIGHT * DH * PLANEWIDTH;
 	_s_viewwindow = screenpage + viewwindowtop;
 
 	_s_statusbar  = Z_MallocStatic(SCREENWIDTH * ST_HEIGHT);
@@ -167,8 +191,8 @@ void I_InitGraphics(void)
 	custom.bltcon0 = 0b0000100111110000;
 	custom.bltcon1 = 0;
 
-	custom.bltamod = PLANEWIDTH - VIEWWINDOWWIDTH;
-	custom.bltdmod = PLANEWIDTH - VIEWWINDOWWIDTH;
+	custom.bltamod = PLANEWIDTH - SCREENWIDTH * DW / 8;
+	custom.bltdmod = PLANEWIDTH - SCREENWIDTH * DW / 8;
 
 	custom.bltafwm = 0xffff;
 	custom.bltalwm = 0xffff;
@@ -203,11 +227,43 @@ void I_SetPalette(int8_t pal)
 }
 
 
-#define B0 (0 << 0)
-#define B1 (1 << 0)
-#define B2 (3 << 0)
 
-static const uint8_t VGA_TO_BW_LUT_0[256] =
+#if HORIZONTAL_RESOLUTION == HORIZONTAL_RESOLUTION_LO
+
+#define B0 0
+#define B1 1
+
+static const uint8_t VGA_TO_BW_LUT[256] =
+{
+	B0, B0, B0, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0,
+	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B0, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
+	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
+	B0, B0, B0, B0, B0, B0, B0, B0, B1, B1, B1, B1, B1, B0, B0, B1
+};
+
+#undef B0
+#undef B1
+#undef B2
+
+#else
+
+#define B0 0
+#define B1 1
+#define B2 3
+
+static const uint8_t VGA_TO_BW_LUT_e[256] =
 {
 	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
 	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
@@ -231,11 +287,11 @@ static const uint8_t VGA_TO_BW_LUT_0[256] =
 #undef B1
 #undef B2
 
-#define B0 (0 << 0)
-#define B1 (2 << 0)
-#define B2 (3 << 0)
+#define B0 0
+#define B1 2
+#define B2 3
 
-static const uint8_t VGA_TO_BW_LUT_0b[256] =
+static const uint8_t VGA_TO_BW_LUT_o[256] =
 {
 	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
 	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
@@ -259,173 +315,7 @@ static const uint8_t VGA_TO_BW_LUT_0b[256] =
 #undef B1
 #undef B2
 
-#define B0 (0 << 2)
-#define B1 (1 << 2)
-#define B2 (3 << 2)
-
-static const uint8_t VGA_TO_BW_LUT_1[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 2)
-#define B1 (2 << 2)
-#define B2 (3 << 2)
-
-static const uint8_t VGA_TO_BW_LUT_1b[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 4)
-#define B1 (1 << 4)
-#define B2 (3 << 4)
-
-static const uint8_t VGA_TO_BW_LUT_2[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 4)
-#define B1 (2 << 4)
-#define B2 (3 << 4)
-
-static const uint8_t VGA_TO_BW_LUT_2b[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 6)
-#define B1 (1 << 6)
-#define B2 (3 << 6)
-
-static const uint8_t VGA_TO_BW_LUT_3[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
-
-#define B0 (0 << 6)
-#define B1 (2 << 6)
-#define B2 (3 << 6)
-
-static const uint8_t VGA_TO_BW_LUT_3b[256] =
-{
-	B0, B0, B0, B1, B2, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2, B2,
-	B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1, B1,
-	B1, B1, B1, B1, B1, B1, B0, B0, B1, B1, B1, B1, B1, B1, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B2, B2, B2, B2, B2, B2, B1, B1,
-	B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0, B0, B0, B0, B0,
-	B2, B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B1, B1, B1, B1,
-	B2, B2, B2, B2, B2, B2, B2, B2, B1, B1, B1, B0, B0, B0, B0, B0,
-	B0, B0, B0, B0, B0, B0, B0, B0, B2, B2, B2, B1, B1, B0, B0, B1
-};
-
-#undef B0
-#undef B1
-#undef B2
+#endif
 
 
 #define NO_PALETTE_CHANGE 100
@@ -442,36 +332,63 @@ void I_FinishUpdate(void)
 	}
 
 	// status bar
-	if (st_needrefresh == 2)
+	if (st_needrefresh)
 	{
 		st_needrefresh--;
 
-		uint8_t *src = _s_statusbar;
-		uint8_t *dst = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
-		for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
-			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-				*dst++ = VGA_TO_BW_LUT_3[*src++] | VGA_TO_BW_LUT_2[*src++] | VGA_TO_BW_LUT_1[*src++] | VGA_TO_BW_LUT_0[*src++];
+		if (st_needrefresh)
+		{
+			uint8_t *src = _s_statusbar;
+			uint8_t *dst = screenpage + statusbartop;
+#if HORIZONTAL_RESOLUTION == HORIZONTAL_RESOLUTION_LO
+			for (uint_fast8_t y = 0; y < ST_HEIGHT; y++) {
+				for (uint_fast8_t x = 0; x < SCREENWIDTH * DW / 8; x++) {
+					uint8_t c =    VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					c = (c << 1) | VGA_TO_BW_LUT[*src++];
+					*dst++ = c;
+				}
+
+				dst += PLANEWIDTH - SCREENWIDTH * DW / 8;
 			}
+#else
+			for (uint_fast8_t y = 0; y < ST_HEIGHT / 2; y++) {
+				for (uint_fast8_t x = 0; x < SCREENWIDTH * DW / 8; x++) {
+					uint8_t c =    VGA_TO_BW_LUT_e[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_e[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_e[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_e[*src++];
+					*dst++ = c;
+				}
 
-			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
+				dst += PLANEWIDTH - SCREENWIDTH * DW / 8;
 
-			for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH; x++) {
-				*dst++ = VGA_TO_BW_LUT_3b[*src++] | VGA_TO_BW_LUT_2b[*src++] | VGA_TO_BW_LUT_1b[*src++] | VGA_TO_BW_LUT_0b[*src++];
+				for (uint_fast8_t x = 0; x < (SCREENWIDTH * DW / 8); x++) {
+					uint8_t c =    VGA_TO_BW_LUT_o[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_o[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_o[*src++];
+					c = (c << 2) | VGA_TO_BW_LUT_o[*src++];
+					*dst++ = c;
+				}
+
+				dst += PLANEWIDTH - SCREENWIDTH * DW / 8;
 			}
-
-			dst += PLANEWIDTH - VIEWWINDOWWIDTH;
+#endif
 		}
-	}
-	else if (st_needrefresh) // st_needrefresh == 1
-	{
-		st_needrefresh = 0;
+		else
+		{
+			WaitBlit();
 
-		WaitBlit();
+			custom.bltapt = (uint8_t*)(screenpaget - (uint32_t)screenpage) + statusbartop;
+			custom.bltdpt = screenpage + statusbartop;
 
-		custom.bltapt = (uint8_t*)(screenpaget - (uint32_t)screenpage) + viewwindowtop + PLANEWIDTH * VIEWWINDOWHEIGHT;
-		custom.bltdpt = _s_viewwindow + PLANEWIDTH * VIEWWINDOWHEIGHT;
-
-		custom.bltsize = (ST_HEIGHT << 6) | (VIEWWINDOWWIDTH / 2);
+			custom.bltsize = (ST_HEIGHT << 6) | ((SCREENWIDTH * DW / 8) / 2);
+		}
 	}
 
 	// page flip
@@ -504,13 +421,57 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 
 	const uint8_t *nearcolormap = dcvars->colormap;
 
-	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH * DH) + dcvars->x;
 
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
 
 	int16_t l = count >> 4;
 
+#if defined VERTICAL_RESOLUTION_DOUBLED
+	uint8_t c;
+	while (l--)
+	{
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+	}
+
+	switch (count & 15)
+	{
+		case 15: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 14: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 13: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 12: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 11: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case 10: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  9: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  8: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  7: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  6: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  5: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  4: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  3: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  2: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c; dest += PLANEWIDTH * 2; frac += fracstep;
+		case  1: c = nearcolormap[source[frac>>COLBITS]]; *dest = *(dest + PLANEWIDTH) = c;
+	}
+#else
 	while (l--)
 	{
 		*dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
@@ -552,6 +513,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 		case  2: *dest = nearcolormap[source[frac>>COLBITS]]; dest += PLANEWIDTH; frac += fracstep;
 		case  1: *dest = nearcolormap[source[frac>>COLBITS]];
 	}
+#endif
 }
 
 
@@ -564,12 +526,16 @@ void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
 
-	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH * DH) + dcvars->x;
 
 	while (count--)
 	{
+#if defined VERTICAL_RESOLUTION_DOUBLED
+		*dest = *(dest + PLANEWIDTH) = color;
+#else
 		*dest = color;
-		dest += PLANEWIDTH;
+#endif
+		dest += PLANEWIDTH * DH;
 		color = colort - color;
 	}
 }
@@ -611,14 +577,18 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 
 	const uint8_t *nearcolormap = &fullcolormap[6 * 256];
 
-	uint8_t *dest = _s_viewwindow + (dc_yl * PLANEWIDTH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dc_yl * PLANEWIDTH * DH) + dcvars->x;
 
 	static int16_t fuzzpos = 0;
 
 	do
 	{
-		*dest = nearcolormap[dest[fuzzoffset[fuzzpos]]];
-		dest += PLANEWIDTH;
+#if defined VERTICAL_RESOLUTION_DOUBLED
+		*dest = *(dest + PLANEWIDTH) = nearcolormap[dest[fuzzoffset[fuzzpos] * DH]];
+#else
+		*dest = nearcolormap[dest[fuzzoffset[fuzzpos] * DH]];
+#endif
+		dest += PLANEWIDTH * DH;
 
 		fuzzpos++;
 		if (fuzzpos >= FUZZTABLE)
