@@ -291,12 +291,12 @@ static boolean P_TryWalk(mobj_t __far* actor)
 // Most of P_NewChaseDir(), except for what
 // determines the new direction to take
 //
-
+#include "i_system.h"
 static void P_DoNewChaseDir(mobj_t __far* actor, fixed_t deltax, fixed_t deltay)
 {
   int16_t xdir, ydir, tdir;
-  int16_t olddir = actor->movedir;
-  int16_t turnaround = olddir;
+  uint8_t olddir = actor->movedir;
+  uint8_t turnaround = olddir;
 
   if (turnaround != DI_NODIR)         // find reverse direction
     turnaround ^= 4;
