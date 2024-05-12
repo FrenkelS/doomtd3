@@ -1395,7 +1395,7 @@ static int compare (const void* l, const void* r)
 		return 1;
 }
 
-#define MAXVISSPRITES 96
+#define MAXVISSPRITES 24
 static int8_t num_vissprite;
 static vissprite_t vissprites[MAXVISSPRITES];
 static vissprite_t* vissprite_ptrs[MAXVISSPRITES];

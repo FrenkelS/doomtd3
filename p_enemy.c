@@ -35,18 +35,8 @@
  *
  *-----------------------------------------------------------------------------*/
 
-#include "d_player.h"
 #include "m_random.h"
-#include "r_main.h"
-#include "p_maputl.h"
-#include "p_map.h"
-#include "p_setup.h"
-#include "p_spec.h"
-#include "sounds.h"
 #include "p_inter.h"
-#include "g_game.h"
-#include "p_enemy.h"
-#include "p_tick.h"
 
 #include "globdata.h"
 
@@ -295,8 +285,8 @@ static boolean P_TryWalk(mobj_t __far* actor)
 static void P_DoNewChaseDir(mobj_t __far* actor, fixed_t deltax, fixed_t deltay)
 {
   int16_t xdir, ydir, tdir;
-  int16_t olddir = actor->movedir;
-  int16_t turnaround = olddir;
+  uint8_t olddir = actor->movedir;
+  uint8_t turnaround = olddir;
 
   if (turnaround != DI_NODIR)         // find reverse direction
     turnaround ^= 4;
