@@ -295,13 +295,13 @@ typedef char assertLineSize[sizeof(packed_line_t) == 47 ? 1 : -1];
 
 static void P_LoadLineDefs(int16_t lump)
 {
-	const packed_line_t __far* lines = W_GetLumpByNum(lump);
-
 	_g_numlines = W_LumpLength(lump) / sizeof(packed_line_t);
 	_g_lines    = Z_MallocLevel(_g_numlines * sizeof(line_t), NULL);
 	_g_linedata = Z_CallocLevel(_g_numlines * sizeof(linedata_t));
 
 	line_t __far* _w_lines = (line_t __far*) _g_lines;
+
+	const packed_line_t __far* lines = W_GetLumpByNum(lump);
 
 	for (int16_t i = 0; i < _g_numlines; i++)
 	{
