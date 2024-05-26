@@ -53,7 +53,7 @@ static void I_SetScreenMode(uint16_t mode)
 
 void I_InitGraphics(void)
 {
-#if defined DEBUG
+#if defined EGA_DEBUG
 	I_SetScreenMode(0x0d);
 
 	videomemory = D_MK_FP(0xa000, 0);
@@ -83,7 +83,7 @@ void I_SetPalette(int8_t pal)
 void I_FinishUpdate(void)
 {
 	// view window
-#if defined DEBUG
+#if defined EGA_DEBUG
 #define PLANEWIDTH 40
 	uint8_t *src = &_s_viewwindow[0];
 	uint8_t __far* dst = videomemory;
@@ -105,7 +105,7 @@ void R_InitColormaps(void)
 	int16_t num = W_GetNumForName("COLORMAP");
 	fullcolormap = W_GetLumpByNum(num); // Never freed
 
-#if !defined DEBUG
+#if !defined EGA_DEBUG
 	uint16_t length = W_LumpLength(num);
 	uint8_t __far* ptr = (uint8_t __far*) fullcolormap;
 	for (int i = 0; i < length; i++)

@@ -949,5 +949,5 @@ static void ST_Stop(void)
 
 void ST_Init(void)
 {
-	ST_loadData();
+  ST_loadData();
 }
