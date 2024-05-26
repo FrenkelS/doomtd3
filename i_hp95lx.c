@@ -118,7 +118,6 @@ void R_InitColormaps(void)
 
 
 #define COLEXTRABITS (8 - 1)
-#define COLBITS (8 + 1)
 
 uint8_t nearcolormap[256];
 
