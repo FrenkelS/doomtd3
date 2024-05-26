@@ -265,29 +265,35 @@ void W_CacheLumps(void)
 	const char __far* lumpsToCache = W_GetLumpByNum(cachelumpnum);
 	const void __far* __far* lumps = (const void __far* __far*)lumpsToCache;
 	uint32_t freeBlockSize = Z_GetLargestFreeBlockSize();
-	int16_t i;
-	for (i = 0; i < numlumps; i++)
+	int16_t cachecount = 0;
+	for (int16_t i = 0; i < numlumps; i++)
 	{
 		char name[8];
 		_fmemcpy(name, &lumpsToCache[i * 8], 8);
-		int16_t num = W_GetNumForName(name);
-		uint16_t length = W_LumpLength(num);
-
-		if (length > freeBlockSize)
+#if defined DISABLE_STATUS_BAR
+		if ((name[0] != 'S' && name[1] != 'T') || (name[0] == 'S' && name[1] == 'T' && name[2] == 'E' && name[3] == 'P'))
+#endif
 		{
-			freeBlockSize = Z_GetLargestFreeBlockSize();
+			int16_t num = W_GetNumForName(name);
+			uint16_t length = W_LumpLength(num);
+
 			if (length > freeBlockSize)
 			{
-				break;
+				freeBlockSize = Z_GetLargestFreeBlockSize();
+				if (length > freeBlockSize)
+				{
+					break;
+				}
 			}
-		}
 
-		freeBlockSize -= length;
-		*lumps++ = W_GetLumpByNum(num);
+			freeBlockSize -= length;
+			*lumps++ = W_GetLumpByNum(num);
+			cachecount++;
+		}
 	}
 
 	lumps = (const void __far* __far*)lumpsToCache;
-	for (int16_t j = 0; j < i; j++)
+	for (int16_t j = 0; j < cachecount; j++)
 		Z_ChangeTagToCache(*lumps++);
 
 	Z_Free(lumpsToCache);

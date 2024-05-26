@@ -539,9 +539,11 @@ static void ST_updateWidgets(void)
 
 void ST_Ticker(void)
 {
+#if !defined DISABLE_STATUS_BAR
   st_randomnumber = M_Random();
   ST_updateWidgets();
   st_oldhealth = _g_player.health;
+#endif
 }
 
 
