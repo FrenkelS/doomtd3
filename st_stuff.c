@@ -171,8 +171,6 @@ static int16_t      st_randomnumber;
 
 static int8_t st_palette;
 
-static boolean isDrawStatusBar;
-
 
 // Size of statusbar.
 // Now sensitive for scaling.
@@ -541,12 +539,11 @@ static void ST_updateWidgets(void)
 
 void ST_Ticker(void)
 {
-	if (!isDrawStatusBar)
-		return;
-
-	st_randomnumber = M_Random();
-	ST_updateWidgets();
-	st_oldhealth = _g_player.health;
+#if !defined DISABLE_STATUS_BAR
+  st_randomnumber = M_Random();
+  ST_updateWidgets();
+  st_oldhealth = _g_player.health;
+#endif
 }
 
 
@@ -953,5 +950,4 @@ static void ST_Stop(void)
 void ST_Init(void)
 {
 	ST_loadData();
-	isDrawStatusBar = ST_IsDrawStatusBar();
 }

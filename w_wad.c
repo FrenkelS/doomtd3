@@ -265,13 +265,14 @@ void W_CacheLumps(void)
 	const char __far* lumpsToCache = W_GetLumpByNum(cachelumpnum);
 	const void __far* __far* lumps = (const void __far* __far*)lumpsToCache;
 	uint32_t freeBlockSize = Z_GetLargestFreeBlockSize();
-	boolean isDrawStatusBar = ST_IsDrawStatusBar();
 	int16_t cachecount = 0;
 	for (int16_t i = 0; i < numlumps; i++)
 	{
 		char name[8];
 		_fmemcpy(name, &lumpsToCache[i * 8], 8);
-		if (isDrawStatusBar || (name[0] != 'S' && name[1] != 'T')) 
+#if defined DISABLE_STATUS_BAR
+		if ((name[0] != 'S' && name[1] != 'T') || (name[0] == 'S' && name[1] == 'T' && name[2] == 'E' && name[3] == 'P'))
+#endif
 		{
 			int16_t num = W_GetNumForName(name);
 			uint16_t length = W_LumpLength(num);

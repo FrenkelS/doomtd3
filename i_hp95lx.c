@@ -51,7 +51,6 @@ static void I_SetScreenMode(uint16_t mode)
 }
 
 
-//#define DEBUG
 void I_InitGraphics(void)
 {
 #if defined DEBUG
@@ -237,12 +236,6 @@ void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 void V_DrawRaw(int16_t num, uint16_t offset)
 {
 
-}
-
-
-boolean ST_IsDrawStatusBar(void)
-{
-	return false;
 }
 
 
