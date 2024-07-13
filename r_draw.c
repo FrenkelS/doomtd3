@@ -75,7 +75,6 @@ typedef struct drawseg_s
   // all three adjusted so [x1] is first value.
 
   int16_t *sprtopclip, *sprbottomclip;
-  int16_t *maskedtexturecol; // dropoff overflow
 } drawseg_t;
 
 #define MAXDRAWSEGS   192
@@ -328,7 +327,6 @@ static int32_t      worldbottom;
 
 static boolean didsolidcol; /* True if at least one column was marked solid */
 
-static boolean  maskedtexture;
 static int16_t      toptexture;
 static int16_t      bottomtexture;
 static int16_t      midtexture;
@@ -352,7 +350,6 @@ static angle16_t  rw_centerangle;
 static int16_t  rw_offset;
 static int16_t      rw_lightlevel;
 
-static int16_t      *maskedtexturecol; // dropoff overflow
 
 int16_t   __far* textureheight; //needed for texture pegging (and TFE fix - killough)
 
@@ -911,7 +908,7 @@ const uint8_t __far* R_LoadColorMap(int16_t lightlevel)
 
 //
 // R_DrawMaskedColumn
-// Used for sprites and masked mid textures.
+// Used for sprites.
 // Masked means: partly transparent, i.e. stored
 //  in posts/runs of opaque pixels.
 //
@@ -1070,85 +1067,6 @@ static void R_GetColumn(const texture_t __far* texture, int16_t texcolumn, int16
 }
 
 
-//
-// R_RenderMaskedSegRange
-//
-
-static void R_RenderMaskedSegRange(const drawseg_t *ds, int16_t x1, int16_t x2)
-{
-    int16_t      texnum;
-    draw_column_vars_t dcvars;
-
-    // Calculate light table.
-    // Use different light tables
-    //   for horizontal / vertical / diagonal. Diagonal?
-
-    curline = ds->curline;  // OPTIMIZE: get rid of LIGHTSEGSHIFT globally
-
-    frontsector = &_g_sectors[curline->frontsectornum];
-    backsector  = &_g_sectors[curline->backsectornum];
-
-    texnum = _g_sides[curline->sidenum].midtexture;
-    texnum = texturetranslation[texnum];
-
-    // killough 4/13/98: get correct lightlevel for 2s normal textures
-    rw_lightlevel = frontsector->lightlevel;
-
-    maskedtexturecol = ds->maskedtexturecol;
-
-    rw_scalestep = ds->scalestep;
-    spryscale    = ds->scale1 + (x1 - ds->x1) * rw_scalestep;
-    mfloorclip   = ds->sprbottomclip;
-    mceilingclip = ds->sprtopclip;
-
-    // find positioning
-    if (_g_lines[curline->linenum].flags & ML_DONTPEGBOTTOM)
-    {
-        dcvars.texturemid = frontsector->floorheight > backsector->floorheight
-                ? frontsector->floorheight : backsector->floorheight;
-        dcvars.texturemid = dcvars.texturemid + ((int32_t)textureheight[texnum] << FRACBITS) - viewz;
-    }
-    else
-    {
-        dcvars.texturemid =frontsector->ceilingheight<backsector->ceilingheight
-                ? frontsector->ceilingheight : backsector->ceilingheight;
-        dcvars.texturemid = dcvars.texturemid - viewz;
-    }
-
-    dcvars.texturemid += (((int32_t)_g_sides[curline->sidenum].rowoffset) << FRACBITS);
-
-    const texture_t __far* texture = R_GetTexture(texnum);
-
-    dcvars.colormap = R_LoadColorMap(rw_lightlevel);
-
-    // draw the columns
-    for (dcvars.x = x1 ; dcvars.x <= x2 ; dcvars.x++, spryscale += rw_scalestep)
-    {
-        int16_t xc = maskedtexturecol[dcvars.x];
-
-        if (xc != SHRT_MAX) // dropoff overflow
-        {
-            sprtopscreen = CENTERY * FRACUNIT - FixedMul(dcvars.texturemid, spryscale);
-
-            dcvars.iscale = FixedReciprocal((uint32_t)spryscale);
-
-            // draw the texture
-            int16_t patch_num;
-            int16_t x_c;
-            R_GetColumn(texture, xc, &patch_num, &x_c);
-            const patch_t __far* patch = W_GetLumpByNum(patch_num);
-            const column_t __far* column = (const column_t __far*) ((const byte __far*)patch + (uint16_t)patch->columnofs[x_c]);
-
-            R_DrawMaskedColumn(R_DrawColumn, &dcvars, column);
-            Z_ChangeTagToCache(patch);
-            maskedtexturecol[dcvars.x] = SHRT_MAX; // dropoff overflow
-        }
-    }
-
-    curline = NULL; /* cph 2001/11/18 - must clear curline now we're done with it, so R_LoadColorMap doesn't try using it for other things */
-}
-
-
 static PUREFUNC boolean R_PointOnSegSide(fixed_t x, fixed_t y, const seg_t __far* line)
 {
     const fixed_t lx = line->v1.x;
@@ -1204,7 +1122,7 @@ static void R_DrawSprite (const vissprite_t* spr)
     for (const drawseg_t* ds = ds_p; ds-- > drawsegs; )  // new -- killough
     {
         // determine if the drawseg obscures the sprite
-        if (ds->x1 > spr->x2 || ds->x2 < spr->x1 || (!ds->silhouette && !ds->maskedtexturecol))
+        if (ds->x1 > spr->x2 || ds->x2 < spr->x1 || !ds->silhouette)
             continue;      // does not cover sprite
 
         const int16_t r1 = ds->x1 < spr->x1 ? spr->x1 : ds->x1;
@@ -1223,9 +1141,6 @@ static void R_DrawSprite (const vissprite_t* spr)
 
         if (scale < spr->scale || (lowscale < spr->scale && !R_PointOnSegSide (spr->gx, spr->gy, ds->curline)))
         {
-            if (ds->maskedtexturecol)       // masked mid texture?
-                R_RenderMaskedSegRange(ds, r1, r2);
-
             continue;               // seg is behind sprite
         }
 
@@ -1411,21 +1326,11 @@ static void R_SortVisSprites (void)
 
 static void R_DrawMasked(void)
 {
-    drawseg_t *ds;
-    drawseg_t* drawsegs = _s_drawsegs;
-
-
     R_SortVisSprites();
 
     // draw all vissprites back to front
     for (int8_t i = num_vissprite; --i >= 0; )
         R_DrawSprite(vissprite_ptrs[i]);
-
-    // render any remaining masked mid textures
-
-    for (ds=ds_p ; ds-- > drawsegs ; )
-        if (ds->maskedtexturecol)
-            R_RenderMaskedSegRange(ds, ds->x1, ds->x2);
 
     R_DrawPlayerSprites ();
 }
@@ -1841,7 +1746,7 @@ static void R_DrawSegTextureColumn(int16_t texture, int16_t texcolumn, draw_colu
 
 //
 // R_RenderSegLoop
-// Draws zero, one, or two textures (and possibly a masked texture) for walls.
+// Draws zero, one, or two textures for walls.
 // Can draw or mark the starting pixel of floor and ceiling textures.
 // boolean segtextured is true if any of the segs textures might be visible.
 // boolean markfloor is false if the back side is the same plane.
@@ -1940,7 +1845,6 @@ static void R_RenderSegLoop(int16_t rw_x, boolean segtextured, boolean markfloor
         // draw the wall tiers
         if (midtexture)
         {
-
             dcvars.yl = yl;     // single sided line
             dcvars.yh = yh;
             dcvars.texturemid = rw_midtexturemid;
@@ -1953,7 +1857,6 @@ static void R_RenderSegLoop(int16_t rw_x, boolean segtextured, boolean markfloor
         }
         else
         {
-
             // two sided line
             if (toptexture)
             {
@@ -2019,10 +1922,6 @@ static void R_RenderSegLoop(int16_t rw_x, boolean segtextured, boolean markfloor
                 solidcol[rw_x] = 1;
                 didsolidcol = true;
             }
-
-            // save texturecol for backdrawing of masked mid texture
-            if (maskedtexture)
-                maskedtexturecol[rw_x] = texturecolumn;
         }
 
         rw_scale += rw_scalestep;
@@ -2150,8 +2049,7 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
     worldtop = frontsector->ceilingheight - viewz;
     worldbottom = frontsector->floorheight - viewz;
 
-    midtexture = toptexture = bottomtexture = maskedtexture = 0;
-    ds_p->maskedtexturecol = NULL;
+    midtexture = toptexture = bottomtexture = 0;
 
     boolean markfloor, markceiling;
 
@@ -2264,18 +2162,10 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
 
             rw_bottomtexturemid += ((int32_t)Mod(sidedef->rowoffset, textureheight[bottomtexture])) << FRACBITS;
         }
-
-        // allocate space for masked texture tables
-        if (sidedef->midtexture)    // masked midtexture
-        {
-            maskedtexture = true;
-            ds_p->maskedtexturecol = maskedtexturecol = lastopening - rw_x;
-            lastopening += rw_stopx - rw_x;
-        }
     }
 
     // calculate rw_offset (only needed for textured lines)
-    boolean segtextured = ((midtexture | toptexture | bottomtexture | maskedtexture) > 0);
+    boolean segtextured = ((midtexture | toptexture | bottomtexture) > 0);
 
     if (segtextured)
     {
@@ -2355,30 +2245,18 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
     }
 
     // save sprite clipping info
-    if ((ds_p->silhouette & SIL_TOP || maskedtexture) && !ds_p->sprtopclip)
+    if ((ds_p->silhouette & SIL_TOP) && !ds_p->sprtopclip)
     {
         memcpy((byte*)lastopening, (const byte*)(ceilingclip+start), sizeof(int16_t)*(rw_stopx-start));
         ds_p->sprtopclip = lastopening - start;
         lastopening += rw_stopx - start;
     }
 
-    if ((ds_p->silhouette & SIL_BOTTOM || maskedtexture) && !ds_p->sprbottomclip)
+    if ((ds_p->silhouette & SIL_BOTTOM) && !ds_p->sprbottomclip)
     {
         memcpy((byte*)lastopening, (const byte*)(floorclip+start), sizeof(int16_t)*(rw_stopx-start));
         ds_p->sprbottomclip = lastopening - start;
         lastopening += rw_stopx - start;
-    }
-
-    if (maskedtexture && !(ds_p->silhouette & SIL_TOP))
-    {
-        ds_p->silhouette |= SIL_TOP;
-        ds_p->tsilheight = INT32_MIN;
-    }
-
-    if (maskedtexture && !(ds_p->silhouette & SIL_BOTTOM))
-    {
-        ds_p->silhouette |= SIL_BOTTOM;
-        ds_p->bsilheight = INT32_MAX;
     }
 
     ds_p++;
