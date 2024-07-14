@@ -330,6 +330,9 @@ static boolean didsolidcol; /* True if at least one column was marked solid */
 static int16_t      toptexture;
 static int16_t      bottomtexture;
 static int16_t      midtexture;
+static const texture_t __far* textoptexture;
+static const texture_t __far* texbottomtexture;
+static const texture_t __far* texmidtexture;
 
 static fixed_t  rw_midtexturemid;
 static fixed_t  rw_toptexturemid;
@@ -1564,7 +1567,7 @@ static void R_AddSprites(subsector_t __far* subsec, int16_t lightlevel)
 
 
 #if defined FLAT_WALL
-#define R_DrawSegTextureColumn(x,y,z) R_DrawColumnFlat(x,z)
+#define R_DrawSegTextureColumn(w,x,y,z) R_DrawColumnFlat(x,z)
 #else
 static void R_DrawColumnInCache(const column_t __far* patch, byte* cache, int16_t originy, int16_t cacheheight)
 {
@@ -1708,10 +1711,8 @@ static const byte __far* R_ComposeColumn(const int16_t texture, const texture_t 
     return colcache;
 }
 
-static void R_DrawSegTextureColumn(int16_t texture, int16_t texcolumn, draw_column_vars_t* dcvars)
+static void R_DrawSegTextureColumn(const texture_t __far* tex, int16_t texture, int16_t texcolumn, draw_column_vars_t* dcvars)
 {
-    const texture_t __far* tex = R_GetTexture(texture);
-
     if (!tex->overlapped)
     {
         int16_t patch_num;
@@ -1850,7 +1851,7 @@ static void R_RenderSegLoop(int16_t rw_x, boolean segtextured, boolean markfloor
             dcvars.texturemid = rw_midtexturemid;
             //
 
-            R_DrawSegTextureColumn(midtexture, texturecolumn, &dcvars);
+            R_DrawSegTextureColumn(texmidtexture, midtexture, texturecolumn, &dcvars);
 
             cc_rwx = VIEWWINDOWHEIGHT;
             fc_rwx = -1;
@@ -1873,7 +1874,7 @@ static void R_RenderSegLoop(int16_t rw_x, boolean segtextured, boolean markfloor
                     dcvars.yh = mid;
                     dcvars.texturemid = rw_toptexturemid;
 
-                    R_DrawSegTextureColumn(toptexture, texturecolumn, &dcvars);
+                    R_DrawSegTextureColumn(textoptexture, toptexture, texturecolumn, &dcvars);
 
                     cc_rwx = mid;
                 }
@@ -1902,7 +1903,7 @@ static void R_RenderSegLoop(int16_t rw_x, boolean segtextured, boolean markfloor
                     dcvars.yh = yh;
                     dcvars.texturemid = rw_bottomtexturemid;
 
-                    R_DrawSegTextureColumn(bottomtexture, texturecolumn, &dcvars);
+                    R_DrawSegTextureColumn(texbottomtexture, bottomtexture, texturecolumn, &dcvars);
 
                     fc_rwx = mid;
                 }
@@ -2057,6 +2058,7 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
     {
         // single sided line
         midtexture = texturetranslation[sidedef->midtexture];
+        texmidtexture = R_GetTexture(midtexture);
 
         // a single sided line is terminal, so it must mark ends
         markfloor = markceiling = true;
@@ -2150,16 +2152,18 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
         if (worldhigh < worldtop)   // top texture
         {
             toptexture = texturetranslation[sidedef->toptexture];
-            rw_toptexturemid = linedef->flags & ML_DONTPEGTOP ? worldtop :
-                                                                        backsector->ceilingheight + ((int32_t)textureheight[sidedef->toptexture] << FRACBITS) - viewz;
+            textoptexture = R_GetTexture(toptexture);
+
+            rw_toptexturemid = linedef->flags & ML_DONTPEGTOP ? worldtop : backsector->ceilingheight + ((int32_t)textureheight[sidedef->toptexture] << FRACBITS) - viewz;
             rw_toptexturemid += ((int32_t)Mod(sidedef->rowoffset, textureheight[toptexture])) << FRACBITS;
         }
 
         if (worldlow > worldbottom) // bottom texture
         {
             bottomtexture = texturetranslation[sidedef->bottomtexture];
-            rw_bottomtexturemid = linedef->flags & ML_DONTPEGBOTTOM ? worldtop : worldlow;
+            texbottomtexture = R_GetTexture(bottomtexture);
 
+            rw_bottomtexturemid = linedef->flags & ML_DONTPEGBOTTOM ? worldtop : worldlow;
             rw_bottomtexturemid += ((int32_t)Mod(sidedef->rowoffset, textureheight[bottomtexture])) << FRACBITS;
         }
     }
