@@ -258,8 +258,6 @@ static void G_DoLoadLevel (void)
 
 void G_Ticker (void)
 {
-    P_MapStart();
-
     P_MapEnd();
 
     // do things to change the game state

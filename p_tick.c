@@ -195,7 +195,6 @@ static void P_RunThinkers (void)
 
 void P_Ticker (void)
 {
-  P_MapStart();
                // not if this is an intermission screen
   if (_g_playeringame)
       P_PlayerThink(&_g_player);
