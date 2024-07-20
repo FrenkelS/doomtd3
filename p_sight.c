@@ -59,7 +59,7 @@ static los_t los;
 // Returns side 0 (front), 1 (back), or 2 (on).
 //
 
-static int16_t P_DivlineSide(fixed_t x, fixed_t y, const divline_t *node)
+static int8_t P_DivlineSide(fixed_t x, fixed_t y, const divline_t *node)
 {
 	if (!node->dx)
 	{
@@ -235,7 +235,7 @@ static boolean P_CrossBSPNode(int16_t bspnum)
         dl.dx = ((fixed_t)bsp->dx << FRACBITS);
         dl.dy = ((fixed_t)bsp->dy << FRACBITS);
 
-        int16_t side,side2;
+        int8_t side,side2;
         side = P_DivlineSide(los.strace.x,los.strace.y,&dl)&1;
         side2= P_DivlineSide(los.t2x, los.t2y, &dl);
 
