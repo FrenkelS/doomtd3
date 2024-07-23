@@ -45,7 +45,7 @@
 #include "z_bmallo.h"
 #include "i_system.h"
 
-#define BLOCKS_PER_POOL 32
+#define BLOCKS_PER_POOL 318
 
 typedef struct bmalpool_s {
 	struct bmalpool_s __far* nextpool;
@@ -73,11 +73,8 @@ __inline static PUREFUNC int16_t iselem(const bmalpool_t __far* pool, size_t siz
 
 	dif -= sizeof(bmalpool_t);
 	dif -= BLOCKS_PER_POOL;
-	if (dif < 0)
-		return -1;
-
 	dif /= size;
-	return (((size_t)dif >= BLOCKS_PER_POOL) ? -1 : dif);
+	return dif;
 }
 
 
@@ -87,27 +84,26 @@ enum { unused_block = 0, used_block = 1};
 void __far* Z_BMalloc(struct block_memory_alloc_s *pzone)
 {
 	bmalpool_t __far*__far* pool = (bmalpool_t __far*__far*)&(pzone->firstpool);
-	while (*pool != NULL) {
+	if (*pool != NULL) {
 		byte __far* p = _fmemchr((*pool)->used, unused_block, BLOCKS_PER_POOL); // Scan for unused marker
-		if (p) {
-			int16_t n = p - (*pool)->used;
-			(*pool)->used[n] = used_block;
-			return getelem(*pool, pzone->size, n);
-		} else
-			pool = &((*pool)->nextpool);
+		int16_t n = p - (*pool)->used;
+		(*pool)->used[n] = used_block;
+		return getelem(*pool, pzone->size, n);
 	}
+	else
+	{
+		// Nothing available, must allocate a new pool
+		bmalpool_t __far* newpool;
 
-	// Nothing available, must allocate a new pool
-	bmalpool_t __far* newpool;
+		// CPhipps: Allocate new memory, initialised to 0
 
-	// CPhipps: Allocate new memory, initialised to 0
+		*pool = newpool = Z_CallocLevel(sizeof(*newpool) + sizeof(byte) * BLOCKS_PER_POOL + pzone->size * BLOCKS_PER_POOL);
+		newpool->nextpool = NULL; // NULL = (void*)0 so this is redundant
 
-	*pool = newpool = Z_CallocLevel(sizeof(*newpool) + (sizeof(byte) + pzone->size) * BLOCKS_PER_POOL);
-	newpool->nextpool = NULL; // NULL = (void*)0 so this is redundant
-
-	// Return element 0 from this pool to satisfy the request
-	newpool->used[0] = used_block;
-	return getelem(newpool, pzone->size, 0);
+		// Return element 0 from this pool to satisfy the request
+		newpool->used[0] = used_block;
+		return getelem(newpool, pzone->size, 0);
+	}
 }
 
 
@@ -115,20 +111,6 @@ void Z_BFree(struct block_memory_alloc_s *pzone, void __far* p)
 {
 	bmalpool_t __far*__far* pool = (bmalpool_t __far*__far*)&(pzone->firstpool);
 
-	while (*pool != NULL) {
-		int16_t n = iselem(*pool, pzone->size, p);
-		if (n >= 0) {
-			(*pool)->used[n] = unused_block;
-			if (_fmemchr(((*pool)->used), used_block, BLOCKS_PER_POOL) == NULL) {
-				// Block is all unused, can be freed
-				bmalpool_t __far* oldpool = *pool;
-				*pool = (*pool)->nextpool;
-				Z_Free(oldpool);
-			}
-			return;
-		} else
-			pool = &((*pool)->nextpool);
-	}
-
-	I_Error("Z_BFree: Free not in zone");
+	int16_t n = iselem(*pool, pzone->size, p);
+	(*pool)->used[n] = unused_block;
 }
