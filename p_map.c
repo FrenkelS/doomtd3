@@ -999,7 +999,7 @@ void P_RadiusAttack(mobj_t __far* spot, mobj_t __far* source, int16_t damage)
 
 #include "z_bmallo.h"
 
-static struct block_memory_alloc_s secnodezone = { NULL, sizeof(msecnode_t), 32 };
+static struct block_memory_alloc_s secnodezone = { NULL, sizeof(msecnode_t) };
 
 void P_SetSecnodeFirstpoolToNull(void)
 {
