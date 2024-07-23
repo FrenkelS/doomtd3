@@ -1008,14 +1008,8 @@ enum { unused_block = 0, used_block = 1};
 
 inline static msecnode_t* P_GetSecnode(void)
 {
-	int16_t i = 0;
-	while (i < MAX_MSECNODES)
-	{
-		if (used[i] == unused_block)
-			break;
-
-		i++;
-	}
+	byte* b = memchr(&used[0], unused_block, MAX_MSECNODES);
+	int16_t i = b - &used[0];
 
 	used[i] = used_block;
 	return &msecnodes[i];

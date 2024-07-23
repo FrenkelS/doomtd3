@@ -45,11 +45,8 @@ typedef uint32_t segment_t;
 
 #define __far
 
-#define _fmemchr	memchr
 #define _fmemcpy	memcpy
 #define _fmemset	memset
-#define _fstrcpy	strcpy
-#define _fstrlen	strlen
 
 #endif
 
