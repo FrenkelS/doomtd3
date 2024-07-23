@@ -66,7 +66,6 @@ export GLOBOBJS+=" tables.o"
 export GLOBOBJS+=" v_video.c"
 #export GLOBOBJS+=" w_wad.c"
 export GLOBOBJS+=" w_wad.o"
-export GLOBOBJS+=" z_bmallo.c"
 #export GLOBOBJS+=" z_zone.c"
 export GLOBOBJS+=" z_zone.o"
 

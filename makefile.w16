@@ -69,7 +69,6 @@ GLOBOBJS = &
  tables.obj &
  v_video.obj &
  w_wad.obj &
- z_bmallo.obj &
  z_zone.obj
 
 WC16\DOOMTDWC.EXE : $(GLOBOBJS)

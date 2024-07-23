@@ -36,7 +36,6 @@ add_application(DOOMTD3
     tables.c
     v_video.c
     w_wad.c
-    z_bmallo.c
     z_zone.c
     )
 target_link_libraries(DOOMTD3 "-lm")

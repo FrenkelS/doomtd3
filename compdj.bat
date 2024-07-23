@@ -40,7 +40,6 @@ set CFLAGS=%CFLAGS% -Ofast -flto -fwhole-program -fomit-frame-pointer -funroll-l
 @set GLOBOBJS=%GLOBOBJS% tables.c
 @set GLOBOBJS=%GLOBOBJS% v_video.c
 @set GLOBOBJS=%GLOBOBJS% w_wad.c
-@set GLOBOBJS=%GLOBOBJS% z_bmallo.c
 @set GLOBOBJS=%GLOBOBJS% z_zone.c
 
 gcc %GLOBOBJS% %CFLAGS% -o DJ/DOOMTD32.EXE

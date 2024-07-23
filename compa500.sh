@@ -42,7 +42,6 @@ export GLOBOBJS+=" st_stuff.c"
 export GLOBOBJS+=" tables.c"
 export GLOBOBJS+=" v_video.c"
 export GLOBOBJS+=" w_wad.c"
-export GLOBOBJS+=" z_bmallo.c"
 export GLOBOBJS+=" z_zone.c"
 
 m68k-amigaos-gcc $GLOBOBJS $CFLAGS $RENDER_OPTIONS -o amiga/doomtd3

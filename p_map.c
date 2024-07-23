@@ -997,26 +997,36 @@ void P_RadiusAttack(mobj_t __far* spot, mobj_t __far* source, int16_t damage)
 // CPhipps -
 // Use block memory allocator here
 
-#include "z_bmallo.h"
+#define MAX_MSECNODES 318
 
-static struct block_memory_alloc_s secnodezone = { NULL, sizeof(msecnode_t) };
+static byte used[MAX_MSECNODES];
+static msecnode_t msecnodes[MAX_MSECNODES];
 
-void P_SetSecnodeFirstpoolToNull(void)
-{
-	secnodezone.firstpool = NULL;
-}
+
+enum { unused_block = 0, used_block = 1};
 
 
 inline static msecnode_t __far* P_GetSecnode(void)
 {
-  return (msecnode_t __far*)Z_BMalloc(&secnodezone);
+	int16_t i = 0;
+	while (i < MAX_MSECNODES)
+	{
+		if (used[i] == unused_block)
+			break;
+
+		i++;
+	}
+
+	used[i] = used_block;
+	return &msecnodes[i];
 }
 
 // P_PutSecnode() returns a node to the freelist.
 
 inline static void P_PutSecnode(msecnode_t __far* node)
 {
-  Z_BFree(&secnodezone, node);
+	int16_t i = node - &msecnodes[0];
+	used[i] = unused_block;
 }
 
 // phares 3/16/98

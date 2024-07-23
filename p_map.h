@@ -57,7 +57,6 @@ void    P_RadiusAttack(mobj_t __far* spot, mobj_t __far* source, int16_t damage)
 boolean P_CheckPosition(mobj_t __far* thing, fixed_t x, fixed_t y);
 
 
-void    P_SetSecnodeFirstpoolToNull(void);
 void    P_DelSeclist(void);
 void    P_SetSeclist(msecnode_t __far*);
 void    P_CreateSecNodeList(mobj_t __far*);
