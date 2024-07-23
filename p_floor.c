@@ -160,7 +160,7 @@ static void PIT_ChangeSector(mobj_t __far* thing)
 
 static boolean P_CheckSector(sector_t __far* sector)
   {
-  msecnode_t __far* n;
+  msecnode_t *n;
 
   nofit = false;
 

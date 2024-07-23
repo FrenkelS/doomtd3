@@ -79,7 +79,7 @@ const line_t __far* _g_spechit[4];
 int16_t _g_numspechit;
 
 // Temporary holder for thing_sectorlist threads
-static msecnode_t __far* _s_sector_list;
+static msecnode_t *_s_sector_list;
 
 
 mobj_t __far*   _g_linetarget; // who got hit (or NULL)
@@ -1006,7 +1006,7 @@ static msecnode_t msecnodes[MAX_MSECNODES];
 enum { unused_block = 0, used_block = 1};
 
 
-inline static msecnode_t __far* P_GetSecnode(void)
+inline static msecnode_t* P_GetSecnode(void)
 {
 	int16_t i = 0;
 	while (i < MAX_MSECNODES)
@@ -1023,7 +1023,7 @@ inline static msecnode_t __far* P_GetSecnode(void)
 
 // P_PutSecnode() returns a node to the freelist.
 
-inline static void P_PutSecnode(msecnode_t __far* node)
+inline static void P_PutSecnode(msecnode_t* node)
 {
 	int16_t i = node - &msecnodes[0];
 	used[i] = unused_block;
@@ -1038,7 +1038,7 @@ inline static void P_PutSecnode(msecnode_t __far* node)
 
 static void P_AddSecnode(sector_t __far* s, mobj_t __far* thing)
   {
-  msecnode_t __far* node;
+  msecnode_t *node;
 
   node = _s_sector_list;
   while (node)
@@ -1081,12 +1081,12 @@ static void P_AddSecnode(sector_t __far* s, mobj_t __far* thing)
 // sectors this object appears in. Returns a pointer to the next node
 // on the linked list, or NULL.
 
-static msecnode_t __far* P_DelSecnode(msecnode_t __far* node)
+static msecnode_t* P_DelSecnode(msecnode_t *node)
   {
-  msecnode_t __far* tp;  // prev node on thing thread
-  msecnode_t __far* tn;  // next node on thing thread
-  msecnode_t __far* sp;  // prev node on sector thread
-  msecnode_t __far* sn;  // next node on sector thread
+  msecnode_t *tp;  // prev node on thing thread
+  msecnode_t *tn;  // next node on thing thread
+  msecnode_t *sp;  // prev node on sector thread
+  msecnode_t *sn;  // next node on sector thread
 
   if (node)
     {
@@ -1125,7 +1125,7 @@ static msecnode_t __far* P_DelSecnode(msecnode_t __far* node)
 
 void P_DelSeclist(void)
 {
-	msecnode_t __far* node = _s_sector_list;
+	msecnode_t *node = _s_sector_list;
 	while (node)
 		node = P_DelSecnode(node);
 
@@ -1133,7 +1133,7 @@ void P_DelSeclist(void)
 }
 
 
-void P_SetSeclist(msecnode_t __far* sectorList)
+void P_SetSeclist(msecnode_t *sectorList)
 {
 	_s_sector_list = sectorList;
 }
@@ -1197,7 +1197,7 @@ void P_CreateSecNodeList(mobj_t __far* thing)
   // finished, delete all nodes where m_thing is still NULL. These
   // represent the sectors the Thing has vacated.
 
-  msecnode_t __far* node = _s_sector_list;
+  msecnode_t *node = _s_sector_list;
   while (node)
     {
     node->m_thing = NULL;

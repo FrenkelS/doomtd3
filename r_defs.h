@@ -95,7 +95,7 @@ typedef struct
 
   // list of mobjs that are at least partially in the sector
   // thinglist is a subset of touching_thinglist
-  struct msecnode_s __far* touching_thinglist;
+  struct msecnode_s *touching_thinglist;
 
   const struct line_s __far*__far*lines;
 
@@ -201,10 +201,10 @@ typedef struct msecnode_s
 {
   sector_t          __far* m_sector; // a sector containing this object
   struct mobj_s __far* m_thing;  // this object
-  struct msecnode_s __far* m_tprev;  // prev msecnode_t for this thing
-  struct msecnode_s __far* m_tnext;  // next msecnode_t for this thing
-  struct msecnode_s __far* m_sprev;  // prev msecnode_t for this sector
-  struct msecnode_s __far* m_snext;  // next msecnode_t for this sector
+  struct msecnode_s *m_tprev;  // prev msecnode_t for this thing
+  struct msecnode_s *m_tnext;  // next msecnode_t for this thing
+  struct msecnode_s *m_sprev;  // prev msecnode_t for this sector
+  struct msecnode_s *m_snext;  // next msecnode_t for this sector
   boolean visited; // killough 4/4/98, 4/7/98: used in search algorithms
 } msecnode_t;
 
