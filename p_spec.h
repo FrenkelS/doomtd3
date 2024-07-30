@@ -298,8 +298,6 @@ boolean EV_DoPlat(const line_t __far* line, plattype_e type);
 ////////////////////////////////////////////////////////////////
 
 // at game start
-void P_InitPicAnims(void);
-
 void P_InitSwitchList
 ( void );
 
@@ -309,7 +307,7 @@ void P_SpawnSpecials
 
 // every tic
 void P_UpdateSpecials(void);
-void P_UpdateAnimatedFlat(void);
+
 
 // when needed
 boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line);

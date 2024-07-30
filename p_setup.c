@@ -577,6 +577,5 @@ void P_SetupLevel(int16_t map)
 void P_Init (void)
 {
     P_InitSwitchList();
-    P_InitPicAnims();
     R_InitSprites();
 }

@@ -29,7 +29,6 @@
  *  02111-1307, USA.
  *
  * DESCRIPTION:
- *   -Loads and initializes texture and flat animation sequences
  *   -Implements utility functions for all linedef/sector special handlers
  *   -Dispatches walkover and gun line triggers
  *   -Initializes and implements special sector types
@@ -60,28 +59,6 @@
 
 #include "globdata.h"
 
-
-//
-// Animating textures and planes
-//
-static int16_t  animated_texture_basepic;
-
-//
-// P_InitPicAnims
-//
-// Load the table of animation definitions, checking for existence of
-// the start and end of each frame. If the start doesn't exist or
-// the last doesn't exist, BOOM exits.
-//
-// Wall/Flat animation sequences, defined by name of first and last frame,
-// The full animation sequence is given using all lumps between the start
-// and end entry, in the order found in the WAD file.
-//
-void P_InitPicAnims (void)
-{
-	animated_texture_basepic = R_CheckTextureNumForName ("SLADRIP1");
-	                           R_CheckTextureNumForName ("SLADRIP3");
-}
 
 ///////////////////////////////////////////////////////////////
 //
@@ -265,7 +242,7 @@ boolean P_CheckTag(const line_t __far* line)
 // P_UpdateSpecials()
 //
 // Check level timer, frag counter,
-// animate flats, scroll walls,
+// scroll walls,
 // change button textures
 //
 // Reads and modifies globals:
@@ -273,20 +250,8 @@ boolean P_CheckTag(const line_t __far* line)
 //  levelFragLimit, levelFragLimitCount
 //
 
-static void P_UpdateAnimatedTexture(void)
-{
-	int16_t pic = animated_texture_basepic + ((_g_leveltime >> 3) % 3);
-
-	for (int16_t i = animated_texture_basepic; i < animated_texture_basepic + 3; i++)
-		texturetranslation[i] = pic;
-}
-
 void P_UpdateSpecials (void)
 {
-    // Animate flats and textures globally
-    P_UpdateAnimatedFlat();
-    P_UpdateAnimatedTexture();
-
     // Check buttons (retriggerable switches) and change texture on timeout
     for (int8_t i = 0; i < MAXBUTTONS; i++)
     {

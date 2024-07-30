@@ -356,7 +356,6 @@ static int16_t      rw_lightlevel;
 
 int16_t   __far* textureheight; //needed for texture pegging (and TFE fix - killough)
 
-int16_t       __far* texturetranslation;
 
 static fixed_t  viewcos, viewsin;
 
@@ -2057,7 +2056,7 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
     if (!backsector)
     {
         // single sided line
-        midtexture = texturetranslation[sidedef->midtexture];
+        midtexture = sidedef->midtexture;
         texmidtexture = R_GetTexture(midtexture);
 
         // a single sided line is terminal, so it must mark ends
@@ -2151,7 +2150,7 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
 
         if (worldhigh < worldtop)   // top texture
         {
-            toptexture = texturetranslation[sidedef->toptexture];
+            toptexture = sidedef->toptexture;
             textoptexture = R_GetTexture(toptexture);
 
             rw_toptexturemid = linedef->flags & ML_DONTPEGTOP ? worldtop : backsector->ceilingheight + ((int32_t)textureheight[sidedef->toptexture] << FRACBITS) - viewz;
@@ -2160,7 +2159,7 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
 
         if (worldlow > worldbottom) // bottom texture
         {
-            bottomtexture = texturetranslation[sidedef->bottomtexture];
+            bottomtexture = sidedef->bottomtexture;
             texbottomtexture = R_GetTexture(bottomtexture);
 
             rw_bottomtexturemid = linedef->flags & ML_DONTPEGBOTTOM ? worldtop : worldlow;

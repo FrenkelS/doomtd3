@@ -39,8 +39,6 @@ static int16_t firstflat;
 static int16_t  animated_flat_basepic;
 static int16_t __far* flattranslation;             // for global animation
 
-static int16_t animated_flat_basepic_color[3];
-
 
 //
 // R_DrawSpan
@@ -77,18 +75,12 @@ void R_InitFlats(void)
 
 	flattranslation = Z_MallocStatic((numflats + 1) * sizeof(*flattranslation));
 
-	animated_flat_basepic = R_FlatNumForName("NUKAGE1");
-
 	for (int16_t i = 0; i < numflats; i++)
 	{
 		byte b;
 		W_ReadLumpByNum(firstflat + i, &b);
 		flattranslation[i] = b;
 	}
-
-	animated_flat_basepic_color[0] = flattranslation[animated_flat_basepic + 0];
-	animated_flat_basepic_color[1] = flattranslation[animated_flat_basepic + 1];
-	animated_flat_basepic_color[2] = flattranslation[animated_flat_basepic + 2];
 }
 
 
@@ -112,14 +104,4 @@ int16_t R_FlatNumForName(const char *name)
 {
 	int16_t i = W_GetNumForName(name);
 	return i - firstflat;
-}
-
-
-void P_UpdateAnimatedFlat(void)
-{
-	int16_t pic = animated_flat_basepic_color[(_g_leveltime >> 3) % 3];
-
-	flattranslation[animated_flat_basepic + 0] = pic;
-	flattranslation[animated_flat_basepic + 1] = pic;
-	flattranslation[animated_flat_basepic + 2] = pic;
 }

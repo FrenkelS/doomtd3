@@ -182,8 +182,6 @@ static void R_LoadTexture(int16_t texture_num)
 
     textureheight[texture_num] = texture->height;
 
-    texturetranslation[texture_num] = texture_num;
-
     textures[texture_num] = texture;
 }
 
@@ -278,11 +276,6 @@ static void R_InitTextures()
 
 	textureheight = Z_MallocStatic(numtextures*sizeof*textureheight);
 	_fmemset(textureheight, 0, numtextures*sizeof*textureheight);
-
-	texturetranslation = Z_MallocStatic((numtextures + 1)*sizeof*texturetranslation);
-
-	for (int16_t i = 0; i < numtextures; i++)
-		texturetranslation[i] = i;
 }
 
 

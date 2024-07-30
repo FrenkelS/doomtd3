@@ -62,8 +62,6 @@ extern const uint8_t __far* fullcolormap;
 
 extern int16_t   __far* textureheight; //needed for texture pegging (and TFE fix - killough)
 
-extern int16_t       __far* texturetranslation;
-
 
 //
 // Utility functions.
