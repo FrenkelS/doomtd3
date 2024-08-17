@@ -563,20 +563,6 @@ fixed_t CONSTFUNC FixedMul3216(fixed_t a, uint16_t blw)
 }
 
 
-//
-// FixedReciprocalSmall
-// Divide FFFFFFFFh by a 16-bit number.
-//
-
-#if defined USE_ASSEMBLY
-fixed_t  CONSTFUNC FixedReciprocalSmall(uint16_t v);
-uint16_t CONSTFUNC FixedReciprocalBig(fixed_t v);
-#else
-#define FixedReciprocalSmall(v) (0xffffffffu/(uint16_t)(v))
-#define FixedReciprocalBig(v)   (0xffffffffu/(v))
-#endif
-
-
 //Approx fixed point divide of a/b using reciprocal. -> a * (1/b).
 #if defined __WATCOMC__
 //
@@ -589,17 +575,6 @@ fixed_t CONSTFUNC FixedApproxDiv(fixed_t a, fixed_t b)
 		return FixedMul3232(a, FixedReciprocalSmall(b));
 	else
 		return FixedMul3216(a, FixedReciprocalBig(b));
-}
-
-
-#if defined __WATCOMC__
-//
-#else
-inline
-#endif
-fixed_t CONSTFUNC FixedApproxDiv3216(fixed_t a, uint16_t b)
-{
-	return FixedMul3232(a, FixedReciprocalSmall(b));
 }
 
 
