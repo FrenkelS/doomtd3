@@ -17,7 +17,7 @@
 
 %ifidn CPU, i8088
 cpu 8086
-%elifidn CPU, i186
+%elifidn CPU, any_186
 cpu 186
 %else
 %error unsupported cpu CPU
