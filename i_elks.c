@@ -667,6 +667,18 @@ void __far* _fmemset(void __far* str, int c, size_t n)
 }
 
 
+int16_t abs(int16_t v)
+{
+	return v < 0 ? -v : v;
+}
+
+
+int32_t labs(int32_t v)
+{
+	return v < 0 ? -v : v;
+}
+
+
 int main(int argc, const char * const * argv)
 {
 	D_DoomMain();

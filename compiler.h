@@ -44,6 +44,15 @@ void __far* _fmemcpy(void __far* destination, const void __far* source, size_t n
 void __far* _fmemset(void __far* str, int c, size_t n);
 #endif
 
+#ifndef abs
+int16_t abs(int16_t v);
+#endif
+
+#ifndef labs
+int32_t labs(int32_t v);
+#endif
+
+
 #else
 //32-bit
 #define D_MK_FP(s,o) (void*)((s<<4)+o)
