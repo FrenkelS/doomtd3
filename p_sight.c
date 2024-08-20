@@ -124,7 +124,7 @@ static uint16_t PUREFUNC P_InterceptVector2(const divline_t *v2, const divline_t
 
 static boolean P_CrossSubsector(int16_t num)
 {
-    const seg_t __far* seg = _g_segs + _g_subsectors[num].firstline;
+    const D_seg_t __far* seg = _g_segs + _g_subsectors[num].firstline;
     int16_t count;
     fixed_t opentop = 0, openbottom = 0;
     const sector_t __far* front = NULL;
