@@ -160,7 +160,7 @@ boolean EV_DoPlat(const line_t __far* line, plattype_e type)
   plat_t __far* plat;
   int16_t             secnum;
   boolean             rtn;
-  sector_t __far*       sec;
+  D_sector_t __far*       sec;
 
   secnum = -1;
   rtn = false;

@@ -305,8 +305,8 @@ static byte solidcol[VIEWWINDOWWIDTH];
 static const D_seg_t     __far* curline;
 static side_t    __far* sidedef;
 static const line_t    __far* linedef;
-static sector_t  __far* frontsector;
-static sector_t  __far* backsector;
+static D_sector_t  __far* frontsector;
+static D_sector_t  __far* backsector;
 static drawseg_t *ds_p;
 
 static int16_t floorplane_color;
@@ -1514,7 +1514,7 @@ static void R_ProjectSprite (mobj_t __far* thing, int16_t lightlevel)
 // killough 9/18/98: add lightlevel as parameter, fixing underwater lighting
 static void R_AddSprites(subsector_t __far* subsec, int16_t lightlevel)
 {
-  sector_t __far* sec=subsec->sector;
+  D_sector_t __far* sec=subsec->sector;
   mobj_t __far* thing;
 
   // BSP is traversed by subsector.

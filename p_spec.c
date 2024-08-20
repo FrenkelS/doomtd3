@@ -69,11 +69,11 @@
 //
 // getNextSector()
 //
-// Return sector_t * of sector next to current across line.
+// Return D_sector_t * of sector next to current across line.
 //
 // Note: returns NULL if not two-sided line, or both sides refer to sector
 //
-sector_t __far* getNextSector(const line_t __far* line, sector_t __far* sec)
+D_sector_t __far* getNextSector(const line_t __far* line, D_sector_t __far* sec)
 {
 
 
@@ -94,11 +94,11 @@ sector_t __far* getNextSector(const line_t __far* line, sector_t __far* sec)
 // Returns the fixed point value of the lowest floor height
 // in the sector passed or its surrounding sectors.
 //
-fixed_t P_FindLowestFloorSurrounding(sector_t __far* sec)
+fixed_t P_FindLowestFloorSurrounding(D_sector_t __far* sec)
 {
   int16_t                 i;
   const line_t __far*             check;
-  sector_t __far*           other;
+  D_sector_t __far*           other;
   fixed_t             floor = sec->floorheight;
 
   for (i=0 ;i < sec->linecount ; i++)
@@ -122,11 +122,11 @@ fixed_t P_FindLowestFloorSurrounding(sector_t __far* sec)
 // Passed a sector, returns the fixed point value of the largest
 // floor height in the surrounding sectors, not including that passed
 //
-fixed_t P_FindHighestFloorSurrounding(sector_t __far* sec)
+fixed_t P_FindHighestFloorSurrounding(D_sector_t __far* sec)
 {
   int16_t i;
   const line_t __far* check;
-  sector_t __far* other;
+  D_sector_t __far* other;
   fixed_t floor = -32000*FRACUNIT;
 
   for (i=0 ;i < sec->linecount ; i++)
@@ -150,11 +150,11 @@ fixed_t P_FindHighestFloorSurrounding(sector_t __far* sec)
 // Passed a sector, returns the fixed point value of the smallest
 // ceiling height in the surrounding sectors, not including that passed
 //
-fixed_t P_FindLowestCeilingSurrounding(sector_t __far* sec)
+fixed_t P_FindLowestCeilingSurrounding(D_sector_t __far* sec)
 {
   int16_t                 i;
   const line_t __far*             check;
-  sector_t __far*           other;
+  D_sector_t __far*           other;
   fixed_t             height = 32000*FRACUNIT;
 
   for (i=0 ;i < sec->linecount ; i++)
@@ -301,7 +301,7 @@ void P_SpawnScrollers(void);
 
 void P_SpawnSpecials (void)
 {
-  sector_t __far*   sector;
+  D_sector_t __far*   sector;
   int16_t         i;
 
   //  Init special sectors.

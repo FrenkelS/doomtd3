@@ -175,7 +175,7 @@ typedef struct
 typedef struct
 {
   thinker_t thinker;
-  sector_t __far* sector;
+  D_sector_t __far* sector;
   fixed_t speed;
   fixed_t low;
   fixed_t high;
@@ -195,7 +195,7 @@ typedef struct
 {
   thinker_t thinker;
   vldoor_e type;
-  sector_t __far* sector;
+  D_sector_t __far* sector;
   fixed_t topheight;
   fixed_t speed;
 
@@ -222,7 +222,7 @@ typedef struct
 {
   thinker_t thinker;
   floor_e type;
-  sector_t __far* sector;
+  D_sector_t __far* sector;
   int16_t direction;
   int16_t texture;
   fixed_t floordestheight;
@@ -237,17 +237,17 @@ typedef struct
 //
 ////////////////////////////////////////////////////////////////
 
-fixed_t P_FindLowestFloorSurrounding(sector_t __far* sec);
+fixed_t P_FindLowestFloorSurrounding(D_sector_t __far* sec);
 
-fixed_t P_FindHighestFloorSurrounding(sector_t __far* sec);
+fixed_t P_FindHighestFloorSurrounding(D_sector_t __far* sec);
 
-fixed_t P_FindNextHighestFloor(sector_t __far* sec);
+fixed_t P_FindNextHighestFloor(D_sector_t __far* sec);
 
-fixed_t P_FindLowestCeilingSurrounding(sector_t __far* sec);
+fixed_t P_FindLowestCeilingSurrounding(D_sector_t __far* sec);
 
 int16_t P_FindSectorFromLineTag(const line_t __far* line, int16_t start);
 
-sector_t __far* getNextSector(const line_t __far* line, sector_t __far* sec);
+D_sector_t __far* getNextSector(const line_t __far* line, D_sector_t __far* sec);
 
 boolean P_CheckTag(const line_t __far* line);
 
@@ -268,8 +268,8 @@ void T_VerticalDoor(vldoor_t __far* door);
 
 // p_floor
 
-result_e T_MovePlaneFloor  (sector_t __far* sector, fixed_t speed, fixed_t dest, int16_t direction);
-result_e T_MovePlaneCeiling(sector_t __far* sector, fixed_t speed, fixed_t dest, int16_t direction);
+result_e T_MovePlaneFloor  (D_sector_t __far* sector, fixed_t speed, fixed_t dest, int16_t direction);
+result_e T_MovePlaneCeiling(D_sector_t __far* sector, fixed_t speed, fixed_t dest, int16_t direction);
 
 
 ////////////////////////////////////////////////////////////////
@@ -314,11 +314,11 @@ boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line);
 
 // p_lights
 
-void P_SpawnLightFlash(sector_t __far* sector);
+void P_SpawnLightFlash(D_sector_t __far* sector);
 
-void P_SpawnStrobeFlash(sector_t __far* sector, int16_t fastOrSlow, boolean inSync);
+void P_SpawnStrobeFlash(D_sector_t __far* sector, int16_t fastOrSlow, boolean inSync);
 
-void P_SpawnGlowingLight(sector_t __far* sector);
+void P_SpawnGlowingLight(D_sector_t __far* sector);
 
 // p_plats
 

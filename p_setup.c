@@ -62,7 +62,7 @@
 const D_seg_t    __far* _g_segs;
 
 int16_t      _g_numsectors;
-sector_t __far* _g_sectors;
+D_sector_t __far* _g_sectors;
 
 
 static int16_t      numsubsectors;
@@ -200,12 +200,12 @@ static void P_LoadSectors (int16_t lump)
   int16_t  i;
 
   _g_numsectors = W_LumpLength (lump) / sizeof(mapsector_t);
-  _g_sectors = Z_CallocLevel(_g_numsectors * sizeof(sector_t));
+  _g_sectors = Z_CallocLevel(_g_numsectors * sizeof(D_sector_t));
   data = W_GetLumpByNum(lump);
 
   for (i=0; i<_g_numsectors; i++)
     {
-      sector_t __far* ss = _g_sectors + i;
+      D_sector_t __far* ss = _g_sectors + i;
       const mapsector_t __far* ms = data + i;
 
       ss->floorheight = ((int32_t)SHORT(ms->floorheight))<<FRACBITS;
@@ -423,7 +423,7 @@ static void P_LoadReject(int16_t lump)
 // figgi 09/18/00 -- adapted for gl-nodes
 
 // cph - convenient sub-function
-static void P_AddLineToSector(const line_t __far* li, sector_t __far* sector)
+static void P_AddLineToSector(const line_t __far* li, D_sector_t __far* sector)
 {
   sector->lines[sector->linecount++] = li;
 }
@@ -450,7 +450,7 @@ static void M_AddToBox(fixed_t* box,fixed_t x,fixed_t y)
 static void P_GroupLines (void)
 {
     register const line_t __far* li;
-    register sector_t __far* sector;
+    register D_sector_t __far* sector;
     int16_t i,j, total = _g_numlines;
 
     // figgi

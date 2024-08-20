@@ -158,7 +158,7 @@ static void PIT_ChangeSector(mobj_t __far* thing)
 // sector. Both more accurate and faster.
 //
 
-static boolean P_CheckSector(sector_t __far* sector)
+static boolean P_CheckSector(D_sector_t __far* sector)
   {
   msecnode_t *n;
 
@@ -214,7 +214,7 @@ static boolean P_CheckSector(sector_t __far* sector)
 //  pastdest - plane moved normally and is now at destination height
 //  crushed - plane encountered an obstacle, is holding until removed
 //
-result_e T_MovePlaneFloor(sector_t __far* sector, fixed_t speed, fixed_t dest, int16_t direction)
+result_e T_MovePlaneFloor(D_sector_t __far* sector, fixed_t speed, fixed_t dest, int16_t direction)
 {
   boolean       flag;
   fixed_t       lastpos;
@@ -287,7 +287,7 @@ result_e T_MovePlaneFloor(sector_t __far* sector, fixed_t speed, fixed_t dest, i
 }
 
 
-result_e T_MovePlaneCeiling(sector_t __far* sector, fixed_t speed, fixed_t dest, int16_t direction)
+result_e T_MovePlaneCeiling(D_sector_t __far* sector, fixed_t speed, fixed_t dest, int16_t direction)
 {
   boolean       flag;
   fixed_t       lastpos;
@@ -409,10 +409,10 @@ static void T_MoveFloor(floormove_t __far* floor)
 //
 // Rewritten by Lee Killough to avoid fixed array and to be faster
 //
-fixed_t P_FindNextHighestFloor(sector_t __far* sec)
+fixed_t P_FindNextHighestFloor(D_sector_t __far* sec)
 {
   fixed_t currentheight = sec->floorheight;
-  sector_t __far* other;
+  D_sector_t __far* other;
   int16_t i;
 
   for (i=0 ;i < sec->linecount ; i++)
@@ -453,7 +453,7 @@ boolean EV_DoFloor(const line_t __far* line, floor_e floortype)
 {
   int16_t           secnum;
   boolean           rtn;
-  sector_t __far*     sec;
+  D_sector_t __far*     sec;
   floormove_t __far*  floor;
 
   secnum = -1;

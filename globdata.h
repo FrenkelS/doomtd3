@@ -93,7 +93,7 @@ extern divline_t _g_trace;
 extern const D_seg_t    __far* _g_segs;
 
 extern int16_t      _g_numsectors;
-extern sector_t __far* _g_sectors;
+extern D_sector_t __far* _g_sectors;
 
 
 extern subsector_t __far* _g_subsectors;
