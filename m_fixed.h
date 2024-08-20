@@ -69,14 +69,14 @@ fixed_t CONSTFUNC FixedMulAngle(fixed_t a, fixed_t b);
 
 //Approx Reciprocal of v
 // Divide FFFFFFFFh by a number.
-#if defined C_ONLY
-#define FixedReciprocal(v)      (0xffffffffu/(v))
-#define FixedReciprocalBig(v)   (0xffffffffu/(v))
-#define FixedReciprocalSmall(v) (0xffffffffu/(uint16_t)(v))
-#else
+#if defined USE_ASSEMBLY
 fixed_t  CONSTFUNC FixedReciprocal(fixed_t v);
 uint16_t CONSTFUNC FixedReciprocalBig(fixed_t v);
 fixed_t  CONSTFUNC FixedReciprocalSmall(uint16_t v);
+#else
+#define FixedReciprocal(v)      (0xffffffffu/(v))
+#define FixedReciprocalBig(v)   (0xffffffffu/(v))
+#define FixedReciprocalSmall(v) (0xffffffffu/(uint16_t)(v))
 #endif
 
 
