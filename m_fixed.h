@@ -56,6 +56,15 @@ typedef int32_t fixed_t;
  */
 
 #include <stdlib.h>
+
+#ifndef abs
+#define abs(x) ((x)<0?-(x):(x))
+#endif
+
+#ifndef labs
+#define labs(x) ((x)<0?-(x):(x))
+#endif
+
 #define D_abs labs
 
 
