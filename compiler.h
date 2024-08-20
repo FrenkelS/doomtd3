@@ -34,6 +34,16 @@
 typedef uint16_t segment_t;
 #define SIZE_OF_SEGMENT_T 2
 
+#ifndef _fmemcpy
+#include <stddef.h>
+void __far* _fmemcpy(void __far* destination, const void __far* source, size_t num);
+#endif
+
+#ifndef _fmemset
+#include <stddef.h>
+void __far* _fmemset(void __far* str, int c, size_t n);
+#endif
+
 #else
 //32-bit
 #define D_MK_FP(s,o) (void*)((s<<4)+o)
