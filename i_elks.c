@@ -53,12 +53,27 @@ static uint8_t __far* videomemory_statusbar;
 static boolean isGraphicsModeSet = false;
 
 
-static void I_SetScreenMode(uint16_t mode)
+static void I_SetScreenMode(uint8_t mode)
 {
-	//TODO
-	//union REGS regs;
-	//regs.w.ax = mode;
-	//int86(0x10, &regs, &regs);
+   // SI, DI, BP, ES and probably DS are to be saved
+   // cli and sti are used to make a proper BIOS call from ELKS
+   __asm__(
+  "push %%si;"
+  "push %%di;"
+  "push %%bp;"
+  "push %%es;"
+  "cli;"
+  "mov %%ah,0;" 
+  "mov %%al,%0;" 
+  "int $0x10;"
+  "sti;"
+  "pop %%es;"
+  "pop %%bp;"
+  "pop %%di;"
+  "pop %%si;"
+     : /* no outputs */
+     : "r" (mode)
+     : ); //list of modified registers
 }
 
 
