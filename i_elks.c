@@ -386,13 +386,28 @@ static uint8_t nearcolormap[256];
 #define L_FP_OFF D_FP_OFF
 static uint16_t nearcolormapoffset = 0xffff;
 
-static const uint8_t __far* source;
-static const uint8_t *dest;
 
-
-static void R_DrawColumn2(uint16_t fracstep, uint16_t frac, int16_t count)
+void R_DrawColumn(const draw_column_vars_t *dcvars)
 {
-	uint8_t __far* dst = (uint8_t __far*)dest;
+	const int16_t count = (dcvars->yh - dcvars->yl) + 1;
+
+	// Zero length, column does not exceed a pixel.
+	if (count <= 0)
+		return;
+
+	const uint8_t __far* source = dcvars->source;
+
+	if (nearcolormapoffset != L_FP_OFF(dcvars->colormap))
+	{
+		_fmemcpy(nearcolormap, dcvars->colormap, 256);
+		nearcolormapoffset = L_FP_OFF(dcvars->colormap);
+	}
+
+	uint8_t *dst = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
+
+	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
+	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
+
 	int16_t l = count >> 4;
 
 	while (l--)
@@ -436,31 +451,6 @@ static void R_DrawColumn2(uint16_t fracstep, uint16_t frac, int16_t count)
 		case  2: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
 		case  1: *dst = nearcolormap[source[frac>>COLBITS]];
 	}
-}
-
-
-void R_DrawColumn(const draw_column_vars_t *dcvars)
-{
-	const int16_t count = (dcvars->yh - dcvars->yl) + 1;
-
-	// Zero length, column does not exceed a pixel.
-	if (count <= 0)
-		return;
-
-	source = dcvars->source;
-
-	if (nearcolormapoffset != L_FP_OFF(dcvars->colormap))
-	{
-		_fmemcpy(nearcolormap, dcvars->colormap, 256);
-		nearcolormapoffset = L_FP_OFF(dcvars->colormap);
-	}
-
-	dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
-
-	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
-	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
-
-	R_DrawColumn2(fracstep, frac, count);
 }
 
 
