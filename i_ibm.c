@@ -428,7 +428,7 @@ void R_DrawColumn2(uint16_t fracstep, uint16_t frac, int16_t count);
 #else
 static void R_DrawColumn2(uint16_t fracstep, uint16_t frac, int16_t count)
 {
-	uint8_t __far* dst = (uint8_t __far*)dest;
+	uint8_t *dst = (uint8_t *)dest;
 	int16_t l = count >> 4;
 
 	while (l--)
