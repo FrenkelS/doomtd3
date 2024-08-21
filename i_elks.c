@@ -625,7 +625,7 @@ static int32_t clock()
 {
 	struct timeval now;
 	gettimeofday(&now, NULL);
-	return now.tv_sec * 1000000L + now.tv_usec;
+	return now.tv_sec * 1000L + now.tv_usec * 1000L;
 }
 
 
@@ -641,7 +641,7 @@ void I_StartClock(void)
 uint32_t I_EndClock(void)
 {
 	int32_t endtime = clock();
-	return ((endtime - starttime) * TICRATE) / 1000000L;
+	return ((endtime - starttime) * TICRATE) / 1000L;
 }
 
 
