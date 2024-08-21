@@ -601,16 +601,27 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch)
 }
 
 
-uint16_t _fmemalloc(uint16_t __size, uint16_t *__seg);
-
-
 segment_t I_ZoneBase(uint32_t *size)
 {
-	uint16_t max, segment;
-	_fmemalloc(0xffff, &max);
-	_fmemalloc(max, &segment);
-	*size = (uint32_t)max * PARAGRAPH_SIZE;
-	return segment;
+	uint32_t paragraphs = 550 * 1024L / PARAGRAPH_SIZE;
+	uint8_t __far* ptr = fmemalloc(paragraphs * PARAGRAPH_SIZE);
+	while (!ptr)
+	{
+		paragraphs--;
+		ptr = fmemalloc(paragraphs * PARAGRAPH_SIZE);
+	}
+
+	// align ptr
+	uint32_t m = (uint32_t) ptr;
+	if ((m & (PARAGRAPH_SIZE - 1)) != 0)
+	{
+		paragraphs--;
+		while ((m & (PARAGRAPH_SIZE - 1)) != 0)
+			m = (uint32_t) ++ptr;
+	}
+
+	*size = paragraphs * PARAGRAPH_SIZE;
+	return D_FP_SEG(ptr);
 }
 
 
