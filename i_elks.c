@@ -639,6 +639,13 @@ void I_Error2(const char *error, ...)
 }
 
 
+int main(int argc, const char * const * argv)
+{
+	D_DoomMain();
+	return 0;
+}
+
+
 void __far* _fmemcpy(void __far* destination, const void __far* source, size_t num)
 {
 	uint8_t __far* s = (uint8_t __far*)source;
@@ -671,11 +678,4 @@ int16_t abs(int16_t v)
 int32_t labs(int32_t v)
 {
 	return v < 0 ? -v : v;
-}
-
-
-int main(int argc, const char * const * argv)
-{
-	D_DoomMain();
-	return 0;
 }
