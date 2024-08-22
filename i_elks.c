@@ -53,7 +53,23 @@ static uint8_t __far* videomemory_statusbar;
 static boolean isGraphicsModeSet = false;
 
 
-static void I_SetScreenMode(uint8_t mode)
+#if defined __WATCOMC__
+static void I_SetScreenMode(uint16_t mode);
+#pragma aux I_SetScreenMode = \
+	"push si",	\
+	"push di",	\
+	"push bp",	\
+	"push es",	\
+	"cli",		\
+	"int 0x10",	\
+	"sti",		\
+	"pop es",	\
+	"pop bp",	\
+	"pop di",	\
+	"pop si"	\
+	parm [ax]
+#else
+static void I_SetScreenMode(uint16_t mode)
 {
    // SI, DI, BP, ES and probably DS are to be saved
    // cli and sti are used to make a proper BIOS call from ELKS
@@ -63,8 +79,7 @@ static void I_SetScreenMode(uint8_t mode)
   "push %%bp;"
   "push %%es;"
   "cli;"
-  "mov %%ah,0;" 
-  "mov %%al,%0;" 
+  "mov %%ax,%0;"
   "int $0x10;"
   "sti;"
   "pop %%es;"
@@ -75,6 +90,7 @@ static void I_SetScreenMode(uint8_t mode)
      : "r" (mode)
      : ); //list of modified registers
 }
+#endif
 
 
 void I_InitGraphics(void)
