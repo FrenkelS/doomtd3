@@ -79,7 +79,6 @@ static void I_SetScreenMode(uint16_t mode)
   "push %%bp;"
   "push %%es;"
   "cli;"
-  "mov %%ax,%0;"
   "int $0x10;"
   "sti;"
   "pop %%es;"
@@ -87,7 +86,7 @@ static void I_SetScreenMode(uint16_t mode)
   "pop %%di;"
   "pop %%si;"
      : /* no outputs */
-     : "r" (mode)
+     : "a" (mode)
      : ); //list of modified registers
 }
 #endif
