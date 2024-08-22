@@ -389,7 +389,7 @@ static uint16_t nearcolormapoffset = 0xffff;
 
 void R_DrawColumn(const draw_column_vars_t *dcvars)
 {
-	const int16_t count = (dcvars->yh - dcvars->yl) + 1;
+	int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	// Zero length, column does not exceed a pixel.
 	if (count <= 0)
@@ -408,48 +408,11 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
 	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
 
-	int16_t l = count >> 4;
-
-	while (l--)
+	while (count--)
 	{
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		*dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-	}
-
-	switch (count & 15)
-	{
-		case 15: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case 14: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case 13: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case 12: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case 11: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case 10: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  9: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  8: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  7: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  6: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  5: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  4: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  3: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  2: *dst = nearcolormap[source[frac>>COLBITS]]; dst += VIEWWINDOWWIDTH; frac += fracstep;
-		case  1: *dst = nearcolormap[source[frac>>COLBITS]];
+		*dst = nearcolormap[source[frac>>COLBITS]];
+		dst += VIEWWINDOWWIDTH;
+		frac += fracstep;
 	}
 }
 
