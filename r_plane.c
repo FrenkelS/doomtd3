@@ -36,22 +36,8 @@ int16_t skyflatnum;
 
 
 static int16_t firstflat;
-static int16_t  animated_flat_basepic;
-static int16_t __far* flattranslation;             // for global animation
+static uint8_t __far* flattranslation;
 
-
-//
-// R_DrawSpan
-// With DOOM style restrictions on view orientation,
-//  the floors and ceilings consist of horizontal slices
-//  or spans with constant z depth.
-// However, rotation around the world z axis is possible,
-//  thus this mapping, while simpler and faster than
-//  perspective correct texture mapping, has to traverse
-//  the texture at an angle in all but a few cases.
-// In consequence, flats are not stored by column (like walls),
-//  and the inner loop has to step in texture space u and v.
-//
 
 byte R_GetPlaneColor(int16_t picnum, int16_t lightlevel)
 {
@@ -66,14 +52,11 @@ byte R_GetPlaneColor(int16_t picnum, int16_t lightlevel)
 
 void R_InitFlats(void)
 {
-	firstflat        = W_GetNumForName("F_START") + 1;
-
+	       firstflat = W_GetNumForName("F_START") + 1;
 	int16_t lastflat = W_GetNumForName("F_END")   - 1;
 	int16_t numflats = lastflat - firstflat + 1;
 
-	// Create translation table for global animation.
-
-	flattranslation = Z_MallocStatic((numflats + 1) * sizeof(*flattranslation));
+	flattranslation = Z_MallocStatic(numflats);
 
 	for (int16_t i = 0; i < numflats; i++)
 	{
