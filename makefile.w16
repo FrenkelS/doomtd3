@@ -37,6 +37,12 @@
 CCOPTSS = -oaxes -oh -ol+ -zp1 -bt=dos -2 -j -zq -s -mm -wx -za99
 CCOPTST = -oaxet -oh -ol+ -zp1 -bt=dos -2 -j -zq -s -mm -wx -za99
 
+!ifdef __LINUX__
+OUTPUT = WC16/$^&.obj
+!else
+OUTPUT = WC16\$^&
+!endif
+
 GLOBOBJS = &
  d_items.obj &
  d_main.obj &
@@ -71,43 +77,43 @@ GLOBOBJS = &
  w_wad.obj &
  z_zone.obj
 
-WC16\DOOMTDWC.EXE : $(GLOBOBJS)
+WC16/DOOMTDWC.EXE : $(GLOBOBJS)
  cd WC16
- wlink @..\wc16doom.lnk
+ wlink @../wc16doom.lnk
  cd..
 
 .obj : WC16
 
 .c.obj :
- wcc $(CCOPTSS) $[* /fo=WC16\$^&
+ wcc $(CCOPTSS) $[* -fo=$(OUTPUT)
 
 
 i_ibm.obj : i_ibm.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 p_map.obj : p_map.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 p_maputl.obj : p_maputl.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 p_mobj.obj : p_mobj.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 p_sight.obj : p_sight.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 r_draw.obj : r_draw.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 r_plane.obj : r_plane.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 tables.obj : tables.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 w_wad.obj : w_wad.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 z_zone.obj : z_zone.c
- wcc $(CCOPTST) $[* /fo=WC16\$^&
+ wcc $(CCOPTST) $[* -fo=$(OUTPUT)
