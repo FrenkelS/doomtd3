@@ -110,7 +110,7 @@ typedef struct
 
   int16_t soundtraversed;    // 0 = untraversed, 1,2 = sndlines-1
 
-} D_sector_t;
+} sector_t;
 
 //
 // The SideDef.
@@ -118,7 +118,7 @@ typedef struct
 
 typedef struct
 {
-    D_sector_t __far* sector;      // Sector the SideDef is facing.
+    sector_t __far* sector;      // Sector the SideDef is facing.
 
     int16_t textureoffset; // add this to the calculated texture column
     int16_t rowoffset;     // add this to the calculated texture top
@@ -186,7 +186,7 @@ typedef struct line_s
 // Sector list node showing all sectors an object appears in.
 //
 // There are two threads that flow through these nodes. The first thread
-// starts at touching_thinglist in a D_sector_t and flows through the m_snext
+// starts at touching_thinglist in a sector_t and flows through the m_snext
 // links to find all mobjs that are entirely or partially in the sector.
 // The second thread starts at touching_sectorlist in an mobj_t and flows
 // through the m_tnext links to find all sectors a thing touches. This is
@@ -199,7 +199,7 @@ typedef struct line_s
 
 typedef struct msecnode_s
 {
-  D_sector_t          __far* m_sector; // a sector containing this object
+  sector_t          __far* m_sector; // a sector containing this object
   struct mobj_s __far* m_thing;  // this object
   struct msecnode_s *m_tprev;  // prev msecnode_t for this thing
   struct msecnode_s *m_tnext;  // next msecnode_t for this thing
@@ -226,7 +226,7 @@ typedef struct
   // (but that would be slower -- killough)
   // backsector is NULL for one sided lines
 
-  D_sector_t *frontsector, *backsector;
+  sector_t *frontsector, *backsector;
 } seg_t;
 */
 
@@ -259,7 +259,7 @@ typedef struct
 
 typedef struct subsector_s
 {
-  D_sector_t __far* sector;
+  sector_t __far* sector;
   uint16_t numlines, firstline;
 } subsector_t;
 

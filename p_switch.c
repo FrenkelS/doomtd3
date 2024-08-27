@@ -247,7 +247,7 @@ static void P_ChangeSwitchTexture(const line_t __far* line, boolean useAgain)
 static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
 {
   player_t* player;
-  D_sector_t __far* sec;
+  sector_t __far* sec;
   vldoor_t __far* door;
 
   //  Check for locks

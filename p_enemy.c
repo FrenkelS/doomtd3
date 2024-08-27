@@ -170,7 +170,7 @@ static boolean P_CheckMissileRange(mobj_t __far* actor)
 
 static boolean P_IsOnLift(const mobj_t __far* actor)
 {
-  const D_sector_t __far* sec = actor->subsector->sector;
+  const sector_t __far* sec = actor->subsector->sector;
 
   // Short-circuit: it's on a lift which is active.
   if (sec->floordata && ((thinker_t __far*) sec->floordata)->function==T_PlatRaise)

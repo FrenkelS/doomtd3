@@ -127,8 +127,8 @@ static boolean P_CrossSubsector(int16_t num)
     const seg_t __far* seg = _g_segs + _g_subsectors[num].firstline;
     int16_t count;
     fixed_t opentop = 0, openbottom = 0;
-    const D_sector_t __far* front = NULL;
-    const D_sector_t __far* back  = NULL;
+    const sector_t __far* front = NULL;
+    const sector_t __far* back  = NULL;
 
     for (count = _g_subsectors[num].numlines; --count >= 0; seg++)
     { // check lines
@@ -261,8 +261,8 @@ static boolean P_CrossBSPNode(int16_t bspnum)
 
 boolean P_CheckSight(mobj_t __far* t1, mobj_t __far* t2)
 {
-  const D_sector_t __far* s1 = t1->subsector->sector;
-  const D_sector_t __far* s2 = t2->subsector->sector;
+  const sector_t __far* s1 = t1->subsector->sector;
+  const sector_t __far* s2 = t2->subsector->sector;
   int16_t pnum = (s1-_g_sectors)*_g_numsectors + (s2-_g_sectors);
 
   // First check for trivial rejection.

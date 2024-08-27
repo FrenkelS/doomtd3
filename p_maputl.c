@@ -255,8 +255,8 @@ void P_LineOpening(const line_t __far* linedef)
     // moved front and back outside P-LineOpening and changed
     // them to these so we can pick up the new friction value
     // in PIT_CheckLine()
-    D_sector_t __far* openfrontsector;
-    D_sector_t __far* openbacksector;
+    sector_t __far* openfrontsector;
+    sector_t __far* openbacksector;
 
     if (linedef->sidenum[1] == NO_INDEX)      // single sided line
     {
@@ -380,7 +380,7 @@ void P_SetThingPosition(mobj_t __far* thing)
       // obsolete ones.
 
       // When a node is deleted, its sector links (the links starting
-      // at D_sector_t->touching_thinglist) are broken. When a node is
+      // at sector_t->touching_thinglist) are broken. When a node is
       // added, new sector links are created.
 
       P_CreateSecNodeList(thing);

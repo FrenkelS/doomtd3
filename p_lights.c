@@ -62,7 +62,7 @@
 typedef struct
 {
   thinker_t thinker;
-  D_sector_t __far* sector;
+  sector_t __far* sector;
   int16_t count;
   int16_t maxlight;
   int16_t minlight;
@@ -101,7 +101,7 @@ static void T_LightFlash (lightflash_t __far* flash)
 typedef struct
 {
   thinker_t thinker;
-  D_sector_t __far* sector;
+  sector_t __far* sector;
   int16_t count;
   int16_t minlight;
   int16_t maxlight;
@@ -139,7 +139,7 @@ static void T_StrobeFlash (strobe_t __far*   flash)
 typedef struct
 {
   thinker_t thinker;
-  D_sector_t __far* sector;
+  sector_t __far* sector;
   int16_t minlight;
   int16_t maxlight;
   int16_t direction;
@@ -179,12 +179,12 @@ static void T_Glow(glow_t __far* g)
 // in a surrounding sector less than that passed. If no smaller light
 // level exists, the light level passed is returned.
 //
-static int16_t P_FindMinSurroundingLight(D_sector_t __far* sector, int16_t max)
+static int16_t P_FindMinSurroundingLight(sector_t __far* sector, int16_t max)
 {
   int16_t         i;
   int16_t         min;
   const line_t __far*     line;
-  D_sector_t __far*   check;
+  sector_t __far*   check;
 
   min = max;
   for (i=0 ; i < sector->linecount ; i++)
@@ -219,7 +219,7 @@ static int16_t P_FindMinSurroundingLight(D_sector_t __far* sector, int16_t max)
 // Passed the sector that spawned the thinker
 // Returns nothing
 //
-void P_SpawnLightFlash (D_sector_t __far* sector)
+void P_SpawnLightFlash (sector_t __far* sector)
 {
   lightflash_t __far* flash;
 
@@ -250,7 +250,7 @@ void P_SpawnLightFlash (D_sector_t __far* sector)
 //
 // Returns nothing
 //
-void P_SpawnStrobeFlash(D_sector_t __far* sector, int16_t fastOrSlow, boolean inSync)
+void P_SpawnStrobeFlash(sector_t __far* sector, int16_t fastOrSlow, boolean inSync)
 {
   strobe_t __far* flash;
 
@@ -285,7 +285,7 @@ void P_SpawnStrobeFlash(D_sector_t __far* sector, int16_t fastOrSlow, boolean in
 // Passed the sector that spawned the thinker
 // Returns nothing
 //
-void P_SpawnGlowingLight(D_sector_t __far* sector)
+void P_SpawnGlowingLight(sector_t __far* sector)
 {
   glow_t __far* g;
 

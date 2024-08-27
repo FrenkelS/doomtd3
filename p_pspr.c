@@ -365,7 +365,7 @@ boolean P_CheckAmmo(player_t *player)
 // sound blocking lines cut off traversal.
 //
 
-static void P_RecursiveSound(D_sector_t __far* sec, int16_t soundblocks, mobj_t __far* soundtarget)
+static void P_RecursiveSound(sector_t __far* sec, int16_t soundblocks, mobj_t __far* soundtarget)
 {
   int16_t i;
 
@@ -379,7 +379,7 @@ static void P_RecursiveSound(D_sector_t __far* sec, int16_t soundblocks, mobj_t 
 
   for (i=0; i<sec->linecount; i++)
     {
-      D_sector_t __far* other;
+      sector_t __far* other;
       const line_t __far* check = sec->lines[i];
 
       if (!(check->flags & ML_TWOSIDED))

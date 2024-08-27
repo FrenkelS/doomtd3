@@ -291,7 +291,7 @@ static void P_DeathThink (player_t* player)
 //
 static void P_PlayerInSpecialSector (player_t* player)
 {
-  D_sector_t __far*   sector;
+  sector_t __far*   sector;
 
   sector = player->mo->subsector->sector;
 

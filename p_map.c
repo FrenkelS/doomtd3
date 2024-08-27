@@ -1030,7 +1030,7 @@ inline static void P_PutSecnode(msecnode_t* node)
 // sectors this object appears in. This is called when creating a list of
 // nodes that will get linked in later.
 
-static void P_AddSecnode(D_sector_t __far* s, mobj_t __far* thing)
+static void P_AddSecnode(sector_t __far* s, mobj_t __far* thing)
   {
   msecnode_t *node;
 
@@ -1096,7 +1096,7 @@ static msecnode_t* P_DelSecnode(msecnode_t *node)
       tn->m_tprev = tp;
 
     // Unlink from the sector thread. This thread begins at
-    // D_sector_t->touching_thinglist.
+    // sector_t->touching_thinglist.
 
     sp = node->m_sprev;
     sn = node->m_snext;

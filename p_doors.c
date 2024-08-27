@@ -67,8 +67,8 @@ static void EV_LightTurnOnPartway(const line_t __far* line, fixed_t level)
   // search all sectors for ones with same tag as activating line
   for (i = -1; (i = P_FindSectorFromLineTag(line,i)) >= 0;)
     {
-      D_sector_t __far* temp;
-      D_sector_t __far* sector = _g_sectors+i;
+      sector_t __far* temp;
+      sector_t __far* sector = _g_sectors+i;
       int16_t j, bright = 0, min = sector->lightlevel;
 
       for (j = 0; j < sector->linecount; j++)
@@ -230,7 +230,7 @@ boolean EV_DoDoor(const line_t __far* line, vldoor_e type)
 {
   int16_t   secnum;
   boolean   rtn;
-  D_sector_t __far* sec;
+  sector_t __far* sec;
   vldoor_t __far* door;
 
   secnum = -1;
