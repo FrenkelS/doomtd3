@@ -92,16 +92,16 @@ static void _ffread(void __far* ptr, uint16_t size, FILE* fp)
 
 	while (size >= BUFFERSIZE)
 	{
-		fread(&buffer, BUFFERSIZE, 1, fp);
-		_fmemcpy(dest, &buffer, BUFFERSIZE);
+		fread(&buffer[0], BUFFERSIZE, 1, fp);
+		_fmemcpy(dest, &buffer[0], BUFFERSIZE);
 		dest += BUFFERSIZE;
 		size -= BUFFERSIZE;
 	}
 
 	if (size > 0)
 	{
-		fread(&buffer, size, 1, fp);
-		_fmemcpy(dest, &buffer, size);
+		fread(&buffer[0], size, 1, fp);
+		_fmemcpy(dest, &buffer[0], size);
 	}
 }
 
