@@ -50,7 +50,7 @@
 #else
 #define I_Error(...) I_Error2(__VA_ARGS__)
 #endif
-void NORETURN_PRE I_Error2(const char *error, ...) NORETURN_POST;
+void _Noreturn I_Error2(const char *error, ...);
 
 
 void I_InitGraphics(void);
