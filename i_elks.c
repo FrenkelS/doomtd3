@@ -68,7 +68,7 @@ static void I_SetScreenMode(uint16_t mode);
 	"pop di",	\
 	"pop si"	\
 	parm [ax]
-#else
+#elif defined __IA16_SYS_ELKS
 static void I_SetScreenMode(uint16_t mode)
 {
    // SI, DI, BP, ES and probably DS are to be saved
@@ -89,6 +89,8 @@ static void I_SetScreenMode(uint16_t mode)
      : "a" (mode)
      : ); //list of modified registers
 }
+#else
+#error unsupported compiler
 #endif
 
 
