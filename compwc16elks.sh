@@ -32,3 +32,5 @@ owcc -c -bnone -mcmodel=m -march=i86 -Os -std=c99 -Wc,-fpi87 -Wc,-zev -Wc,-zls -
 owcc -c -bnone -mcmodel=m -march=i86 -Os -std=c99 -Wc,-fpi87 -Wc,-zev -Wc,-zls -Wc,-x -fno-stack-check -fnostdlib -Wall -Wextra -Wc,-wcd=303 -I/home/frenkel/elks/libc/include -I/home/frenkel/elks/include -I/home/frenkel/elks/elks/include -I/usr/bin/watcom/h -o z_zone.obj   z_zone.c
 
 owcc -bos2 -s -Wl,option -Wl,start=_start -Wl,option -Wl,dosseg -Wl,option -Wl,nodefaultlibs -Wl,option -Wl,stack=0x1000 -Wl,option -Wl,heapsize=0x1000 -Wl,library -Wl,/home/frenkel/elks/libc/libc.lib -o doomtd3.os2 d_items.obj d_main.obj g_game.obj i_elks.obj info.obj m_random.obj p_doors.obj p_enemy.obj p_floor.obj p_inter.obj p_lights.obj p_map.obj p_maputl.obj p_mobj.obj p_plats.obj p_pspr.obj p_scroll.obj p_setup.obj p_sight.obj p_spec.obj p_switch.obj p_tick.obj p_user.obj r_data.obj r_draw.obj r_plane.obj r_things.obj st_stuff.obj tables.obj v_video.obj w_wad.obj z_zone.obj
+
+rm *.obj
