@@ -227,7 +227,7 @@ typedef struct
   // backsector is NULL for one sided lines
 
   D_sector_t *frontsector, *backsector;
-} D_seg_t;
+} seg_t;
 */
 
 //
@@ -246,7 +246,7 @@ typedef struct
 
     uint16_t frontsectornum;
     uint16_t backsectornum;
-} D_seg_t;
+} seg_t;
 
 
 //

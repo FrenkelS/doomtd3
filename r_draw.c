@@ -64,7 +64,7 @@
 
 typedef struct drawseg_s
 {
-  const D_seg_t __far* curline;
+  const seg_t __far* curline;
   int16_t x1, x2;
   fixed_t scale1, scale2, scalestep;
   int16_t silhouette;                       // 0=none, 1=bottom, 2=top, 3=both
@@ -302,7 +302,7 @@ static angle16_t viewangle16;
 
 static byte solidcol[VIEWWINDOWWIDTH];
 
-static const D_seg_t     __far* curline;
+static const seg_t     __far* curline;
 static side_t    __far* sidedef;
 static const line_t    __far* linedef;
 static D_sector_t  __far* frontsector;
@@ -1039,7 +1039,7 @@ static void R_GetColumn(const texture_t __far* texture, int16_t texcolumn, int16
 }
 
 
-static PUREFUNC boolean R_PointOnSegSide(fixed_t x, fixed_t y, const D_seg_t __far* line)
+static PUREFUNC boolean R_PointOnSegSide(fixed_t x, fixed_t y, const seg_t __far* line)
 {
     const fixed_t lx = line->v1.x;
     const fixed_t ly = line->v1.y;
@@ -2325,7 +2325,7 @@ static void R_ClipWallSegment(int16_t first, int16_t last, const boolean solid)
 // and adds any visible pieces to the line list.
 //
 
-static void R_AddLine(const D_seg_t __far* line)
+static void R_AddLine(const seg_t __far* line)
 {
     curline = line;
 
@@ -2405,7 +2405,7 @@ static void R_AddLine(const D_seg_t __far* line)
 static void R_Subsector(int16_t num)
 {
     int16_t         count;
-    const D_seg_t       __far* line;
+    const seg_t       __far* line;
     subsector_t __far* sub;
 
     sub = &_g_subsectors[num];

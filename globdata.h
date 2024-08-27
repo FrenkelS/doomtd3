@@ -90,7 +90,7 @@ extern divline_t _g_trace;
 // Store VERTEXES, LINEDEFS, SIDEDEFS, etc.
 //
 
-extern const D_seg_t    __far* _g_segs;
+extern const seg_t    __far* _g_segs;
 
 extern int16_t      _g_numsectors;
 extern D_sector_t __far* _g_sectors;

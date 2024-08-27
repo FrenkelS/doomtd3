@@ -59,7 +59,7 @@
 // Store VERTEXES, LINEDEFS, SIDEDEFS, etc.
 //
 
-const D_seg_t    __far* _g_segs;
+const seg_t    __far* _g_segs;
 
 int16_t      _g_numsectors;
 D_sector_t __far* _g_sectors;
@@ -136,7 +136,7 @@ enum {
 
 static void P_LoadSegs (int16_t lump)
 {
-    _g_segs = (const D_seg_t __far*)W_GetLumpByNumAutoFree(lump);
+    _g_segs = (const seg_t __far*)W_GetLumpByNumAutoFree(lump);
 }
 
 //
@@ -456,7 +456,7 @@ static void P_GroupLines (void)
     // figgi
     for (i=0 ; i<numsubsectors ; i++)
     {
-        const D_seg_t __far* seg = &_g_segs[_g_subsectors[i].firstline];
+        const seg_t __far* seg = &_g_segs[_g_subsectors[i].firstline];
         _g_subsectors[i].sector = NULL;
         for(j=0; j<_g_subsectors[i].numlines; j++)
         {
