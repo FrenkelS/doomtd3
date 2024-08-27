@@ -7,8 +7,8 @@ option map
 #option stub=wstub
 option static
 option verbose
-libpath %WATCOM%\lib286
-libpath %WATCOM%\lib286\dos
+libpath %WATCOM%/lib286
+libpath %WATCOM%/lib286/dos
 lib noemu87.lib
 format dos
 name DOOMTDWC
