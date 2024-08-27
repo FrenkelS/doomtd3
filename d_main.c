@@ -109,8 +109,7 @@ static void D_Display (void)
 //  D_DoomLoop()
 //
 
-static void NORETURN_PRE D_DoomLoop(void) NORETURN_POST;
-static void D_DoomLoop(void)
+static void _Noreturn D_DoomLoop(void)
 {
     for (;;)
     {
