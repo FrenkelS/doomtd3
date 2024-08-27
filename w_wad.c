@@ -88,20 +88,20 @@ static void __far*__far* lumpcache;
 static void _ffread(void __far* ptr, uint16_t size, FILE* fp)
 {
 	uint8_t __far* dest = ptr;
-	uint8_t* buffer = alloca(BUFFERSIZE);
+	uint8_t buffer[BUFFERSIZE];
 
 	while (size >= BUFFERSIZE)
 	{
-		fread(buffer, BUFFERSIZE, 1, fp);
-		_fmemcpy(dest, buffer, BUFFERSIZE);
+		fread(&buffer, BUFFERSIZE, 1, fp);
+		_fmemcpy(dest, &buffer, BUFFERSIZE);
 		dest += BUFFERSIZE;
 		size -= BUFFERSIZE;
 	}
 
 	if (size > 0)
 	{
-		fread(buffer, size, 1, fp);
-		_fmemcpy(dest, buffer, size);
+		fread(&buffer, size, 1, fp);
+		_fmemcpy(dest, &buffer, size);
 	}
 }
 
