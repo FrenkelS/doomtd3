@@ -147,7 +147,7 @@
 
 
 #if defined __WATCOMC__
-	#define NORETURN_PRE  __declspec(noreturn)
+	#define NORETURN_PRE  /*FIXME __declspec(noreturn) */
 	#define NORETURN_POST
 #else
 	#define NORETURN_PRE
