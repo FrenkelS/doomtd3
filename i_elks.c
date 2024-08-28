@@ -117,6 +117,7 @@ static void I_ShutdownGraphics(void)
 
 void I_SetPalette(int8_t pal)
 {
+	UNUSED(pal);
 }
 
 
@@ -643,6 +644,9 @@ void I_Error2(const char *error, ...)
 
 int main(int argc, const char * const * argv)
 {
+	UNUSED(argc);
+	UNUSED(argv);
+
 	D_DoomMain();
 	return 0;
 }
