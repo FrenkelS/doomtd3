@@ -573,34 +573,69 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t __far* patch)
 }
 
 
-segment_t I_ZoneBase(uint32_t *size)
+static segment_t I_Malloc(uint32_t initialsizetotry, uint32_t *size)
 {
-	uint32_t paragraphs = 550 * 1024L / PARAGRAPH_SIZE;
+	uint32_t paragraphs = initialsizetotry / PARAGRAPH_SIZE;
+
 	uint8_t __far* ptr = fmemalloc(paragraphs * PARAGRAPH_SIZE);
-	while (!ptr)
+	while (paragraphs != 0 && ptr == NULL)
 	{
 		paragraphs--;
 		ptr = fmemalloc(paragraphs * PARAGRAPH_SIZE);
 	}
 
-	// align ptr
-	uint32_t m = (uint32_t) ptr;
-	if ((m & (PARAGRAPH_SIZE - 1)) != 0)
+	if (paragraphs == 0)
 	{
-		paragraphs--;
-		while ((m & (PARAGRAPH_SIZE - 1)) != 0)
-			m = (uint32_t) ++ptr;
+		*size = 0;
+		return 0;
+	}
+	else
+	{
+		*size = paragraphs * PARAGRAPH_SIZE;
+		segment_t segment = D_FP_SEG(ptr);
+		printf("%6ld bytes allocated at 0x%4x\n", *size, segment);
+		return segment;
+	}
+}
+
+
+static uint32_t  blocksize[2];
+static segment_t blocksegment[2];
+
+
+segment_t I_ZoneBase(uint32_t *size)
+{
+	blocksegment[0] = I_Malloc(550 * 1024L,  &blocksize[0]);
+	blocksegment[1] = I_Malloc(blocksize[0], &blocksize[1]);
+
+	if (blocksize[1] != 0)
+	{
+		if (blocksegment[1] < blocksegment[0])
+		{
+			uint32_t tmp = blocksize[0];
+			blocksize[0] = blocksize[1];
+			blocksize[1] = tmp;
+
+			segment_t temp  = blocksegment[0];
+			blocksegment[0] = blocksegment[1];
+			blocksegment[1] = temp;
+		}
+		printf("%6ld bytes allocated for zone\n", blocksize[0] + blocksize[1] - PARAGRAPH_SIZE);
+	}
+	else
+	{
+		printf("%6ld bytes allocated for zone\n", blocksize[0]);
 	}
 
-	*size = paragraphs * PARAGRAPH_SIZE;
-	return D_FP_SEG(ptr);
+	*size = blocksize[0];
+	return blocksegment[0];
 }
 
 
 segment_t I_ZoneAdditional(uint32_t *size)
 {
-	*size = 0;
-	return 0;
+	*size = blocksize[1];
+	return blocksegment[1];
 }
 
 
