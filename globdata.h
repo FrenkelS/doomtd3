@@ -165,7 +165,7 @@ extern uint16_t validcount;         // increment every time a check is made
 //
 // sky mapping
 //
-extern int16_t skyflatnum;
+extern const int16_t skyflatnum;
 
 
 // variables used to look up and range check thing_t sprites patches

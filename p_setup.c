@@ -293,7 +293,6 @@ static void P_LoadLineDefs(int16_t lump)
 	{
 		_g_lines[i].v1              = lines[i].v1;
 		_g_lines[i].v2              = lines[i].v2;
-		_g_lines[i].lineno          = i;
 		_g_lines[i].dx              = lines[i].v2.x - lines[i].v1.x; // for side checking.
 		_g_lines[i].dy              = lines[i].v2.y - lines[i].v1.y; // for side checking.
 		_g_lines[i].sidenum[0]      = lines[i].frontsidenum;
