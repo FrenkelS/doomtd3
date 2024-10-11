@@ -661,7 +661,7 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t *patch)
 
 segment_t I_ZoneBase(uint32_t *size)
 {
-	uint32_t paragraphs = 550 * 1024L / PARAGRAPH_SIZE;
+	uint32_t paragraphs = 480 * 1024L / PARAGRAPH_SIZE;
 	uint8_t *ptr = malloc(paragraphs * PARAGRAPH_SIZE);
 	while (!ptr)
 	{
