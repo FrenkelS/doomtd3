@@ -295,7 +295,7 @@ void P_UpdateSpecials(void);
 
 
 // when needed
-boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line);
+boolean P_UseSpecialLine(mobj_t __far* thing, line_t __far* line);
 
 // p_lights
 
