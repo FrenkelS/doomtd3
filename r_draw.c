@@ -850,7 +850,7 @@ static CONSTFUNC int16_t R_PointToDist(int16_t x, int16_t y)
 #define NUMCOLORMAPS 32
 
 
-const uint8_t __far* R_LoadColorMap(int16_t lightlevel)
+static const uint8_t __far* R_LoadColorMap(int16_t lightlevel)
 {
     if (fixedcolormap)
         return fixedcolormap;
@@ -2387,6 +2387,24 @@ static void R_AddLine(const seg_t __far* line)
         R_ClipWallSegment (x1, x2, linedef->r_flags & RF_CLOSED);
     }
 }
+
+
+#define FLAT_NUKAGE1_COLOR 122
+
+
+const int16_t skyflatnum = -2;
+
+
+static byte R_GetPlaneColor(int16_t picnum, int16_t lightlevel)
+{
+	const uint8_t __far* colormap = R_LoadColorMap(lightlevel);
+
+	if (picnum == -3)
+		picnum = FLAT_NUKAGE1_COLOR;
+
+	return colormap[picnum];
+}
+
 
 //
 // R_Subsector

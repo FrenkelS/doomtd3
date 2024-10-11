@@ -30,7 +30,6 @@ add_application(DOOMTD3
     p_user.c
     r_data.c
     r_draw.c
-    r_plane.c
     r_things.c
     st_stuff.c
     tables.c

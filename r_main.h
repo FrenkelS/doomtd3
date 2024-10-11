@@ -72,7 +72,7 @@ angle_t R_PointToAngle3(fixed_t x, fixed_t y);
 subsector_t __far* R_PointInSubsector(fixed_t x, fixed_t y);
 
 void R_InitColormaps(void);
-const uint8_t __far* R_LoadColorMap(int16_t lightlevel);
+
 
 //
 // REFRESH - the actual rendering functions.
@@ -82,8 +82,6 @@ void R_RenderPlayerView(player_t *player);   // Called by G_Drawer.
 
 void R_DrawColumn (const draw_column_vars_t *dcvars);
 void R_DrawColumnFlat(uint8_t col, const draw_column_vars_t *dcvars);
-
-byte R_GetPlaneColor(int16_t picnum, int16_t lightlevel);
 
 
 #endif
