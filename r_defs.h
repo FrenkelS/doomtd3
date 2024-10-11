@@ -213,27 +213,6 @@ typedef struct msecnode_s
   boolean visited; // killough 4/4/98, 4/7/98: used in search algorithms
 } msecnode_t;
 
-//
-// The LineSeg.
-//
-
-/*
-typedef struct
-{
-  vertex_t *v1, *v2;
-  fixed_t offset;
-  angle_t angle;
-  side_t* sidedef;
-  const line_t* linedef;
-
-  // Sector references.
-  // Could be retrieved from linedef, too
-  // (but that would be slower -- killough)
-  // backsector is NULL for one sided lines
-
-  sector_t *frontsector, *backsector;
-} seg_t;
-*/
 
 //
 // The LineSeg.
@@ -249,9 +228,11 @@ typedef struct
     uint16_t sidenum;
     uint16_t linenum;
 
-    uint16_t frontsectornum;
-    uint16_t backsectornum;
+    uint8_t frontsectornum;
+    uint8_t backsectornum;
 } seg_t;
+
+typedef char assertSegSize[sizeof(seg_t) == 18 ? 1 : -1];
 
 
 //

@@ -517,14 +517,14 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 }
 
 
-void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
+void R_DrawColumnFlat(uint8_t col, const draw_column_vars_t *dcvars)
 {
 	int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	if (count <= 0)
 		return;
 
-	const uint8_t color1 = texture;
+	const uint8_t color1 = col;
 	const uint8_t color2 = (color1 << 4 | color1 >> 4);
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
