@@ -258,7 +258,7 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
     case 26: // Blue Lock
       if ( !player )
         return;
-      if (!player->cards[it_bluecard] && !player->cards[it_blueskull])
+      if (!player->cards[it_bluecard])
       {
           player->message = PD_BLUEK;         // Ty 03/27/98 - externalized
           return;
@@ -269,7 +269,7 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
     case 34:
       if ( !player )
           return;
-      if (!player->cards[it_yellowcard] && !player->cards[it_yellowskull])
+      if (!player->cards[it_yellowcard])
       {
           player->message = PD_YELLOWK;       // Ty 03/27/98 - externalized
           return;
@@ -279,7 +279,7 @@ static void EV_VerticalDoor(const line_t __far* line, mobj_t __far* thing)
     case 28: // Red Lock
       if ( !player )
           return;
-      if (!player->cards[it_redcard] && !player->cards[it_redskull])
+      if (!player->cards[it_redcard])
       {
           player->message = PD_REDK;          // Ty 03/27/98 - externalized
           return;
