@@ -304,7 +304,7 @@ static byte solidcol[VIEWWINDOWWIDTH];
 
 static const seg_t     __far* curline;
 static side_t    __far* sidedef;
-static const line_t    __far* linedef;
+static line_t    __far* linedef;
 static sector_t  __far* frontsector;
 static sector_t  __far* backsector;
 static drawseg_t *ds_p;
@@ -820,22 +820,22 @@ static angle16_t R_PointToAngle16(int16_t x, int16_t y)
 #define SLOPEBITS    11
 #define DBITS      (FRACBITS-SLOPEBITS)
 
-static CONSTFUNC int16_t R_PointToDist(fixed_t x, fixed_t y)
+static CONSTFUNC int16_t R_PointToDist(int16_t x, int16_t y)
 {
-    if (viewx == x && viewy == y)
+    if (viewx == ((fixed_t)x << FRACBITS) && viewy == ((fixed_t)y << FRACBITS))
         return 0;
 
-    fixed_t dx = D_abs(x - viewx);
-    fixed_t dy = D_abs(y - viewy);
+    int16_t dx = abs(x - (viewx >> FRACBITS));
+    int16_t dy = abs(y - (viewy >> FRACBITS));
 
     if (dy > dx)
     {
-        fixed_t t = dx;
+        int16_t t = dx;
         dx = dy;
         dy = t;
     }
 
-    return dx / finecosineapprox((FixedApproxDiv(dy,dx) >> DBITS) / 2);
+    return ((fixed_t)dx << FRACBITS) / finecosineapprox(((((fixed_t)dy << FRACBITS) / dx) >> DBITS) / 2);
 }
 
 
@@ -850,7 +850,7 @@ static CONSTFUNC int16_t R_PointToDist(fixed_t x, fixed_t y)
 #define NUMCOLORMAPS 32
 
 
-const uint8_t __far* R_LoadColorMap(int16_t lightlevel)
+static const uint8_t __far* R_LoadColorMap(int16_t lightlevel)
 {
     if (fixedcolormap)
         return fixedcolormap;
@@ -1041,25 +1041,25 @@ static void R_GetColumn(const texture_t __far* texture, int16_t texcolumn, int16
 
 static PUREFUNC boolean R_PointOnSegSide(fixed_t x, fixed_t y, const seg_t __far* line)
 {
-    const fixed_t lx = line->v1.x;
-    const fixed_t ly = line->v1.y;
-    const fixed_t ldx = line->v2.x - lx;
-    const fixed_t ldy = line->v2.y - ly;
+    const int16_t lx = line->v1.x;
+    const int16_t ly = line->v1.y;
+    const int16_t ldx = line->v2.x - lx;
+    const int16_t ldy = line->v2.y - ly;
 
     if (!ldx)
-        return x <= lx ? ldy > 0 : ldy < 0;
+        return x <= (fixed_t)lx << FRACBITS ? ldy > 0 : ldy < 0;
 
     if (!ldy)
-        return y <= ly ? ldx < 0 : ldx > 0;
+        return y <= (fixed_t)ly << FRACBITS ? ldx < 0 : ldx > 0;
 
-    x -= lx;
-    y -= ly;
+    x -= (fixed_t)lx << FRACBITS;
+    y -= (fixed_t)ly << FRACBITS;
 
     // Try to quickly decide by looking at sign bits.
-    if ((ldy ^ ldx ^ x ^ y) < 0)
-        return (ldy ^ x) < 0;          // (left is negative)
+    if ((ldy ^ ldx ^ (x >> FRACBITS) ^ (y >> FRACBITS)) < 0)
+        return (ldy ^ (x >> FRACBITS)) < 0;          // (left is negative)
 
-    return FixedMul3216(y, ldx>>FRACBITS) >= FixedMul3216(x, ldy>>FRACBITS);
+    return FixedMul3216(y, ldx) >= FixedMul3216(x, ldy);
 }
 
 
@@ -1952,16 +1952,14 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
     }
 
 
-    linedata_t __far* linedata = &_g_linedata[curline->linenum];
-
-    // mark the segment as visible for auto map
-    linedata->r_flags |= ML_MAPPED;
-
     sidedef = &_g_sides[curline->sidenum];
     linedef = &_g_lines[curline->linenum];
 
+    // mark the segment as visible for auto map
+    linedef->r_flags |= ML_MAPPED;
+
     // calculate rw_distance for scale calculation
-    rw_normalangle = (curline->angle >> FRACBITS) + ANG90_16;
+    rw_normalangle = curline->angle;
 
     angle16_t offsetangle = rw_normalangle - rw_angle1;
 
@@ -2037,7 +2035,7 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
         ds_p->sprtopclip = ds_p->sprbottomclip = NULL;
         ds_p->silhouette = SIL_NONE;
 
-        if(linedata->r_flags & RF_CLOSED)
+        if(linedef->r_flags & RF_CLOSED)
         { /* cph - closed 2S line e.g. door */
             // cph - killough's (outdated) comment follows - this deals with both
             // "automap fixes", his and mine
@@ -2127,8 +2125,8 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
     if (segtextured)
     {
         fixed_t rw_offset32 = hyp * -finesineapprox(offsetangle >> ANGLETOFINESHIFT_16);
-        rw_offset32 += (((fixed_t)sidedef->textureoffset) << FRACBITS) + curline->offset;
         rw_offset = rw_offset32 >> FRACBITS;
+        rw_offset += sidedef->textureoffset + curline->offset;
 
         rw_centerangle = ANG90_16 + viewangle16 - rw_normalangle;
 
@@ -2228,11 +2226,9 @@ static void R_StoreWallRange(const int16_t start, const int16_t stop)
 
 static void R_RecalcLineFlags(void)
 {
-    linedata_t __far* linedata = &_g_linedata[linedef->lineno];
-
     const side_t __far* side = &_g_sides[curline->sidenum];
 
-    linedata->r_validcount = _g_gametic;
+    linedef->r_validcount = _g_gametic;
 
     /* First decide if the line is closed, normal, or invisible */
     if (!(linedef->flags & ML_TWOSIDED)
@@ -2254,7 +2250,7 @@ static void R_RecalcLineFlags(void)
                     frontsector->ceilingpic!= skyflatnum)
                 )
             )
-        linedata->r_flags = (RF_CLOSED | (linedata->r_flags & ML_MAPPED));
+        linedef->r_flags = (RF_CLOSED | (linedef->r_flags & ML_MAPPED));
     else
     {
         // Reject empty lines used for triggers
@@ -2270,9 +2266,9 @@ static void R_RecalcLineFlags(void)
                 || backsector->floorpic != frontsector->floorpic
                 || backsector->lightlevel != frontsector->lightlevel)
         {
-            linedata->r_flags = (linedata->r_flags & ML_MAPPED); return;
+            linedef->r_flags = (linedef->r_flags & ML_MAPPED);
         } else
-            linedata->r_flags = (RF_IGNORE | (linedata->r_flags & ML_MAPPED));
+            linedef->r_flags = (RF_IGNORE | (linedef->r_flags & ML_MAPPED));
     }
 }
 
@@ -2329,8 +2325,8 @@ static void R_AddLine(const seg_t __far* line)
 {
     curline = line;
 
-    angle16_t angle1 = R_PointToAngle(line->v1.x, line->v1.y);
-    angle16_t angle2 = R_PointToAngle(line->v2.x, line->v2.y);
+    angle16_t angle1 = R_PointToAngle16(line->v1.x, line->v1.y);
+    angle16_t angle2 = R_PointToAngle16(line->v2.x, line->v2.y);
 
     // Clip to view edges.
     angle16_t span = angle1 - angle2;
@@ -2378,20 +2374,37 @@ static void R_AddLine(const seg_t __far* line)
     if (x1 >= x2)       // killough 1/31/98 -- change == to >= for robustness
         return;
 
-    backsector = line->backsectornum != NO_INDEX ? &_g_sectors[line->backsectornum] : NULL;
+    backsector = line->backsectornum != NO_INDEX8 ? &_g_sectors[line->backsectornum] : NULL;
 
     /* cph - roll up linedef properties in flags */
     linedef = &_g_lines[curline->linenum];
-    linedata_t __far* linedata = &_g_linedata[linedef->lineno];
 
-    if (linedata->r_validcount != (uint16_t)_g_gametic)
+    if (linedef->r_validcount != (uint16_t)_g_gametic)
         R_RecalcLineFlags();
 
-    if (!(linedata->r_flags & RF_IGNORE))
+    if (!(linedef->r_flags & RF_IGNORE))
     {
-        R_ClipWallSegment (x1, x2, linedata->r_flags & RF_CLOSED);
+        R_ClipWallSegment (x1, x2, linedef->r_flags & RF_CLOSED);
     }
 }
+
+
+#define FLAT_NUKAGE1_COLOR 122
+
+
+const int16_t skyflatnum = -2;
+
+
+static byte R_GetPlaneColor(int16_t picnum, int16_t lightlevel)
+{
+	const uint8_t __far* colormap = R_LoadColorMap(lightlevel);
+
+	if (picnum == -3)
+		picnum = FLAT_NUKAGE1_COLOR;
+
+	return colormap[picnum];
+}
+
 
 //
 // R_Subsector

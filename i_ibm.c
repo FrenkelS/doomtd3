@@ -501,14 +501,14 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 }
 
 
-void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
+void R_DrawColumnFlat(uint8_t col, const draw_column_vars_t *dcvars)
 {
 	int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	if (count <= 0)
 		return;
 
-	const uint8_t color1 = texture;
+	const uint8_t color1 = col;
 	const uint8_t color2 = (color1 << 4 | color1 >> 4);
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
@@ -645,7 +645,7 @@ static unsigned int _dos_allocmem(unsigned int __size, unsigned int *__seg)
 
 	if (__size == 0xffff)
 	{
-		int32_t paragraphs = 550 * 1024L / PARAGRAPH_SIZE;
+		int32_t paragraphs = 480 * 1024L / PARAGRAPH_SIZE;
 		ptr = malloc(paragraphs * PARAGRAPH_SIZE);
 		while (!ptr)
 		{
