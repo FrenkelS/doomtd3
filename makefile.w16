@@ -69,7 +69,6 @@ GLOBOBJS = &
  p_user.obj &
  r_data.obj &
  r_draw.obj &
- r_plane.obj &
  r_things.obj &
  st_stuff.obj &
  tables.obj &
@@ -104,9 +103,6 @@ p_sight.obj : p_sight.c
  wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 r_draw.obj : r_draw.c
- wcc $(CCOPTST) $[* -fo=$(OUTPUT)
-
-r_plane.obj : r_plane.c
  wcc $(CCOPTST) $[* -fo=$(OUTPUT)
 
 tables.obj : tables.c

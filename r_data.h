@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023 by
+ *  Copyright 2023, 2024 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -75,14 +75,6 @@ typedef struct
 
 // I/O, setting up the stuff.
 void R_Init(void);
-void R_InitFlats(void);
-void R_InitSky(void);
-
-
-// Retrieval.
-// Floor/ceiling opaque texture tiles,
-// lookup by name. For animation?
-int16_t R_FlatNumForName (const char* name);   // killough -- const added
 
 
 // R_*TextureNumForName returns the texture number for the texture name, or NO_TEXTURE if 

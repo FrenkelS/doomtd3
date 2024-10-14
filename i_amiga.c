@@ -136,9 +136,9 @@ static uint16_t __chip coplist[] = {
 static const int16_t colors[14] =
 {
 	0x000,													// normal
-	0x800, 0x900, 0xa00, 0xb00, 0xc00, 0xd00, 0xe00, 0xf00,	// red
-	0x440, 0x550, 0x660, 0x770,								// yellow
-	0x070													// green
+	0x100, 0x300, 0x500, 0x700, 0x800, 0xa00, 0xc00, 0xe00,	// red
+	0x110, 0x321, 0x541, 0x652,								// yellow
+	0x020													// green
 };
 
 
@@ -517,14 +517,14 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 }
 
 
-void R_DrawColumnFlat(int16_t texture, const draw_column_vars_t *dcvars)
+void R_DrawColumnFlat(uint8_t col, const draw_column_vars_t *dcvars)
 {
 	int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	if (count <= 0)
 		return;
 
-	const uint8_t color1 = texture;
+	const uint8_t color1 = col;
 	const uint8_t color2 = (color1 << 4 | color1 >> 4);
 	const uint8_t colort = color1 + color2;
 	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
@@ -661,7 +661,7 @@ void V_DrawPatchNotScaled(int16_t x, int16_t y, const patch_t *patch)
 
 segment_t I_ZoneBase(uint32_t *size)
 {
-	uint32_t paragraphs = 550 * 1024L / PARAGRAPH_SIZE;
+	uint32_t paragraphs = 480 * 1024L / PARAGRAPH_SIZE;
 	uint8_t *ptr = malloc(paragraphs * PARAGRAPH_SIZE);
 	while (!ptr)
 	{

@@ -216,21 +216,6 @@ typedef struct
 } vldoor_t;
 
 
-// p_floor
-
-typedef struct
-{
-  thinker_t thinker;
-  floor_e type;
-  sector_t __far* sector;
-  int16_t direction;
-  int16_t texture;
-  fixed_t floordestheight;
-  fixed_t speed;
-
-} floormove_t;
-
-
 ////////////////////////////////////////////////////////////////
 //
 // Linedef and sector special utility function prototypes
@@ -310,7 +295,7 @@ void P_UpdateSpecials(void);
 
 
 // when needed
-boolean P_UseSpecialLine(mobj_t __far* thing, const line_t __far* line);
+boolean P_UseSpecialLine(mobj_t __far* thing, line_t __far* line);
 
 // p_lights
 
