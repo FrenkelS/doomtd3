@@ -25,7 +25,6 @@ wcc $CCOPTSS p_tick.c   -fo=p_tick.obj
 wcc $CCOPTSS p_user.c   -fo=p_user.obj
 wcc $CCOPTSS r_data.c   -fo=r_data.obj
 wcc $CCOPTSS r_draw.c   -fo=r_draw.obj
-wcc $CCOPTSS r_plane.c  -fo=r_plane.obj
 wcc $CCOPTSS r_things.c -fo=r_things.obj
 wcc $CCOPTSS st_stuff.c -fo=st_stuff.obj
 wcc $CCOPTSS tables.c   -fo=tables.obj
@@ -33,7 +32,7 @@ wcc $CCOPTSS v_video.c  -fo=v_video.obj
 wcc $CCOPTSS w_wad.c    -fo=w_wad.obj
 wcc $CCOPTSS z_zone.c   -fo=z_zone.obj
 
-owcc -bos2 -s -Wl,option -Wl,start=_start -Wl,option -Wl,dosseg -Wl,option -Wl,nodefaultlibs -Wl,option -Wl,stack=0x1000 -Wl,option -Wl,heapsize=0x1000 -Wl,library -Wl,$LIBC -o doomtd3.os2 d_items.obj d_main.obj g_game.obj i_elks.obj info.obj m_random.obj p_doors.obj p_enemy.obj p_floor.obj p_inter.obj p_lights.obj p_map.obj p_maputl.obj p_mobj.obj p_plats.obj p_pspr.obj p_scroll.obj p_setup.obj p_sight.obj p_spec.obj p_switch.obj p_tick.obj p_user.obj r_data.obj r_draw.obj r_plane.obj r_things.obj st_stuff.obj tables.obj v_video.obj w_wad.obj z_zone.obj
+owcc -bos2 -s -Wl,option -Wl,start=_start -Wl,option -Wl,dosseg -Wl,option -Wl,nodefaultlibs -Wl,option -Wl,stack=0x1000 -Wl,option -Wl,heapsize=0x1000 -Wl,library -Wl,$LIBC -o doomtd3.os2 d_items.obj d_main.obj g_game.obj i_elks.obj info.obj m_random.obj p_doors.obj p_enemy.obj p_floor.obj p_inter.obj p_lights.obj p_map.obj p_maputl.obj p_mobj.obj p_plats.obj p_pspr.obj p_scroll.obj p_setup.obj p_sight.obj p_spec.obj p_switch.obj p_tick.obj p_user.obj r_data.obj r_draw.obj r_things.obj st_stuff.obj tables.obj v_video.obj w_wad.obj z_zone.obj
 
 rm *.obj
 rm *.err
