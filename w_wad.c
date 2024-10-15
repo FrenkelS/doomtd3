@@ -116,16 +116,22 @@ typedef struct
 void W_Init(void)
 {
 #if BYTE_ORDER == LITTLE_ENDIAN
-	fileWAD = fopen("DOOMTD3L.WAD", "rb");
-	if (fileWAD == NULL)
-		I_Error("Can't open DOOMTD3L.WAD.");
+#define WAD_UPPERCASE "DOOMTD3L.WAD"
+#define WAD_LOWERCASE "doomtd3l.wad"
 #elif BYTE_ORDER == BIG_ENDIAN
-	fileWAD = fopen("DOOMTD3B.WAD", "rb");
-	if (fileWAD == NULL)
-		I_Error("Can't open DOOMTD3B.WAD.");
+#define WAD_UPPERCASE "DOOMTD3B.WAD"
+#define WAD_LOWERCASE "doomtd3b.wad"
 #else
 #error unknown byte order
 #endif
+
+	fileWAD = fopen(WAD_UPPERCASE, "rb");
+	if (fileWAD == NULL)
+	{
+		fileWAD = fopen(WAD_LOWERCASE, "rb");
+		if (fileWAD == NULL)
+			I_Error("Can't open " WAD_UPPERCASE);
+	}
 
 	wadinfo_t header;
 	fseek(fileWAD, 0, SEEK_SET);
