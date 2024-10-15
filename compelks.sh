@@ -1,4 +1,4 @@
-CCOPTSS="-os -bt=none -0 -zq -s -mm -wx -zastd=c99 -zls"
+CCOPTSS="-os -bt=none -0 -zq -s -mm -wx -zastd=c99 -zls -Delks"
 
 wcc $CCOPTSS d_items.c  -fo=d_items.obj
 wcc $CCOPTSS d_main.c   -fo=d_main.obj
