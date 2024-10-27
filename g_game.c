@@ -87,7 +87,6 @@ static int16_t      _s_basetic;
 
 static boolean gamekeydown[NUMKEYS];
 
-boolean         _g_playeringame;
 boolean         _g_demoplayback;
 
 
@@ -226,7 +225,7 @@ void G_BuildTiccmd(void)
 
 static void G_DoLoadLevel (void)
 {
-    if (_g_playeringame && _g_player.playerstate == PST_DEAD)
+    if (_g_player.playerstate == PST_DEAD)
         _g_player.playerstate = PST_REBORN;
 
     P_SetupLevel (_s_gamemap);
@@ -258,13 +257,10 @@ void G_Ticker (void)
     }
 
 
-    if (_g_playeringame)
-    {
-        memcpy(&_g_player.cmd, &netcmd, sizeof(ticcmd_t));
+    memcpy(&_g_player.cmd, &netcmd, sizeof(ticcmd_t));
    
-        if (_g_demoplayback)
-            G_ReadDemoTiccmd ();
-    }
+    if (_g_demoplayback)
+        G_ReadDemoTiccmd ();
 
     // do main actions
     P_Ticker ();
@@ -441,7 +437,7 @@ static const byte __far* G_ReadDemoHeader(const byte __far* demo_p)
     //e6y: check for overrun
     CheckForOverrun(header_p, demo_p, MAXPLAYERS);
 
-    _g_playeringame = *demo_p++;
+    demo_p++;
     demo_p += MIN_MAXPLAYERS - MAXPLAYERS;
 
 

@@ -486,27 +486,22 @@ static boolean P_LookForPlayers(mobj_t __far* actor, boolean allaround)
 {
     player_t *player;
 
-    if(_g_playeringame)
-    {
-        player = &_g_player;
+    player = &_g_player;
 
-        if (player->health <= 0)
-            return false;               // dead
+    if (player->health <= 0)
+        return false;               // dead
 
-        if (!P_IsVisible(actor, player->mo, allaround))
-            return false;
+    if (!P_IsVisible(actor, player->mo, allaround))
+        return false;
 
-        actor->target = player->mo;
+    actor->target = player->mo;
 
-        /* killough 9/9/98: give monsters a threshold towards getting players
-       * (we don't want it to be too easy for a player with dogs :)
-       */
-        actor->threshold = 60;
+    /* killough 9/9/98: give monsters a threshold towards getting players
+     * (we don't want it to be too easy for a player with dogs :)
+     */
+    actor->threshold = 60;
 
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
 //
