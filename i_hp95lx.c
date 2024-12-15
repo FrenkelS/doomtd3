@@ -149,7 +149,7 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 	dest = &_s_viewwindow[(dcvars->yl * VIEWWINDOWWIDTH) + dcvars->x];
 
 	const uint16_t fracstep = (dcvars->iscale >> COLEXTRABITS);
-	uint16_t frac = (dcvars->texturemid + (dcvars->yl - CENTERY) * dcvars->iscale) >> COLEXTRABITS;
+	uint16_t frac = (dcvars->texturemid >> COLEXTRABITS) + (dcvars->yl - CENTERY) * fracstep;
 
 	R_DrawColumn2(fracstep, frac, count);
 }
