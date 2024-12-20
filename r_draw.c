@@ -77,7 +77,7 @@ typedef struct drawseg_s
   int16_t *sprtopclip, *sprbottomclip;
 } drawseg_t;
 
-#define MAXDRAWSEGS   192
+#define MAXDRAWSEGS   64
 
 static drawseg_t _s_drawsegs[MAXDRAWSEGS];
 
