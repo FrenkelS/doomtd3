@@ -638,52 +638,43 @@ void R_DrawColumnFlat(uint8_t color, const draw_column_vars_t *dcvars)
 }
 
 
-#define FUZZOFF (PLANEWIDTH)
+#define FUZZCOLOR1 0x00
+#define FUZZCOLOR2 0x02
+#define FUZZCOLOR3 0x20
+#define FUZZCOLOR4 0x22
 #define FUZZTABLE 50
 
-static const int8_t fuzzoffset[FUZZTABLE] =
+static const int8_t fuzzcolors[FUZZTABLE] =
 {
-	FUZZOFF,-FUZZOFF,FUZZOFF,-FUZZOFF,FUZZOFF,FUZZOFF,-FUZZOFF,
-	FUZZOFF,FUZZOFF,-FUZZOFF,FUZZOFF,FUZZOFF,FUZZOFF,-FUZZOFF,
-	FUZZOFF,FUZZOFF,FUZZOFF,-FUZZOFF,-FUZZOFF,-FUZZOFF,-FUZZOFF,
-	FUZZOFF,-FUZZOFF,-FUZZOFF,FUZZOFF,FUZZOFF,FUZZOFF,FUZZOFF,-FUZZOFF,
-	FUZZOFF,-FUZZOFF,FUZZOFF,FUZZOFF,-FUZZOFF,-FUZZOFF,FUZZOFF,
-	FUZZOFF,-FUZZOFF,-FUZZOFF,-FUZZOFF,-FUZZOFF,FUZZOFF,FUZZOFF,
-	FUZZOFF,FUZZOFF,-FUZZOFF,FUZZOFF,FUZZOFF,-FUZZOFF,FUZZOFF
+	FUZZCOLOR1,FUZZCOLOR2,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR2,
+	FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR1,FUZZCOLOR2,
+	FUZZCOLOR3,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR4,FUZZCOLOR2,
+	FUZZCOLOR1,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR3,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR1,FUZZCOLOR4,
+	FUZZCOLOR3,FUZZCOLOR2,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR1,
+	FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR1,FUZZCOLOR3,
+	FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR2,FUZZCOLOR1
 };
 
 
 void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 {
-	int16_t dc_yl = dcvars->yl;
-	int16_t dc_yh = dcvars->yh;
-
-	// Adjust borders. Low...
-	if (dc_yl <= 0)
-		dc_yl = 1;
-
-	// .. and high.
-	if (dc_yh >= VIEWWINDOWHEIGHT - 1)
-		dc_yh = VIEWWINDOWHEIGHT - 2;
-
-	int16_t count = (dc_yh - dc_yl) + 1;
+	int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	// Zero length, column does not exceed a pixel.
 	if (count <= 0)
 		return;
 
-	const uint8_t *nearcolormap = &fullcolormap[6 * 256];
-
-	uint8_t *dest = _s_viewwindow + (dc_yl * PLANEWIDTH * DH) + dcvars->x;
+	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH * DH) + dcvars->x;
 
 	static int16_t fuzzpos = 0;
 
 	do
 	{
 #if defined VERTICAL_RESOLUTION_DOUBLED
-		*dest = *(dest + PLANEWIDTH) = nearcolormap[dest[fuzzoffset[fuzzpos] * DH]];
+		dest[PLANEWIDTH * 0] =
+		dest[PLANEWIDTH * 1] = fuzzcolors[fuzzpos];
 #else
-		*dest = nearcolormap[dest[fuzzoffset[fuzzpos] * DH]];
+		dest[PLANEWIDTH * 0] = fuzzcolors[fuzzpos];
 #endif
 		dest += PLANEWIDTH * DH;
 
