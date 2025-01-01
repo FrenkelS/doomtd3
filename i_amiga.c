@@ -517,30 +517,95 @@ void R_DrawColumn(const draw_column_vars_t *dcvars)
 }
 
 
-void R_DrawColumnFlat(uint8_t col, const draw_column_vars_t *dcvars)
+static uint8_t swapNibbles(uint8_t color)
+{
+	return (color << 4) | (color >> 4);
+}
+
+
+void R_DrawColumnFlat(uint8_t color, const draw_column_vars_t *dcvars)
 {
 	int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
 	if (count <= 0)
 		return;
 
-	const uint8_t color1 = col;
-	const uint8_t color2 = (color1 << 4 | color1 >> 4);
-	const uint8_t colort = color1 + color2;
-	      uint8_t color  = (dcvars->yl & 1) ? color1 : color2;
-
 	uint8_t *dest = _s_viewwindow + (dcvars->yl * PLANEWIDTH * DH) + dcvars->x;
 
-	while (count--)
+	uint8_t color0;
+	uint8_t color1;
+
+	if (dcvars->yl & 1)
 	{
-#if defined VERTICAL_RESOLUTION_DOUBLED
-		*dest = *(dest + PLANEWIDTH) = color;
-#else
-		*dest = color;
-#endif
-		dest += PLANEWIDTH * DH;
-		color = colort - color;
+		color0 = swapNibbles(color);
+		color1 = color;
 	}
+	else
+	{
+		color0 = color;
+		color1 = swapNibbles(color);
+	}
+
+#if defined VERTICAL_RESOLUTION_DOUBLED
+	for (int16_t i = 0; i < count / 2; i++)
+	{
+		dest[PLANEWIDTH * 0] = color0;
+		dest[PLANEWIDTH * 1] = color0;
+		dest[PLANEWIDTH * 2] = color1;
+		dest[PLANEWIDTH * 3] = color1;
+		dest += PLANEWIDTH * 4;
+	}
+
+	if (count & 1)
+	{
+		dest[PLANEWIDTH * 0] = color0;
+		dest[PLANEWIDTH * 1] = color0;
+	}
+#else
+	int16_t l = count >> 4;
+
+	while (l--)
+	{
+		*dest = color0; dest += PLANEWIDTH;
+		*dest = color1; dest += PLANEWIDTH;
+		*dest = color0; dest += PLANEWIDTH;
+		*dest = color1; dest += PLANEWIDTH;
+
+		*dest = color0; dest += PLANEWIDTH;
+		*dest = color1; dest += PLANEWIDTH;
+		*dest = color0; dest += PLANEWIDTH;
+		*dest = color1; dest += PLANEWIDTH;
+
+		*dest = color0; dest += PLANEWIDTH;
+		*dest = color1; dest += PLANEWIDTH;
+		*dest = color0; dest += PLANEWIDTH;
+		*dest = color1; dest += PLANEWIDTH;
+
+		*dest = color0; dest += PLANEWIDTH;
+		*dest = color1; dest += PLANEWIDTH;
+		*dest = color0; dest += PLANEWIDTH;
+		*dest = color1; dest += PLANEWIDTH;
+	}
+
+	switch (count & 15)
+	{
+		case 15: dest[PLANEWIDTH * 14] = color0;
+		case 14: dest[PLANEWIDTH * 13] = color1;
+		case 13: dest[PLANEWIDTH * 12] = color0;
+		case 12: dest[PLANEWIDTH * 11] = color1;
+		case 11: dest[PLANEWIDTH * 10] = color0;
+		case 10: dest[PLANEWIDTH *  9] = color1;
+		case  9: dest[PLANEWIDTH *  8] = color0;
+		case  8: dest[PLANEWIDTH *  7] = color1;
+		case  7: dest[PLANEWIDTH *  6] = color0;
+		case  6: dest[PLANEWIDTH *  5] = color1;
+		case  5: dest[PLANEWIDTH *  4] = color0;
+		case  4: dest[PLANEWIDTH *  3] = color1;
+		case  3: dest[PLANEWIDTH *  2] = color0;
+		case  2: dest[PLANEWIDTH *  1] = color1;
+		case  1: dest[PLANEWIDTH *  0] = color0;
+	}
+#endif
 }
 
 
