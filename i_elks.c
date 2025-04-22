@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------
  *
  *
- *  Copyright (C) 2024 Frenkel Smeijers
+ *  Copyright (C) 2024-2025 Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -696,23 +696,6 @@ void __far* _fmemcpy(void __far* destination, const void __far* source, size_t n
 		*d++ = *s++;
 
 	return NULL;
-}
-
-
-void __far* _fmemset(void __far* str, int c, size_t n)
-{
-	uint8_t __far* d = (uint8_t __far*)str;
-
-	for (size_t i = 0; i < n; i++)
-		*d++ = c;
-
-	return NULL;
-}
-
-
-int16_t abs(int16_t v)
-{
-	return v < 0 ? -v : v;
 }
 
 

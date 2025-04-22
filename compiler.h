@@ -1,6 +1,6 @@
 //
 //
-// Copyright (C) 2023-2024 Frenkel Smeijers
+// Copyright (C) 2023-2025 Frenkel Smeijers
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -37,8 +37,7 @@ typedef uint16_t segment_t;
 #if defined elks
 #include <stddef.h>
 void __far* _fmemcpy(void __far* destination, const void __far* source, size_t num);
-void __far* _fmemset(void __far* str, int c, size_t n);
-int16_t abs(int16_t v);
+#define _fmemset fmemset
 int32_t labs(int32_t v);
 #endif
 
