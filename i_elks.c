@@ -687,18 +687,6 @@ int main(int argc, const char * const * argv)
 }
 
 
-void __far* _fmemcpy(void __far* destination, const void __far* source, size_t num)
-{
-	uint8_t __far* s = (uint8_t __far*)source;
-	uint8_t __far* d = (uint8_t __far*)destination;
-
-	for (size_t i = 0; i < num; i++)
-		*d++ = *s++;
-
-	return NULL;
-}
-
-
 int32_t labs(int32_t v)
 {
 	return v < 0 ? -v : v;

@@ -36,7 +36,7 @@ typedef uint16_t segment_t;
 
 #if defined elks
 #include <stddef.h>
-void __far* _fmemcpy(void __far* destination, const void __far* source, size_t num);
+#define _fmemcpy fmemcpy
 #define _fmemset fmemset
 int32_t labs(int32_t v);
 #endif
