@@ -44,8 +44,6 @@
 static fixed_t dropoff_deltax, dropoff_deltay, floorz;
 
 
-static const fixed_t distfriend = 128L << FRACBITS;
-
 typedef enum {
   DI_EAST,
   DI_NORTHEAST,
@@ -76,30 +74,13 @@ static boolean P_CheckMeleeRange(mobj_t __far* actor)
 {
   mobj_t __far* pl = actor->target;
 
-  return  // killough 7/18/98: friendly monsters don't attack other friends
-    pl && !(actor->flags & pl->flags & MF_FRIEND) &&
+  return
+    pl &&
     (P_AproxDistance(pl->x-actor->x, pl->y-actor->y) <
      MELEERANGE - 20*FRACUNIT + mobjinfo[pl->type].radius) &&
     P_CheckSight(actor, actor->target);
 }
 
-//
-// P_HitFriend()
-//
-// killough 12/98
-// This function tries to prevent shooting at friends
-
-static boolean P_HitFriend(mobj_t __far* actor)
-{
-  return actor->flags & MF_FRIEND && actor->target &&
-    (P_AimLineAttack(actor,
-         R_PointToAngle2(actor->x, actor->y,
-             actor->target->x, actor->target->y),
-         P_AproxDistance(actor->x-actor->target->x,
-             actor->y-actor->target->y)),
-     _g_linetarget) && _g_linetarget != actor->target &&
-    !((_g_linetarget->flags ^ actor->flags) & MF_FRIEND);
-}
 
 //
 // P_CheckMissileRange
@@ -115,23 +96,8 @@ static boolean P_CheckMissileRange(mobj_t __far* actor)
   {      // the target just hit the enemy, so fight back!
       actor->flags &= ~MF_JUSTHIT;
 
-      /* killough 7/18/98: no friendly fire at corpses
-       * killough 11/98: prevent too much infighting among friends
-       * cph - yikes, talk about fitting everything on one line... */
-
-      return
-              !(actor->flags & MF_FRIEND) ||
-              (actor->target->health > 0 &&
-               (!(actor->target->flags & MF_FRIEND) ||
-                (P_MobjIsPlayer(actor->target) ? true :
-                     !(actor->target->flags & MF_JUSTHIT) && P_Random() >128)));
+      return true;
   }
-
-  /* killough 7/18/98: friendly monsters don't attack other friendly
-   * monsters or players (except when attacked, and then only once)
-   */
-  if (actor->flags & actor->target->flags & MF_FRIEND)
-    return false;
 
   if (actor->reactiontime)
     return false;       // do not attack yet
@@ -149,9 +115,6 @@ static boolean P_CheckMissileRange(mobj_t __far* actor)
     dist = 200;
 
   if (P_Random() < dist)
-    return false;
-
-  if (P_HitFriend(actor))
     return false;
 
   return true;
@@ -423,8 +386,7 @@ static void P_NewChaseDir(mobj_t __far* actor)
 
     // killough 8/8/98: sometimes move away from target, keeping distance
     //
-    // 1) Stay a certain distance away from a friend, to avoid being in their way
-    // 2) Take advantage over an enemy without missiles, by keeping distance
+    // Take advantage over an enemy without missiles, by keeping distance
 
     if (actor->floorz - actor->dropoffz > FRACUNIT*24 &&
             actor->z <= actor->floorz &&
@@ -439,21 +401,6 @@ static void P_NewChaseDir(mobj_t __far* actor)
         actor->movecount = 1;
         return;
     }
-    else
-    {
-        fixed_t dist = P_AproxDistance(deltax, deltay);
-
-        // Move away from friends when too close, except
-        // in certain situations (e.g. a crowded lift)
-
-        if (actor->flags & target->flags & MF_FRIEND &&
-                distfriend > dist &&
-                !P_IsOnLift(target))
-        {
-            deltax = -deltax, deltay = -deltay;
-        }
-    }
-
 
     P_DoNewChaseDir(actor, deltax, deltay);
 }
@@ -530,12 +477,6 @@ void A_Look(mobj_t __far* actor)
 {
     mobj_t __far* targ = actor->subsector->sector->soundtarget;
     actor->threshold = 0; // any shot will wake up
-
-    /* killough 7/18/98:
-   * Friendly monsters go after other monsters first, but
-   * also return to player, without attacking them, if they
-   * cannot find any targets. A marine's best friend :)
-   */
     actor->pursuecount = 0;
 
     boolean seen = false;
@@ -655,31 +596,11 @@ void A_Chase(mobj_t __far* actor)
             actor->pursuecount = BASETHRESHOLD;
 
           /* Unless (we have a live target
-           *         and it's not friendly
            *         and we can see it)
            *  try to find a new one; return if sucessful */
 
-            if (!(actor->target && actor->target->health > 0 &&
-                  (
-                      (((actor->target->flags ^ actor->flags) & MF_FRIEND ||
-                        (!(actor->flags & MF_FRIEND))) &&
-                       P_CheckSight(actor, actor->target))))
-                    && P_LookForTargets(actor, true))
+            if (!(actor->target && actor->target->health > 0 && P_CheckSight(actor, actor->target)) && P_LookForTargets(actor, true))
                 return;
-
-            /* (Current target was good, or no new target was found.)
-           *
-           * If monster is a missile-less friend, give up pursuit and
-           * return to player, if no attacks have occurred recently.
-           */
-
-            if (!mobjinfo[actor->type].missilestate && actor->flags & MF_FRIEND)
-            {
-                if (actor->flags & MF_JUSTHIT)          /* if recent action, */
-                    actor->flags &= ~MF_JUSTHIT;          /* keep fighting */
-                else if (P_LookForPlayers(actor, true)) /* else return to player */
-                    return;
-            }
         }
     }
 

@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023, 2024 by
+ *  Copyright 2023-2025 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -163,8 +163,6 @@
 // Don't stop moving halfway off a step,
 //  that is, have dead bodies slide down all the way.
 #define MF_CORPSE       0x4000U
-
-#define MF_FRIEND       0x8000U
 
 
 // Map Object definition.
