@@ -35,9 +35,6 @@
 #include "w_wad.h"
 
 
-#define PLANEWIDTH	80
-
-
 extern const int16_t CENTERY;
 
 static uint8_t _s_viewwindow[VIEWWINDOWWIDTH * VIEWWINDOWHEIGHT];
@@ -110,9 +107,9 @@ void I_FinishUpdate(void)
 	uint16_t *dst = videomemory;
 
 	for (uint_fast8_t y = 0; y < VIEWWINDOWHEIGHT; y++) {
-		for (uint_fast16_t x = 0; x < VIEWWINDOWWIDTH / 2; x++) {
+		for (uint_fast8_t x = 0; x < VIEWWINDOWWIDTH / 2; x++) {
 			*dst = *src++;
-			dst+=2;
+			dst += 2;
 		}
 
 		dst += 20;
@@ -269,9 +266,46 @@ void R_DrawColumnFlat(uint8_t color, const draw_column_vars_t *dcvars)
 }
 
 
+#define FUZZCOLOR1 0x00
+#define FUZZCOLOR2 0x02
+#define FUZZCOLOR3 0x20
+#define FUZZCOLOR4 0x22
+#define FUZZTABLE 50
+
+static const int8_t fuzzcolors[FUZZTABLE] =
+{
+	FUZZCOLOR1,FUZZCOLOR2,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR2,
+	FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR1,FUZZCOLOR2,
+	FUZZCOLOR3,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR4,FUZZCOLOR2,
+	FUZZCOLOR1,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR3,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR1,FUZZCOLOR4,
+	FUZZCOLOR3,FUZZCOLOR2,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR1,
+	FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR4,FUZZCOLOR2,FUZZCOLOR1,FUZZCOLOR3,
+	FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR4,FUZZCOLOR1,FUZZCOLOR3,FUZZCOLOR2,FUZZCOLOR1
+};
+
+
 void R_DrawFuzzColumn(const draw_column_vars_t *dcvars)
 {
+	int16_t count = (dcvars->yh - dcvars->yl) + 1;
 
+	// Zero length, column does not exceed a pixel.
+	if (count <= 0)
+		return;
+
+	uint8_t *dest = &_s_viewwindow[dcvars->yl * VIEWWINDOWWIDTH + dcvars->x];
+
+	static int16_t fuzzpos = 0;
+
+	do
+	{
+		*dest = fuzzcolors[fuzzpos];
+		dest += VIEWWINDOWWIDTH;
+
+		fuzzpos++;
+		if (fuzzpos >= FUZZTABLE)
+			fuzzpos = 0;
+
+	} while(--count);
 }
 
 
