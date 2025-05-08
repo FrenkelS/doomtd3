@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------
  *
  *
- *  Copyright (C) 2024 Frenkel Smeijers
+ *  Copyright (C) 2024-2025 Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -391,6 +391,9 @@ void I_Error2(const char *error, ...)
 
 int main(int argc, const char * const * argv)
 {
+	UNUSED(argc);
+	UNUSED(argv);
+
 	D_DoomMain();
 	return 0;
 }
