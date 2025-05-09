@@ -65,6 +65,8 @@ void I_InitGraphics(void)
 	Setcolor(1, 0x777);
 
 	videomemory = Physbase();
+	videomemory += 10;   // center horizontally
+	videomemory += 1600; // center vertically
 
 	isGraphicsModeSet = true;
 }
