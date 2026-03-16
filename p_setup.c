@@ -34,6 +34,7 @@
  *
  *-----------------------------------------------------------------------------*/
 
+#include <math.h>
 #include <stdint.h>
 
 #include "d_player.h"
@@ -308,7 +309,7 @@ static void P_LoadLineDefs(int16_t lump)
 			_g_lines[i].slopetype = ST_VERTICAL;
 		else if (_g_lines[i].dy == 0)
 			_g_lines[i].slopetype = ST_HORIZONTAL;
-		else if ((_g_lines[i].dy ^ _g_lines[i].dx) > 0)
+		else if ((_g_lines[i].dy ^ _g_lines[i].dx) >= 0)
 			_g_lines[i].slopetype = ST_POSITIVE;
 		else
 			_g_lines[i].slopetype = ST_NEGATIVE;
