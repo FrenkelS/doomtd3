@@ -133,7 +133,7 @@ static uint16_t __chip coplist[] = {
 };
 
 
-static const int16_t colors[14] =
+static const uint16_t colors[14] =
 {
 	0x000,													// normal
 	0x100, 0x300, 0x500, 0x700, 0x800, 0xa00, 0xc00, 0xe00,	// red
