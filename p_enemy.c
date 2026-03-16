@@ -10,7 +10,7 @@
  *  Jess Haas, Nicolas Kalkhof, Colin Phipps, Florian Schulze
  *  Copyright 2005, 2006 by
  *  Florian Schulze, Colin Phipps, Neil Stevens, Andrey Budko
- *  Copyright 2023-2025 by
+ *  Copyright 2023-2026 by
  *  Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
@@ -118,28 +118,6 @@ static boolean P_CheckMissileRange(mobj_t __far* actor)
     return false;
 
   return true;
-}
-
-/*
- * P_IsOnLift
- *
- * killough 9/9/98:
- *
- * Returns true if the object is on a lift. Used for AI,
- * since it may indicate the need for crowded conditions,
- * or that a monster should stay on the lift for a while
- * while it goes up or down.
- */
-
-static boolean P_IsOnLift(const mobj_t __far* actor)
-{
-  const sector_t __far* sec = actor->subsector->sector;
-
-  // Short-circuit: it's on a lift which is active.
-  if (sec->floordata && ((thinker_t __far*) sec->floordata)->function==T_PlatRaise)
-    return true;
-
-  return false;
 }
 
 
