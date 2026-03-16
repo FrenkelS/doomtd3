@@ -1,6 +1,6 @@
 //
 //
-// Copyright (C) 2023-2025 Frenkel Smeijers
+// Copyright (C) 2023-2026 Frenkel Smeijers
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -51,6 +51,7 @@ int32_t labs(int32_t v);
 typedef uint32_t segment_t;
 #define SIZE_OF_SEGMENT_T 4
 
+#undef  __far
 #define __far
 
 #define _fmemcpy	memcpy
