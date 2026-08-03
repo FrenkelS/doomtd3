@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------
  *
  *
- *  Copyright (C) 2023-2024 Frenkel Smeijers
+ *  Copyright (C) 2023-2025 Frenkel Smeijers
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -702,9 +702,9 @@ segment_t I_ZoneAdditional(uint32_t *size)
 
 #if defined _M_I86
 	segment_t __far* emsInterruptVectorSegment = D_MK_FP(0, EMS_INT * 4 + 2);
-	uint64_t __far* actualEmsDeviceName = D_MK_FP(*emsInterruptVectorSegment, 0x000a);
-	uint64_t expectedEmsDeviceName = *(uint64_t*)"EMMXXXX0";
-	if (*actualEmsDeviceName != expectedEmsDeviceName)
+	char __far* actualEmsDeviceName = D_MK_FP(*emsInterruptVectorSegment, 0x000a);
+	const char expectedEmsDeviceName[8] = "EMMXXXX0";
+	if (_fmemcmp(actualEmsDeviceName, expectedEmsDeviceName, sizeof(expectedEmsDeviceName)) == 0)
 		return 0;
 
 	// EMS detected
